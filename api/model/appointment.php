@@ -21,7 +21,6 @@ class Appointment {
 
     //get user details
     function getAppointments($data) {
-        $company_email = "";
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $company_id = filter_var($data->company_id, FILTER_SANITIZE_NUMBER_INT);
         $company_email = filter_var($data->company_email, FILTER_SANITIZE_EMAIL);
@@ -57,10 +56,12 @@ class Appointment {
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
         if ($company_id != "") {
-            $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+            $stmt->bindParam(2,htmlspecialchars(strip_tags($company_id)));
+        } else if ($company_email != ""){
+            $stmt->bindParam(2,strip_tags($company_email));
         }
-        if ($company_email != "") {
-            $stmt->bindParam(3, strip_tags($company_email));
+        if ($company_email != ""){
+            $stmt->bindParam(3,strip_tags($company_email));
         }
         // execute query
         $stmt->execute();
