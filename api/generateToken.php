@@ -46,7 +46,8 @@ if ($num > 0) {
                 array(
                     "message" => "Successful generated token.",
                     "jwt" => $jwt,
-                    "expireAt" => $expire_claim
+                    "expireAt" => $expire_claim,
+                    "userId" => $id
         ));
     } else {
         http_response_code(401);

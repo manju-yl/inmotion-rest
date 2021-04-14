@@ -22,14 +22,27 @@ if ($data->event_id == "" || $data->event_id == null ) {
     );
     exit;
 }
-if (!is_numeric($data->event_id) || !is_numeric($data->company_id)) {
+if ($data->event_id != "" || $data->event_id != null ) {
+    if (!is_numeric($data->event_id) || !is_numeric($data->event_id)) {
      // set response code - 404 Not found
     http_response_code(404);
     // no appointments found
     echo json_encode(
-            array("message" => "EventId and CompanyId should be numberic.")
+            array("message" => "EventId should be numberic.")
     );
     exit;
+    }
+}
+if ($data->company_id != "" || $data->company_id != null ) {
+    if (!is_numeric($data->company_id) || !is_numeric($data->company_id)) {
+     // set response code - 404 Not found
+    http_response_code(404);
+    // no appointments found
+    echo json_encode(
+            array("message" => "CompanyId should be numberic.")
+    );
+    exit;
+    }
 }
 
 $authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_STRING);

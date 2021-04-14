@@ -55,13 +55,17 @@ class Appointment {
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        $flag=0;
         if ($company_id != "") {
             $stmt->bindParam(2,htmlspecialchars(strip_tags($company_id)));
         } else if ($company_email != ""){
             $stmt->bindParam(2,strip_tags($company_email));
+            $flag=1;
         }
-        if ($company_email != ""){
+        if ($flag == 0) {
+           if ($company_email != ""){
             $stmt->bindParam(3,strip_tags($company_email));
+           } 
         }
         // execute query
         $stmt->execute();
