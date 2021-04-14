@@ -19,7 +19,7 @@ class Appointment {
         $this->conn = $db;
     }
 
-    //get user details
+    //get appointment details
     function getAppointments($data) {
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $company_id = filter_var($data->company_id, FILTER_SANITIZE_NUMBER_INT);
