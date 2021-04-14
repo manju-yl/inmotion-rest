@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.33, for Linux (x86_64)
 --
--- Host: localhost    Database: inmotion_05_04_2021
+-- Host: localhost    Database: inmotion
 -- ------------------------------------------------------
 -- Server version	5.7.33-0ubuntu0.18.04.1
 
@@ -29,7 +29,7 @@ CREATE TABLE `Users` (
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,12 +46,13 @@ CREATE TABLE `appointment` (
   `day` varchar(31) DEFAULT NULL,
   `time` varchar(12) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_company_id_idx` (`company_id`),
   KEY `FK_event_id_idx` (`event_id`),
   CONSTRAINT `FK_company_id` FOREIGN KEY (`company_id`) REFERENCES `company` (`co_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_event_id` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,7 +77,7 @@ CREATE TABLE `booth_details` (
   KEY `FK_event_id_idx1` (`event_id`),
   CONSTRAINT `FK_company_id1` FOREIGN KEY (`company_id`) REFERENCES `company` (`co_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_event_id1` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,6 +94,7 @@ CREATE TABLE `company` (
   `company_contact_last_name` varchar(57) DEFAULT NULL,
   `company_email` varchar(57) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` int(7) DEFAULT NULL,
   PRIMARY KEY (`co_id`),
   UNIQUE KEY `co_id` (`co_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -123,4 +125,4 @@ CREATE TABLE `event` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-09 14:51:15
+-- Dump completed on 2021-04-14 14:44:19
