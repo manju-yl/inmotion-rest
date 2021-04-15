@@ -11,10 +11,14 @@ $("#login_form").on('submit',function(e){
 	$.ajax({
 	type: "post",
 	dataType: "json",
-	data: { 
+	headers: {
+	    'Accept': 'application/json',
+	    'Content-Type': 'application/json'
+	},
+	data: JSON.stringify({ 
 	    "email" : email,
 	    "password" : password
-	},
+	}),
 	url: 'api/generateToken.php',
 	success: function(data, result) {
 	    if(data.status ==200){

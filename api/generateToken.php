@@ -8,12 +8,9 @@ use \Firebase\JWT\JWT;
 header('Content-type: application/json');
 $databaseService = new DatabaseService(); 
 $conn = $databaseService->getConnection();
-//$data = json_decode(file_get_contents("php://input"),true);
-//$email = filter_var($data->email, FILTER_SANITIZE_EMAIL);
-//$password = $data->password;
-
-$email           = htmlentities($_POST['email']);
-$password        = htmlentities($_POST['password']);
+$data = json_decode(file_get_contents("php://input"),true); 
+$email = filter_var($data['email'], FILTER_SANITIZE_EMAIL); 
+$password = $data['password']; 
 $user = new User($conn); 
 $stmt = $user->getUser($email);
 $num = $stmt->rowCount(); 
