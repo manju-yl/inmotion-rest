@@ -126,3 +126,6 @@ CREATE TABLE `event` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2021-04-14 14:44:19
+
+ALTER TABLE `booth_details` 
+ADD COLUMN `ges_ese` VARCHAR(45) NULL AFTER `created_date`;

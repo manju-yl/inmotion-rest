@@ -13,6 +13,7 @@ class BoothDetails {
     public $hall;
     public $fm_name;
     public $fm_text_number;
+    public $ges_ese;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -39,7 +40,8 @@ class BoothDetails {
                         bd.fm_name,
                         bd.fm_text_number,
                         c.company_name,
-                        e.event_name
+                        e.event_name,
+                        bd.ges_ese
                     FROM
                         " . $this->table_name . " bd
                             LEFT JOIN
