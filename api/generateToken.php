@@ -5,19 +5,19 @@ include_once './model/user.php';
 require "../vendor/autoload.php";
 require "./common/headers.php";
 use \Firebase\JWT\JWT;
-
-$databaseService = new DatabaseService();
+header('Content-type: application/json');
+$databaseService = new DatabaseService(); 
 $conn = $databaseService->getConnection();
+//$data = json_decode(file_get_contents("php://input"),true);
+//$email = filter_var($data->email, FILTER_SANITIZE_EMAIL);
+//$password = $data->password;
 
-$data = json_decode(file_get_contents("php://input"));
-
-$email = filter_var($data->email, FILTER_SANITIZE_EMAIL);
-$password = $data->password;
-
-$user = new User($conn);
+$email           = htmlentities($_POST['email']);
+$password        = htmlentities($_POST['password']);
+$user = new User($conn); 
 $stmt = $user->getUser($email);
-$num = $stmt->rowCount();
-
+$num = $stmt->rowCount(); 
+if($email != "" && $password != ""){
 if ($num > 0) {
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     $id = $row['id'];
@@ -38,19 +38,25 @@ if ($num > 0) {
                 "lastname" => $lastname,
                 "email" => $email
         ));
-
-        http_response_code(200);
-
+        //http_response_code(200);
+        
         $jwt = JWT::encode($token, $secret_key);
         echo json_encode(
                 array(
+                    "status" => 200,
                     "message" => "Successful generated token.",
                     "jwt" => $jwt,
                     "expireAt" => $expire_claim,
-                    "userId" => $id
+                    "userId" => $id,
+		    "firstname" => $firstname
         ));
+       exit;
     } else {
-        http_response_code(401);
-        echo json_encode(array("message" => "Login failed.", "password" => $password));
+        //http_response_code(401);
+        //echo json_encode(array("message" => "Login failed.", "password" => $password));
+        echo json_encode(array('status' => 401, 'error' => 'Incorrect Email Address or Password.')); exit; 
+    }
+} else {
+       echo json_encode(array('status' => 401, 'error' => 'Incorrect Email Address or Password.')); exit; 
     }
 }
