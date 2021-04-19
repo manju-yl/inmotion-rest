@@ -6,11 +6,14 @@ require "./common/headers.php";
 use \Firebase\JWT\JWT;
 
 $secret_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
+//get database connection
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
 
+//get input data from request
 $data = json_decode(file_get_contents("php://input"));
 
+//get authorization header
 $authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_STRING);
 
 $arr = explode(" ", $authHeader);
@@ -24,7 +27,7 @@ $jwt = $arr[1];
 if ($jwt) {
 
     try {
-
+        //decode the jwt token
         $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
 
         // Access is granted. Add code of the operation here 
