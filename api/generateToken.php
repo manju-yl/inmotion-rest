@@ -35,7 +35,6 @@ if ($num > 0) {
                 "lastname" => $lastname,
                 "email" => $email
         ));
-        //http_response_code(200);
         
         $jwt = JWT::encode($token, $secret_key);
         echo json_encode(
