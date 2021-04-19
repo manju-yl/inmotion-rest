@@ -25,10 +25,10 @@ class BoothDetails {
         $company_id = filter_var($data->company_id, FILTER_SANITIZE_NUMBER_INT);
         $booth = filter_var($data->booth, FILTER_SANITIZE_NUMBER_INT);
         $addCondition = "";
-        if ($company_id != "" ) {
+        if ($company_id != "") {
             $addCondition = "and bd.company_id = ?";
         }
-        if ($booth != "" ) {
+        if ($booth != "") {
             $addCondition .= " and bd.booth = ?";
         }
         // select all query
@@ -57,17 +57,17 @@ class BoothDetails {
         $event_id = htmlspecialchars(strip_tags($event_id));
         $company_id = htmlspecialchars(strip_tags($company_id));
         $stmt->bindParam(1, $event_id);
-        $flag=0;
+        $flag = 0;
         if ($company_id != "") {
-            $stmt->bindParam(2,$company_id);
-        } else if ($booth != ""){
-            $stmt->bindParam(2,$booth);
-            $flag=1;
+            $stmt->bindParam(2, $company_id);
+        } else if ($booth != "") {
+            $stmt->bindParam(2, $booth);
+            $flag = 1;
         }
         if ($flag == 0) {
-           if ($booth != ""){
-            $stmt->bindParam(3,$booth);
-           } 
+            if ($booth != "") {
+                $stmt->bindParam(3, $booth);
+            }
         }
         // execute query
         $stmt->execute();
