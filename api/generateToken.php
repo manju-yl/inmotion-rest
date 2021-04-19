@@ -49,9 +49,7 @@ if ($num > 0) {
         ));
        exit;
     } else {
-        //http_response_code(401);
-        //echo json_encode(array("message" => "Login failed.", "password" => $password));
-        echo json_encode(array('status' => 401, 'error' => 'Incorrect Email Address or Password.')); exit; 
+       echo json_encode(array('status' => 401, 'error' => 'Incorrect Email Address or Password.')); exit; 
     }
 } else {
        echo json_encode(array('status' => 401, 'error' => 'Incorrect Email Address or Password.')); exit; 
