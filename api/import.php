@@ -47,7 +47,7 @@ if (isset($_POST["resignappintments"])) {
         $sheetCount = count($spreadSheetAry);
 
 	    //loop through the excel data
-        for ($i = 1; $i <= $sheetCount; $i ++) {
+        for ($i = 1; $i <= $sheetCount-1; $i ++) {
             $company_id = $spreadSheetAry[$i][0];
             $event_id = $spreadSheetAry[$i][1];
             $day = $spreadSheetAry[$i][2];
