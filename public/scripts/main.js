@@ -24,6 +24,7 @@ $("#login_form").on('submit',function(e){
 	    if(data.status ==200){
 	    	$.cookie('token',data.jwt);
 	    	$.cookie('firstname',data.firstname);
+	    	$.cookie('userId',data.userId);
 	    	window.location = 'importData.php';
 	    }else{
 	    	$(".error").html(data.error)
@@ -35,6 +36,80 @@ $("#login_form").on('submit',function(e){
 	});
 
 
-})
+});
+
+
+$("#import_form").on('submit',function(e){
+	e.preventDefault();
+	$.ajax({
+          url:'api/import.php',
+          method:'POST',
+          data:new FormData(this),
+          contentType:false,
+          cache:false,
+          processData:false,
+          beforeSend:function(){
+          	$('#importappintmentSubmit').attr('disabled', 'disabled');
+    		    $("#floormanager").prop("disabled", true);
+          	$('#importappintmentSubmit').val('Importing...');
+          },
+          success:function(data){
+            console.log(data);
+            $('#message').html(data.error);
+            $('#importappintmentSubmit').attr('disabled', false);
+            $('#importappintmentSubmit').val('Import');
+    		    $('#floormanager').prop("checked", false);
+    		    $("#floormanager").prop("disabled", false);
+            $("#import_form")[0].reset();
+            $('#resignappintment').prop("checked", true);
+          }
+        });
+
+
+});
+
+$("#import_floor_form").on('submit',function(e){
+	e.preventDefault();
+	$.ajax({
+          url:'api/import.php',
+          method:'POST',
+          data:new FormData(this),
+          contentType:false,
+          cache:false,
+          processData:false,
+          beforeSend:function(){
+          	$('#importFloormanagerSubmit').attr('disabled', 'disabled');
+            $("#resignappintment").prop("disabled", true);
+          	$('#importFloormanagerSubmit').val('Importing...');
+          },
+          success:function(data){
+            console.log(data);
+            $('#message').html(data.error);
+            $('#importFloormanagerSubmit').attr('disabled', false);
+            $('#importFloormanagerSubmit').val('Import');
+			      $('#resignappintment').prop("checked", false);
+			      $("#resignappintment").prop("disabled", false);
+            $("#import_floor_form")[0].reset();
+            $('#floormanager').prop("checked", true);
+          }
+        });
+
+
+});
+
+$('#resetbtn').on('click', function(e) {
+    var $el = $('#file');
+    $el.wrap('<form>').closest(
+      'form').get(0).reset();
+    $el.unwrap();
+});
+
+$('#boothresetbtn').on('click', function(e) {
+    var $el = $('#myfile');
+    $el.wrap('<form>').closest(
+      'form').get(0).reset();
+    $el.unwrap();
+});
+
 
 })(jQuery);

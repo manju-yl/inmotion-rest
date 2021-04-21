@@ -73,4 +73,85 @@ class Appointment {
         return $stmt;
     }
 
+    //Add OR Update Appointment details
+    function addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id) {
+        $query = "SELECT event_id FROM " . $this->table_name . " WHERE event_id = ? LIMIT 0,1";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+
+        // execute query
+        $stmt->execute();
+        $num = $stmt->rowCount(); 
+        if ($num > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $event_id = $row['event_id'];
+            $updateAppointment = "
+                UPDATE " . $this->table_name . "
+                SET day = :day,
+                    time = :time,
+                    created_by='$user_id' where event_id = '$event_id'"; 
+
+        $stmt = $this->conn->prepare($updateAppointment); 
+
+        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+            
+        }else{
+            $query = "SELECT company_id FROM " . $this->table_name . " WHERE company_id = ? LIMIT 0,1";
+
+            // prepare query statement
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, htmlspecialchars(strip_tags($company_id)));
+            // execute query
+            $stmt->execute();
+            $num = $stmt->rowCount(); 
+            if ($num > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $company_id = $row['company_id'];
+                $insertquery = "
+                INSERT INTO event
+                SET event_id = :event_id;
+                INSERT INTO " . $this->table_name . "
+                SET company_id = $company_id,
+                    event_id = :event_id,
+                    day = :day,
+                    time = :time,
+                    created_by='$user_id'";
+
+                $stmt = $this->conn->prepare($insertquery); 
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                //$stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+                $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+            }else{
+                $query = "
+                INSERT INTO event
+                SET event_id = :event_id;
+                INSERT INTO company
+                SET co_id = :company_id,
+                    company_name = :company_name,
+                    created_by = '$user_id';
+                INSERT INTO " . $this->table_name . "
+                SET company_id = :company_id,
+                    event_id = :event_id,
+                    day = :day,
+                    time = :time,
+                    created_by='$user_id'";
+
+                $stmt = $this->conn->prepare($query); 
+
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+                $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+            }
+
+        }
+        return $stmt;
+    }
+
 }

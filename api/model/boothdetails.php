@@ -75,4 +75,109 @@ class BoothDetails {
         return $stmt;
     }
 
+    //Add OR Update Booth details
+    function addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_first_name, $company_contact_last_name, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id) {
+        $query = "SELECT event_id FROM " . $this->table_name . " WHERE event_id = ? LIMIT 0,1";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+
+        // execute query
+        $stmt->execute();
+        $num = $stmt->rowCount(); 
+        if ($num > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $event_id = $row['event_id'];
+            $updateAppointment = "
+                UPDATE " . $this->table_name . "
+                SET booth = :booth,
+                    hall = :hall,
+                    fm_name= :fm_name,
+                    fm_phone= :fm_phone,
+                    fm_text_number= :fm_text_number,
+                    ges_ese= :ges_ese where event_id = '$event_id'"; 
+
+        $stmt = $this->conn->prepare($updateAppointment); 
+
+        $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
+        $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
+        $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
+        $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
+        $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
+        $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+            
+        }else{
+        
+            $query = "SELECT company_id FROM " . $this->table_name . " WHERE company_id = ? LIMIT 0,1";
+            // prepare query statement
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(1, htmlspecialchars(strip_tags($company_id)));
+            // execute query
+            $stmt->execute(); 
+            $num = $stmt->rowCount(); 
+            if ($num > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC); 
+                $insertquery = "
+                INSERT INTO event
+                SET event_id = :event_id;
+                INSERT INTO " . $this->table_name . "
+                SET company_id = :company_id,
+                    event_id = :event_id,
+                    booth = :booth,
+                    hall = :hall,
+                    fm_name= :fm_name,
+                    fm_phone= :fm_phone,
+                    fm_text_number= :fm_text_number,
+                    ges_ese= :ges_ese";
+
+                $stmt = $this->conn->prepare($insertquery); 
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
+                $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
+                $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
+                $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
+                $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
+                $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+            }else{
+                $query = "
+                INSERT INTO event
+                SET event_id = :event_id;
+                INSERT INTO company
+                SET co_id = :company_id,
+                    company_name = :company_name,
+                    company_contact_first_name = :company_contact_first_name,
+                    company_contact_last_name = :company_contact_last_name,
+                    company_email = :company_email,
+                    created_by = '$user_id';
+                INSERT INTO " . $this->table_name . "
+                SET company_id = :company_id,
+                    event_id = :event_id,
+                    booth = :booth,
+                    hall = :hall,
+                    fm_name= :fm_name,
+                    fm_phone= :fm_phone,
+                    fm_text_number= :fm_text_number,
+                    ges_ese= :ges_ese";
+
+                $stmt = $this->conn->prepare($query); 
+
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
+                $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
+                $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
+                $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
+                $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
+                $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
+                $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
+                $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
+                $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+            }
+        }
+        return $stmt;
+    }
+
 }
