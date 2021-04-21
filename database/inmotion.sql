@@ -129,3 +129,5 @@ CREATE TABLE `event` (
 
 ALTER TABLE `booth_details` 
 ADD COLUMN `ges_ese` VARCHAR(45) NULL AFTER `created_date`;
+ALTER TABLE `booth_details` CHANGE `hall` `hall` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `ges_ese` `ges_ese` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;

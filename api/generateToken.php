@@ -43,7 +43,6 @@ if ($email != "" && $password != "") {
                     "lastname" => $lastname,
                     "email" => $email
             ));
-            //http_response_code(200);
             //encode the jwt token
             $jwt = JWT::encode($token, $secret_key);
             echo json_encode(
@@ -57,8 +56,6 @@ if ($email != "" && $password != "") {
             ));
             exit;
         } else {
-            //http_response_code(401);
-            //echo json_encode(array("message" => "Login failed.", "password" => $password));
             echo json_encode(array('status' => 401, 'error' => 'Incorrect Email Address or Password.'));
             exit;
         }
