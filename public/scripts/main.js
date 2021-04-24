@@ -3,6 +3,28 @@ return check;});$('.validate-form .input100').each(function(){$(this).focus(func
 else{if($(input).val().trim()==''){return false;}}}
 function showValidate(input){var thisAlert=$(input).parent();$(thisAlert).addClass('alert-validate');}
 function hideValidate(input){var thisAlert=$(input).parent();$(thisAlert).removeClass('alert-validate');}
+
+
+$( document ).ready(function() {
+ 
+  $.ajax({
+  url: 'api/download.php',
+  success: function(data) {
+      if(data=="false"){
+      $("#dispEventLists").html('');
+      $("#dispDownloadBtn").hide();
+    }else{
+      $("#dispEventLists").html(data);
+      $("#dispDownloadBtn").show();
+    }
+  },
+  error: function(data) {
+  }
+  });
+
+
+});
+
 $("#login_form").on('submit',function(e){
 	e.preventDefault();
     var email      = $('#email').val();
@@ -54,6 +76,20 @@ $("#import_form").on('submit',function(e){
           	$('#importappintmentSubmit').val('Importing...');
           },
           success:function(data){
+            $.ajax({
+              url:'api/download.php',
+              cache:false,
+              success:function(data){
+                console.log(data);
+                if(data=="false"){
+                  $("#dispEventLists").html('');
+                  $("#dispDownloadBtn").hide();
+                }else{
+                  $("#dispEventLists").html(data);
+                  $("#dispDownloadBtn").show();
+                }
+              }
+            });
             console.log(data);
             $('#message').html(data.error);
             $('#importappintmentSubmit').attr('disabled', false);

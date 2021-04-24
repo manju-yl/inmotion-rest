@@ -41,6 +41,13 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
              <div id="message"></div>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_form">
+                <div class="infoMessage" id="infoMessage">
+                    <?php $csvFilename = 'sample.xlsx'; ?>
+                    <ol>
+                        <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
+                        <li>Event Id and Company Id are Mandatory. </li>
+                    </ol>
+                </div>
                 <input type="radio" name="resignappintments" value="resignappintment"  id="resignappintment" checked />
                           <label>Re-sign Appointment</label>
                <div id='resignappintment_div'>
@@ -50,6 +57,16 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <button id="resetbtn" class="button button4" type="button">Reset</button></p>
                 </div>
                 </form>
+                <div class="btn" id="appintmentDivDisp">
+              <form action="api/downloadFile.php" method="post">
+                    <div id="dispEventLists"></div>
+                    <div class="btn" id="dispDownloadBtn" style="display:none;">
+                            <button type="submit" id="btnExport" name='export'
+                                value="Export to Excel" class="button button4">Export
+                                to Excel</button>
+                    </div>
+                  </form>
+                </div>
             </section>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_floor_form">
@@ -82,6 +99,8 @@ $('#resignappintment').click(function(){
     $('#floormanager').prop("checked", false);
     $('#resignappintment_div').show();
     $('#floormanager_div').hide();
+    $('#appintmentDivDisp').show();
+    $('#infoMessage').show();
     });
 
 $('#floormanager').click(function(){
@@ -89,6 +108,8 @@ $('#floormanager').click(function(){
     $('#resignappintment').prop("checked", false);
     $('#resignappintment_div').hide();
     $('#floormanager_div').show();
+    $('#appintmentDivDisp').hide();
+    $('#infoMessage').hide();
    });
 </script>   
 <?php

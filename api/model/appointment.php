@@ -75,6 +75,7 @@ class Appointment {
 
     //Add OR Update Appointment details
     function addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id) {
+        if($event_id != "" && $company_id != ""){
         $query = "SELECT event_id FROM " . $this->table_name . " WHERE event_id = ? LIMIT 0,1";
 
         // prepare query statement
@@ -148,9 +149,45 @@ class Appointment {
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
                 $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
                 $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                
             }
-
         }
+    }else{
+                $query = "";
+                $stmt = $this->conn->prepare($query); 
+            }
+        return $stmt;
+    }
+
+
+    //get appointment details
+    function getEmptyAppointmentDetails() {
+        $query = "SELECT 
+            *
+        FROM
+            " . $this->table_name . " 
+        WHERE (company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL) order by created_date desc";
+        //$query .= $addCondition;
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+    //download particular event appointment details
+    function downloadAppointmentDetails($event_id) {
+
+        // select all query
+        $query = "SELECT * FROM " . $this->table_name . " WHERE event_id = ?";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        // execute query
+        $stmt->execute();
         return $stmt;
     }
 

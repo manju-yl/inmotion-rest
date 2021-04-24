@@ -34,33 +34,83 @@ if (isset($_POST["resignappintments"])) {
         }
         $targetPath = 'uploads/' . $_FILES['file']['name'];
         $ret = move_uploaded_file($_FILES['file']['tmp_name'], $targetPath);
-	
-	//check if selected files are moved to temporary folder        
-	if (!$ret) {
+    
+    //check if selected files are moved to temporary folder        
+    if (!$ret) {
             $message = '<div class="errorMessage errormsgWrapperDi">There is an error in uploading the file.</div>';
             echo json_encode(array('status' => 200, 'error' => $message)); exit;
         }
         $Reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(); 
+
+        // file path
         $spreadSheet = $Reader->load($targetPath);
         $excelSheet = $spreadSheet->getActiveSheet();
         $spreadSheetAry = $excelSheet->toArray();
+
+
+        // array Count
         $sheetCount = count($spreadSheetAry);
+        $flag = 0;
+        //$missedRowCount = 0;
 
-	    //loop through the excel data
-        for ($i = 1; $i <= $sheetCount-1; $i ++) {
-            $company_id = $spreadSheetAry[$i][0];
-            $event_id = $spreadSheetAry[$i][1];
-            $day = $spreadSheetAry[$i][2];
-            $time = $spreadSheetAry[$i][3];
-            $company_name = $spreadSheetAry[$i][4];
 
-            $appointment = new appointment($conn);  
-            $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id, $day, $time, $company_name, $user_id);
-            $stmt->execute();
+        $createArray = array('COID', 'EVENTID', 'Re-Sign_Appt_Date_Text', 'Re-sign_Appt_Time_Text', 'Company_Name');
+        $makeArray = array( 'COID' => 'COID', 'EVENTID' => 'EVENTID', 'Re-Sign_Appt_Date_Text' => 'Re-Sign_Appt_Date_Text', 'Re-sign_Appt_Time_Text' => 'Re-sign_Appt_Time_Text', 'Company_Name' => 'Company_Name');
+        $SheetDataKey = array(); 
+        foreach ($spreadSheetAry as $dataInSheet) {
+            foreach ($dataInSheet as $key => $value) {//echo "<pre>"; print_r(trim($value)); print_r($createArray);
+                if (in_array(trim($value), $createArray)) {//echo trim($value);
+                    $value = preg_replace('/\s*/', '', $value);
+                    $SheetDataKey[trim($value)] = $key;
+                } 
+            }
+        } 
+        $dataDiff = array_diff_key($makeArray, $SheetDataKey); 
+        if (empty($dataDiff)) {
+            $flag = 1;
         }
 
-            $message = '<div class="alert alert-success">Appointment was successfully registered.</div>';
-            echo json_encode(array('status' => 200, 'error' => $message)); exit;
+        // match excel sheet column
+        if ($flag == 1) {
+        
+        //loop through the excel data
+        for ($i = 1; $i <= $sheetCount-1; $i ++) {
+            $CoID = $SheetDataKey['COID'];
+            $EVENTID = $SheetDataKey['EVENTID'];
+            $date = $SheetDataKey['Re-Sign_Appt_Date_Text'];
+            $time = $SheetDataKey['Re-sign_Appt_Time_Text'];
+            $Company_Name = $SheetDataKey['Company_Name'];
+
+            $company_id = filter_var(trim($spreadSheetAry[$i][$CoID]), FILTER_SANITIZE_NUMBER_INT);
+            $event_id = filter_var(trim($spreadSheetAry[$i][$EVENTID]), FILTER_SANITIZE_NUMBER_INT);
+            $day = filter_var(trim($spreadSheetAry[$i][$date]), FILTER_SANITIZE_STRING);
+            $time = filter_var(trim($spreadSheetAry[$i][$time]), FILTER_SANITIZE_STRING);
+            $company_name = filter_var(trim($spreadSheetAry[$i][$Company_Name]), FILTER_SANITIZE_STRING);
+       
+            
+            $appointment = new appointment($conn);  
+            $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id);
+
+            
+            if ($stmt->execute()) {
+                $message = 'Appointment was successfully registered. ';
+            } else {
+                //$missedRowCount++;
+                $message = 'Appointment was successfully registered. '; 
+            }
+            //$stmt->debugDumpParams();
+            }
+            
+           /* if($missedRowCount > 0){
+            $message .= $missedRowCount . " Appointments are not registered due to missed Company Id and EventId in the Excel Sheet. Please insert Company Id and Event Id and upload the Excel File Again.";
+        }    */
+        $successmessage = '<div class="alert alert-success">'.$message.'</div>';
+        echo json_encode(array('status' => 200, 'error' => $successmessage)); exit;
+        
+        }else{
+           $message = '<div class="errorMessage errormsgWrapperDi">Please import correct file, did not match excel sheet column.</div>';
+        echo json_encode(array('status' => 401, 'error' => $message)); exit; 
+        }
     } else {
         $message = '<div class="errorMessage errormsgWrapperDi">Invalid File Type. Upload Excel File.</div>';
         echo json_encode(array('status' => 401, 'error' => $message)); exit;
@@ -88,9 +138,9 @@ if (isset($_POST["floormanager"])) {
         }
         $targetPath = 'uploads/' . $_FILES['myfile']['name'];
         $ret = move_uploaded_file($_FILES['myfile']['tmp_name'], $targetPath);
-	
-	//check if selected files are moved to temporary folder         
-	if (!$ret) {
+    
+    //check if selected files are moved to temporary folder         
+    if (!$ret) {
             $message = '<div class="errorMessage errormsgWrapperDi">There is an error in uploading the file.</div>';
             echo json_encode(array('status' => 200, 'error' => $message)); exit;
         }
@@ -101,7 +151,7 @@ if (isset($_POST["floormanager"])) {
         $spreadSheetAry = $excelSheet->toArray();
         $sheetCount = count($spreadSheetAry);
 
-	//loop through the excel data
+    //loop through the excel data
         for ($i = 1; $i <= $sheetCount; $i ++) {
             $company_id = $spreadSheetAry[$i][0];
             $event_id = $spreadSheetAry[$i][1];
