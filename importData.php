@@ -38,16 +38,16 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 <span class="login100-form-title">Upload Form</span>
 <div class="container">
         <div class="wrapper clearfix">
-             <div id="message"></div>
+           <div id="message"></div>
+           <div class="infoMessage">
+                  <?php $csvFilename = 'sample.xlsx'; ?>
+                  <ol>
+                      <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
+                      <li>Event Id and Company Id are Mandatory. </li>
+                  </ol>
+              </div>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_form">
-                <div class="infoMessage" id="infoMessage">
-                    <?php $csvFilename = 'sample.xlsx'; ?>
-                    <ol>
-                        <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
-                        <li>Event Id and Company Id are Mandatory. </li>
-                    </ol>
-                </div>
                 <input type="radio" name="resignappintments" value="resignappintment"  id="resignappintment" checked />
                           <label>Re-sign Appointment</label>
                <div id='resignappintment_div'>
@@ -100,7 +100,6 @@ $('#resignappintment').click(function(){
     $('#resignappintment_div').show();
     $('#floormanager_div').hide();
     $('#appintmentDivDisp').show();
-    $('#infoMessage').show();
     });
 
 $('#floormanager').click(function(){
@@ -109,7 +108,6 @@ $('#floormanager').click(function(){
     $('#resignappintment_div').hide();
     $('#floormanager_div').show();
     $('#appintmentDivDisp').hide();
-    $('#infoMessage').hide();
    });
 </script>   
 <?php
