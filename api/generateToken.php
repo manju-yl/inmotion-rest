@@ -4,6 +4,7 @@ include_once './config/database.php';
 include_once './model/user.php';
 require "../vendor/autoload.php";
 require "./common/headers.php";
+require "../start.php";
 
 use \Firebase\JWT\JWT;
 
@@ -31,7 +32,7 @@ if ($email != "" && $password != "") {
         $password2 = $row['password'];
         //check if password matches
         if (password_verify($password, $password2)) {
-            $secret_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
+            $secret_key = $_ENV['JWT_SECRET'];
             $issuedat_claim = time(); // issued at
             $expire_claim = $issuedat_claim + 86400; // expire time in seconds
             $token = array(

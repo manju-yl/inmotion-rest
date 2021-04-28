@@ -4,6 +4,7 @@ include_once './config/database.php';
 include_once './model/appointment.php';
 include_once './model/boothdetails.php';
 require "./common/headers.php";
+require "../start.php";
 
 use Phppot\DataSource;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;

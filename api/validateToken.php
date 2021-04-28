@@ -3,9 +3,10 @@
 include_once './config/database.php';
 require "../vendor/autoload.php";
 require "./common/headers.php";
+require "../start.php";
 use \Firebase\JWT\JWT;
 
-$secret_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
+$secret_key = $_ENV['JWT_SECRET'];
 //get database connection
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();

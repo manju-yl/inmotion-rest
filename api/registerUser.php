@@ -3,6 +3,7 @@
 include_once './config/database.php';
 include_once './model/user.php';
 require "./common/headers.php";
+require "../start.php";
 //get database connection
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();

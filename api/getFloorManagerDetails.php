@@ -4,10 +4,11 @@ include_once './config/database.php';
 include_once './model/boothdetails.php';
 require "../vendor/autoload.php";
 require "./common/headers.php";
+require "../start.php";
 
 use \Firebase\JWT\JWT;
 
-$secret_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
+$secret_key = $_ENV['JWT_SECRET'];
 //database connection
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
@@ -19,7 +20,7 @@ if ($data->event_id == "" || $data->event_id == null ) {
     http_response_code(404);
     // no appointments found
     echo json_encode(
-            array("message" => "EventId is required.")
+            array("message" => "")
     );
     exit;
 }
@@ -30,7 +31,7 @@ if ($data->event_id != "" || $data->event_id != null ) {
     http_response_code(404);
     // no appointments found
     echo json_encode(
-            array("message" => "EventId should be numberic.")
+            array("message" => "")
     );
     exit;
     }
@@ -42,7 +43,7 @@ if ($data->company_id != "" || $data->company_id != null ) {
     http_response_code(404);
     // no appointments found
     echo json_encode(
-            array("message" => "CompanyId should be numberic.")
+            array("message" => "")
     );
     exit;
     }

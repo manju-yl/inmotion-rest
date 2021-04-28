@@ -3,6 +3,7 @@ require "../vendor/autoload.php";
 include_once './config/database.php';
 include_once './model/appointment.php';
 include_once './model/boothdetails.php';
+require "../start.php";
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 $databaseService = new DatabaseService(); 
