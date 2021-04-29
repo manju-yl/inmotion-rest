@@ -43,7 +43,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <?php $csvFilename = 'sample.xlsx'; ?>
                   <ol>
                       <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
-                      <li>Event Id and Company Id are Mandatory. </li>
+                      <li>EVENTID and COID are Mandatory. </li>
                   </ol>
               </div>
             <section>
@@ -59,6 +59,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 </form>
                 <div class="btn" id="appintmentDivDisp">
               <form action="api/downloadFile.php" method="post">
+                    <div id="recentEventId"></div>
                     <div id="dispEventLists"></div>
                     <div class="btn" id="dispDownloadBtn" style="display:none;">
                             <button type="submit" id="btnExport" name='export'
@@ -78,6 +79,17 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <p><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
                   <button id="boothresetbtn" class="button button4" type="button">Reset</button></p></div>
               </form>
+              <div class="btn" id="floorManagerDivDisp">
+              <form action="api/downloadFile.php" method="post">
+                  <div id="recentFloorEventId"></div>
+                  <div id="dispFloorEventLists"></div>
+                  <div class="btn" id="dispFloorDownloadBtn" style="display:none;">
+                          <button type="submit" id="btnExport" name='exportEmptyFloorDetails'
+                              value="Export to Excel" class="button button4">Export
+                              to Excel</button>
+                  </div>
+                </form>
+              </div>
             </section>
     </div>  
 </div>
@@ -100,6 +112,7 @@ $('#resignappintment').click(function(){
     $('#resignappintment_div').show();
     $('#floormanager_div').hide();
     $('#appintmentDivDisp').show();
+    $('#floorManagerDivDisp').hide();
     });
 
 $('#floormanager').click(function(){
@@ -108,6 +121,22 @@ $('#floormanager').click(function(){
     $('#resignappintment_div').hide();
     $('#floormanager_div').show();
     $('#appintmentDivDisp').hide();
+    $('#floorManagerDivDisp').show();
+
+    $.ajax({
+    url: 'api/downloadFloorManager.php',
+    success: function(data) {
+        if(data=="false"){
+        $("#dispFloorEventLists").html('');
+        $("#dispFloorDownloadBtn").hide();
+      }else{
+        $("#dispFloorEventLists").html(data);
+        $("#dispFloorDownloadBtn").show();
+      }
+    },
+    error: function(data) {
+    }
+    }); 
    });
 </script>   
 <?php

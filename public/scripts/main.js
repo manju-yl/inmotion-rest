@@ -76,22 +76,33 @@ $("#import_form").on('submit',function(e){
           	$('#importappintmentSubmit').val('Importing...');
           },
           success:function(data){
+            
+            console.log(data); 
+            $('#message').html(data.error);
+            
             $.ajax({
               url:'api/download.php',
               cache:false,
-              success:function(data){
-                console.log(data);
-                if(data=="false"){
+              success:function(result){
+                console.log(result); 
+                if(result=="false"){
                   $("#dispEventLists").html('');
                   $("#dispDownloadBtn").hide();
                 }else{
-                  $("#dispEventLists").html(data);
+                  $("#dispEventLists").html(result);
+                  $("#recentEventId").html(data.selectbox);
                   $("#dispDownloadBtn").show();
+                  if(data.emptyRowsCount == 1){
+                      var insertedId = $( "#recenteventselection option:selected" ).text(); 
+                      $("#message").append( '<div class="alert alert-success">Please find the EventId:'+insertedId+' data having missed records.</div>' );
+                    }
+                    else if(data.emptyRowsCount > 1){
+                      var insertedId = $( "#recenteventselection option:selected" ).text(); 
+                      $("#message").append( '<div class="alert alert-success">Please find the below Events dropdown having missed records.</div>' );
+                    }
                 }
               }
             });
-            console.log(data);
-            $('#message').html(data.error);
             $('#importappintmentSubmit').attr('disabled', false);
             $('#importappintmentSubmit').val('Import');
     		    $('#floormanager').prop("checked", false);
@@ -119,8 +130,32 @@ $("#import_floor_form").on('submit',function(e){
           	$('#importFloormanagerSubmit').val('Importing...');
           },
           success:function(data){
-            console.log(data);
             $('#message').html(data.error);
+ 
+            $.ajax({
+              url: 'api/downloadFloorManager.php',
+              success: function(result) {
+                if(result=="false"){
+                  $("#dispFloorEventLists").html('');
+                  $("#dispFloorDownloadBtn").hide();
+                }else{
+                  $("#dispFloorEventLists").html(result);
+                  $("#recentFloorEventId").html(data.selectbox);
+                  $("#dispFloorDownloadBtn").show();
+                  if(data.emptyRowsCount == 1){
+                    var insertedId = $( "#flooreventselection option:selected" ).text(); 
+                    $("#message").append( '<div class="alert alert-success">Please find the EventId:'+insertedId+' data having missed records.</div>' );
+                  }
+                  else if(data.emptyRowsCount > 1){
+                    var insertedId = $( "#flooreventselection option:selected" ).text(); 
+                    $("#message").append( '<div class="alert alert-success">Please find the below Events dropdown having missed records.</div>' );
+                  }
+                }
+              }
+              });
+
+
+            
             $('#importFloormanagerSubmit').attr('disabled', false);
             $('#importFloormanagerSubmit').val('Import');
 			      $('#resignappintment').prop("checked", false);

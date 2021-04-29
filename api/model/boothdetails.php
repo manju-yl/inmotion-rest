@@ -77,6 +77,7 @@ class BoothDetails {
 
     //Add OR Update Booth details
     function addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_first_name, $company_contact_last_name, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id) {
+        if($event_id != "" && $company_id != ""){
         $query = "SELECT event_id FROM " . $this->table_name . " WHERE event_id = ? LIMIT 0,1";
 
         // prepare query statement
@@ -109,7 +110,7 @@ class BoothDetails {
             
         }else{
         
-            $query = "SELECT company_id FROM " . $this->table_name . " WHERE company_id = ? LIMIT 0,1";
+            $query = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
             // prepare query statement
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(1, htmlspecialchars(strip_tags($company_id)));
@@ -118,6 +119,21 @@ class BoothDetails {
             $num = $stmt->rowCount(); 
             if ($num > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC); 
+                $updatequery = "update company
+                SET company_name = :company_name,
+                    company_contact_first_name = :company_contact_first_name,
+                    company_contact_last_name = :company_contact_last_name,
+                    company_email = :company_email,
+                    created_by = '$user_id' where co_id = '$company_id'";
+                $stmt = $this->conn->prepare($updatequery);
+            
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
+                $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
+                $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
+                // execute query
+                $stmt->execute(); 
+            
                 $insertquery = "
                 INSERT INTO event
                 SET event_id = :event_id;
@@ -177,6 +193,70 @@ class BoothDetails {
                 $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
             }
         }
+        }else{
+            $query = "";
+            $stmt = $this->conn->prepare($query); 
+        }
+        return $stmt;
+    }
+
+    //get empty booth details
+    function getEmptyBoothDetails() {
+        $query = "SELECT 
+            *
+        FROM
+            " . $this->table_name . " 
+        WHERE ((company_id = '' OR company_id IS NULL)  OR (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
+        if ($event_id != "") {
+            $addCondition = " and event_id = ?";
+        }
+        $query .= $addCondition;
+        $query .= " order by created_date desc";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+
+        // execute query
+        $stmt->execute(); //$stmt->debugDumpParams();
+
+        return $stmt;
+    }
+
+
+    //download particular events having empty records in booth details
+    function downloadBoothDetails($event_id) {
+
+        // select all query
+        // select all query
+        $query = "SELECT 
+                        c.co_id,
+                        e.event_id,
+                        bd.booth,
+                        bd.hall,
+                        bd.fm_name,
+                        bd.fm_phone,
+                        bd.fm_text_number,
+                        c.company_name,
+                        c.company_contact_first_name,
+                        c.company_contact_last_name,
+                        c.company_email,
+                        e.event_name,
+                        bd.ges_ese
+                    FROM
+                        " . $this->table_name . " bd
+                            LEFT JOIN
+                        company c ON bd.company_id = c.co_id
+                            LEFT JOIN
+                        event e ON e.event_id = bd.event_id
+                    WHERE
+                        bd.event_id = ?";
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        // execute query
+        $stmt->execute(); 
         return $stmt;
     }
 
