@@ -57,6 +57,7 @@ if (isset($_POST["resignappintments"])) {
         $missedRowCount = 0;
         $retArr = array();
         $selectBoxDisplay = "";
+        $missedRecordCount = 0;
 
 
         $createArray = array('COID', 'EventId', 'Re-Sign Appt Date Text', 'Re-sign Appt Time Text', 'Company Name');
@@ -106,31 +107,38 @@ if (isset($_POST["resignappintments"])) {
                                 appointment
                             WHERE ((company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))";
             if ($event_id != "") {
-                $addCondition = "and event_id = ?";
+                    $addCondition = "and event_id = ?";
+            }
+            if ($company_id != "") {
+                $addCondition .= "and company_id = ?";
             }
             $query .= $addCondition;
             $query .= " order by created_date desc";
 
-                            // prepare query statement
-                            $stmt = $conn->prepare($query);
-                            $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-                            // execute query
-                            $stmt->execute(); 
+            // prepare query statement
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+            if ($company_id != "") {
+                $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+            }
+            // execute query
+            $stmt->execute(); 
 
-                            $emptyRecordCount = $stmt->rowCount(); 
-                            //check if records > 0
-                            if ($emptyRecordCount > 0) {
-                                array_push($retArr,$event_id);
-                            }else{
-                                       
-                            }
-                            $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
+            $emptyRecordCount = $stmt->rowCount(); 
+            //check if records > 0
+            if ($emptyRecordCount > 0) {
+                array_push($retArr,$event_id);
+            }else{
+                       
+            }
+            $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
                 
             } else {
                 $missedRowCount++; 
-             }
+            }
             } 
-        if(count($retArr) > 0){
+        $missedRecordCount = count($retArr);
+        if($missedRecordCount > 0){
             $eventIdValues = implode(",",$retArr);
             $query = "SELECT 
                                     *
@@ -162,7 +170,7 @@ if (isset($_POST["resignappintments"])) {
             $message = '<div class="errorMessage errormsgWrapperDi">Re-sign appointment file upload is not complete.</div>';
         }
         //$successmessage = '<div class="alert alert-success">'.$message.'</div>';
-        echo json_encode(array('status' => 200, 'error' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $emptyRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
+        echo json_encode(array('status' => 200, 'error' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Re-sign appointment file.</div>';
             echo json_encode(array('status' => 401, 'error' => $message)); exit; 
@@ -215,8 +223,11 @@ if (isset($_POST["floormanager"])) {
         // array Count
         $sheetCount = count($spreadSheetAry);
         $flag = 0;
-        $emptyRowsCount = 0;
+        $emptyRecordCount = 0;
         $missedRowCount = 0;
+        $retArr = array();
+        $selectBoxDisplay = "";
+        $missedRecordCount = 0;
 
 
         $createArray = array('CoID', 'EventId', 'Exhibiting As', 'Booth Number', 'Company Contact First Name', 'Company Contact Last Name', 'Company Email', 'Hall', 'Floor Manager', 'Phone', 'GES ESE', 'Text Number');
@@ -277,9 +288,12 @@ if (isset($_POST["floormanager"])) {
                                     *
                                 FROM
                                     booth_details
-                                WHERE ((company_id = '' OR company_id IS NULL)  OR (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
+                                WHERE ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
                 if ($event_id != "") {
                     $addCondition = "and event_id = ?";
+                }
+                if ($company_id != "") {
+                    $addCondition .= "and company_id = ?";
                 }
                 $query .= $addCondition;
                 $query .= " order by created_date desc";
@@ -287,33 +301,59 @@ if (isset($_POST["floormanager"])) {
                 // prepare query statement
                 $stmt = $conn->prepare($query);
                 $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+                if ($company_id != "") {
+                    $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+                }
                 // execute query
-                $stmt->execute(); //    $stmt->debugDumpParams();
+                $stmt->execute();     //$stmt->debugDumpParams();
 
                 $emptyRecordCount = $stmt->rowCount(); 
                 //check if records > 0
                 if ($emptyRecordCount > 0) {
-                    $selectBoxDisplay =  "<select id='recentflooreventselection' name='recentflooreventselection' style='display:none;'>";
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                            extract($row);
-                            $selectBoxDisplay .= "<option>" . $event_id . "</option>";
-                        }
-                    $selectBoxDisplay .= "</select>";
-                    
-                    $emptyRowsCount++;
+                    array_push($retArr,$event_id);
                 }else{
-                    //$selectBoxDisplay = "false";
                            
                 }
-                $message = 'Floor Manager file upload is complete.';
+                $message = '<div class="alert alert-success">Floor Manager file upload is complete.</div>';
                 
             } else {
                 $missedRowCount++;
-                $message = 'Please upload the correct Floor Manager file.'; 
             }
-            }
-        $successmessage = '<div class="alert alert-success">'.$message.'</div>';
-        echo json_encode(array('status' => 200, 'error' => $successmessage, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $emptyRowsCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
+            } 
+            $missedRecordCount = count($retArr);
+            if($missedRecordCount > 0){
+            $eventIdValues = implode(",",$retArr);
+            $query = "SELECT 
+                                    *
+                                FROM
+                                    booth_details
+                                WHERE ( (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
+            $addCondition = "and event_id IN ($eventIdValues)";
+            $query .= $addCondition;
+            $query .= " order by created_date desc";
+
+            // prepare query statement
+            $stmt = $conn->prepare($query);
+            // execute query
+            $stmt->execute();     //$stmt->debugDumpParams();
+
+            $emptyRecordCount = $stmt->rowCount(); 
+            //check if records > 0
+            if ($emptyRecordCount > 0) {
+                $selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        extract($row);
+                        $selectBoxDisplay .= "<option>" . $event_id . "</option>";
+                }
+            $selectBoxDisplay .= "</select>";
+            }else{    
+            } 
+        }
+        if($totalRecords == $missedRowCount){
+            $message = '<div class="errorMessage errormsgWrapperDi">Floor Manager file upload is not complete.</div>';
+        }
+        
+        echo json_encode(array('status' => 200, 'error' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Floor Manager file.</div>';
             echo json_encode(array('status' => 401, 'error' => $message)); exit; 
