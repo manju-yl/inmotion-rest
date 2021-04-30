@@ -97,7 +97,7 @@ class BoothDetails {
                     fm_name= :fm_name,
                     fm_phone= :fm_phone,
                     fm_text_number= :fm_text_number,
-                    ges_ese= :ges_ese where event_id = '$event_id'"; 
+                    ges_ese= :ges_ese, created_by = '$user_id' where event_id = '$event_id'"; 
 
         $stmt = $this->conn->prepare($updateAppointment); 
 
@@ -145,7 +145,8 @@ class BoothDetails {
                     fm_name= :fm_name,
                     fm_phone= :fm_phone,
                     fm_text_number= :fm_text_number,
-                    ges_ese= :ges_ese";
+                    ges_ese= :ges_ese,
+                    created_by = '$user_id'";
 
                 $stmt = $this->conn->prepare($insertquery); 
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
@@ -175,7 +176,8 @@ class BoothDetails {
                     fm_name= :fm_name,
                     fm_phone= :fm_phone,
                     fm_text_number= :fm_text_number,
-                    ges_ese= :ges_ese";
+                    ges_ese= :ges_ese,
+                    created_by = '$user_id'";
 
                 $stmt = $this->conn->prepare($query); 
 
