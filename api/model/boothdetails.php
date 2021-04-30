@@ -78,6 +78,10 @@ class BoothDetails {
     //Add OR Update Booth details
     function addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_first_name, $company_contact_last_name, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id) {
         if($event_id != "" && $company_id != ""){
+        $addCondition = "";
+        if ($booth != "") {
+            $addCondition .= " and bd.booth = ?";
+        }
         $query = "SELECT 
                         c.co_id,
                         e.event_id,
@@ -96,11 +100,17 @@ class BoothDetails {
                         event e ON e.event_id = bd.event_id
                     WHERE
                         bd.event_id = ? and bd.company_id= ?";
+        $query .= $addCondition;
         $stmt = $this->conn->prepare($query);
         $event_id = htmlspecialchars(strip_tags($event_id));
         $company_id = htmlspecialchars(strip_tags($company_id));
+        
         $stmt->bindParam(1, $event_id);
         $stmt->bindParam(2, $company_id);
+        if ($booth != "") {
+            $booth = htmlspecialchars(strip_tags($booth));
+            $stmt->bindParam(3, $booth);
+        }
         $stmt->execute();  
         $num = $stmt->rowCount(); 
         if($num > 0){
