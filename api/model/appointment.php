@@ -88,16 +88,50 @@ class Appointment {
         if ($num > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $event_id = $row['event_id'];
-            $updateAppointment = "
+            $checkCompanyExists = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
+
+            // prepare query statement
+            $companyExists = $this->conn->prepare($checkCompanyExists);
+            $companyExists->bindParam(1, htmlspecialchars(strip_tags($company_id)));
+            // execute query
+            $companyExists->execute(); 
+            $companyCount = $companyExists->rowCount(); //echo $event_id."count".$companyCount;
+            if ($companyCount > 0) {
+                $row = $companyExists->fetch(PDO::FETCH_ASSOC);
+                $updatequery = "update company
+                SET company_name = '$company_name',
+                    created_by = '$user_id' where co_id = '$company_id';
                 UPDATE " . $this->table_name . "
-                SET day = :day,
+                                SET company_id = '$company_id',
+                                    event_id = $event_id,
+                                    day = '$day',
+                                    time = '$time',
+                                    created_by='$user_id' where event_id = '$event_id' and company_id = '$company_id'"; //echo $updatequery; 
+                $stmt = $this->conn->prepare($updatequery);
+                //$stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                //$stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+                //$stmt->bindParam(':time', htmlspecialchars(strip_tags($time))); 
+
+                
+            }else{
+                $query = "
+                INSERT INTO company
+                SET co_id = :company_id,
+                    company_name = :company_name,
+                    created_by = '$user_id';
+                INSERT INTO " . $this->table_name . "
+                SET company_id = :company_id,
+                    event_id = $event_id,
+                    day = :day,
                     time = :time,
-                    created_by='$user_id' where event_id = '$event_id'"; 
+                    created_by='$user_id'"; 
+                $stmt = $this->conn->prepare($query); 
 
-        $stmt = $this->conn->prepare($updateAppointment); 
-
-        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+                $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+            }
             
         }else{
             $query = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
@@ -161,7 +195,7 @@ class Appointment {
             }
         }
     }else{
-                $query = "";
+                $query = ""; 
                 $stmt = $this->conn->prepare($query); 
             }
         return $stmt;
@@ -171,11 +205,11 @@ class Appointment {
     //get appointments having empty records
     function getEmptyAppointmentDetails() {
         $query = "SELECT 
-            *
+            DISTINCT event_id, MAX(created_date)
         FROM
             " . $this->table_name . " 
         WHERE ((company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL)) ";
-        $query .= " order by created_date desc";
+        $query .= "GROUP BY event_id  order by MAX(created_date) desc";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
@@ -205,7 +239,7 @@ class Appointment {
                             LEFT JOIN
                         event e ON e.event_id = a.event_id
                     WHERE
-                        a.event_id = ? ";
+                        ((a.company_id = '' OR a.company_id IS NULL)  OR (a.day = '' OR a.day IS NULL)  OR (a.time = '' OR a.time IS NULL)) and a.event_id = ? ";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

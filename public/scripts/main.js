@@ -79,6 +79,14 @@ $("#import_form").on('submit',function(e){
             
             console.log(data); 
             $('#message').html(data.error);
+            if(data.totalRecords > 0){
+              if(data.totalRecords == data.missedRowCount){
+                $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed Mandatory Records on the uploaded file.</div>' );
+              }else if(data.missedRowCount > 0){
+                $("#message").append( '<div class="alert alert-success"> ' + data.missedRowCount + ' record(s) were not inserted due to missed Mandatory Records on the uploaded file.</div>' );
+
+              }
+            }
             
             $.ajax({
               url:'api/download.php',
@@ -92,13 +100,18 @@ $("#import_form").on('submit',function(e){
                   $("#dispEventLists").html(result);
                   $("#recentEventId").html(data.selectbox);
                   $("#dispDownloadBtn").show();
+                  var nextVal = $('#recenteventselection option:selected').next().val();
                   if(data.emptyRowsCount == 1){
                       var insertedId = $( "#recenteventselection option:selected" ).text(); 
-                      $("#message").append( '<div class="alert alert-success">Please find the EventId:'+insertedId+' data having missed records.</div>' );
+                      $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
                     }
                     else if(data.emptyRowsCount > 1){
                       var insertedId = $( "#recenteventselection option:selected" ).text(); 
-                      $("#message").append( '<div class="alert alert-success">Please find the below Events dropdown having missed records.</div>' );
+                      if(insertedId == nextVal){
+                        $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
+                      }else{
+                      $("#message").append( '<div class="alert alert-success">Please check the missing record section below for more details.</div>' );
+                      }
                     }
                 }
               }

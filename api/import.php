@@ -52,8 +52,10 @@ if (isset($_POST["resignappintments"])) {
         // array Count
         $sheetCount = count($spreadSheetAry);
         $flag = 0;
-        $emptyRowsCount = 0;
+        $$emptyRecordCount = 0;
         $missedRowCount = 0;
+        $retArr = array();
+        $selectBoxDisplay = "";
 
 
         $createArray = array('COID', 'EventId', 'Re-Sign Appt Date Text', 'Re-sign Appt Time Text', 'Company Name');
@@ -117,37 +119,57 @@ if (isset($_POST["resignappintments"])) {
                             $emptyRecordCount = $stmt->rowCount(); //echo $emptyRecordCount;
                             //check if records > 0
                             if ($emptyRecordCount > 0) {
+                                array_push($retArr,$event_id);
                                 /*$selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                        extract($row);
-                                        $selectBoxDisplay .= "<option>" . $event_id . "</option>";
-                                    }
-                                $selectBoxDisplay .= "</select>";*/
-                                $selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
                                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                         extract($row);
                                         $selectBoxDisplay .= "<option>" . $event_id . "</option>";
                                     }
                                 $selectBoxDisplay .= "</select>";
                                 
-                                $emptyRowsCount++;
-                                  
-                               
-                                //$message .= 'Please find the below EventId: '.$event_id.' dropdown having missed records.';
+                                $emptyRowsCount++;*/
                             }else{
-                                //$selectBoxDisplay = "false";
                                        
                             }
-                            $message = 'Re-sign appointment file upload is complete.';
+                            $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
                 
             } else {
                 $missedRowCount++; 
-                $message = 'Please upload the correct Re-sign appointment file.'; 
-            }
-            }
-        
-        $successmessage = '<div class="alert alert-success">'.$message.'</div>';
-        echo json_encode(array('status' => 200, 'error' => $successmessage, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $emptyRowsCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
+             }
+            } 
+        if(count($retArr) > 0){
+            $eventIdValues = implode(",",$retArr);
+            $query = "SELECT 
+                                    *
+                                FROM
+                                    appointment
+                                WHERE ((company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))";
+                    $addCondition = "and event_id IN ($eventIdValues)";
+                $query .= $addCondition;
+                $query .= " order by created_date desc";
+
+                                // prepare query statement
+                                $stmt = $conn->prepare($query);
+                                // execute query
+                                $stmt->execute();     //$stmt->debugDumpParams();
+
+                                $emptyRecordCount = $stmt->rowCount(); 
+                                //check if records > 0
+                                if ($emptyRecordCount > 0) {
+                                    $selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
+                                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                            extract($row);
+                                            $selectBoxDisplay .= "<option>" . $event_id . "</option>";
+                                        }
+                                    $selectBoxDisplay .= "</select>";
+                                }else{    
+                                } 
+                            }
+        if($totalRecords == $missedRowCount){
+            $message = '<div class="errorMessage errormsgWrapperDi">Re-sign appointment file upload is not complete.</div>';
+        }
+        //$successmessage = '<div class="alert alert-success">'.$message.'</div>';
+        echo json_encode(array('status' => 200, 'error' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $emptyRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Re-sign appointment file.</div>';
             echo json_encode(array('status' => 401, 'error' => $message)); exit; 
