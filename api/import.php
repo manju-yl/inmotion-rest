@@ -53,7 +53,7 @@ if (isset($_POST["resignappintments"])) {
         // array Count
         $sheetCount = count($spreadSheetAry);
         $flag = 0;
-        $$emptyRecordCount = 0;
+        $emptyRecordCount = 0;
         $missedRowCount = 0;
         $retArr = array();
         $selectBoxDisplay = "";
