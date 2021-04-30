@@ -115,20 +115,12 @@ if (isset($_POST["resignappintments"])) {
                             $stmt = $conn->prepare($query);
                             $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
                             // execute query
-                            $stmt->execute(); //    $stmt->debugDumpParams();
+                            $stmt->execute(); 
 
-                            $emptyRecordCount = $stmt->rowCount(); //echo $emptyRecordCount;
+                            $emptyRecordCount = $stmt->rowCount(); 
                             //check if records > 0
                             if ($emptyRecordCount > 0) {
                                 array_push($retArr,$event_id);
-                                /*$selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
-                                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                        extract($row);
-                                        $selectBoxDisplay .= "<option>" . $event_id . "</option>";
-                                    }
-                                $selectBoxDisplay .= "</select>";
-                                
-                                $emptyRowsCount++;*/
                             }else{
                                        
                             }

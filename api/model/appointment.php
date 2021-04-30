@@ -76,6 +76,57 @@ class Appointment {
     //Add OR Update Appointment details
     function addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id) {
         if($event_id != "" && $company_id != ""){
+        $query = "SELECT 
+                        c.co_id,
+                        c.company_name,
+                        e.event_id,
+                        e.event_name,
+                        a.day,
+                        a.time,
+                        c.company_contact_first_name,
+                        c.company_contact_last_name,
+                        c.company_email
+                    FROM
+                        " . $this->table_name . " a
+                            LEFT JOIN
+                        company c ON a.company_id = c.co_id
+                            LEFT JOIN
+                        event e ON e.event_id = a.event_id
+                    WHERE
+                        a.event_id = ? and a.company_id = ?";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+
+        // execute query
+        $stmt->execute();
+        $num = $stmt->rowCount(); 
+        if ($num > 0) {
+            //$row = $stmt->fetch(PDO::FETCH_ASSOC);
+            //$event_id = $row['event_id']; 
+            $updatequery = "update company
+                SET company_name = :company_name,
+                    created_by = '$user_id' where co_id = '$company_id'";
+                $stmt = $this->conn->prepare($updatequery);
+            
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                // execute query
+                $stmt->execute();
+            
+            $updateAppointment = "
+                UPDATE " . $this->table_name . "
+                SET day = :day,
+                    time = :time,
+                    created_by='$user_id' where event_id = '$event_id' and company_id = '$company_id'";
+
+        $stmt = $this->conn->prepare($updateAppointment); 
+
+        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+            
+        }else{
         $query = "SELECT event_id FROM event WHERE event_id = ? LIMIT 0,1";
 
         // prepare query statement
@@ -95,22 +146,19 @@ class Appointment {
             $companyExists->bindParam(1, htmlspecialchars(strip_tags($company_id)));
             // execute query
             $companyExists->execute(); 
-            $companyCount = $companyExists->rowCount(); //echo $event_id."count".$companyCount;
+            $companyCount = $companyExists->rowCount(); 
             if ($companyCount > 0) {
                 $row = $companyExists->fetch(PDO::FETCH_ASSOC);
-                $updatequery = "update company
+               $updatequery = "update company
                 SET company_name = '$company_name',
                     created_by = '$user_id' where co_id = '$company_id';
-                UPDATE " . $this->table_name . "
-                                SET company_id = '$company_id',
-                                    event_id = $event_id,
-                                    day = '$day',
-                                    time = '$time',
-                                    created_by='$user_id' where event_id = '$event_id' and company_id = '$company_id'"; //echo $updatequery; 
+                INSERT INTO " . $this->table_name . "
+                SET company_id = '$company_id',
+                    event_id = '$event_id',
+                    day = '$day',
+                    time = '$time',
+                    created_by='$user_id'";
                 $stmt = $this->conn->prepare($updatequery);
-                //$stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                //$stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-                //$stmt->bindParam(':time', htmlspecialchars(strip_tags($time))); 
 
                 
             }else{
@@ -194,11 +242,12 @@ class Appointment {
                 
             }
         }
+    }
     }else{
-                $query = ""; 
-                $stmt = $this->conn->prepare($query); 
-            }
-        return $stmt;
+                    $query = ""; 
+                    $stmt = $this->conn->prepare($query); 
+                }
+            return $stmt;
     }
 
 
