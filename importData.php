@@ -116,8 +116,19 @@ $('#resignappintment').click(function(){
     $('#floormanager').prop("checked", false);
     $('#resignappintment_div').show();
     $('#floormanager_div').hide();
-    $('#appointmentDivDisp').show();
-    $('#floorManagerDivDisp').hide();
+    $.ajax({
+      url: 'api/download.php',
+      success: function(data) {
+        if(data=="false"){
+          $("#appointmentDivDisp").hide();
+        }else{
+          $("#appointmentDivDisp").show();
+          $("#dispEventLists").html(data);
+        }
+      },
+      error: function(data) {
+      }
+      });
     });
 
 $('#floormanager').click(function(){
@@ -127,9 +138,6 @@ $('#floormanager').click(function(){
     $('#resignappintment').prop("checked", false);
     $('#resignappintment_div').hide();
     $('#floormanager_div').show();
-    $('#appointmentDivDisp').hide();
-    $('#floorManagerDivDisp').show();
-
     $.ajax({
     url: 'api/downloadFloorManager.php',
     success: function(data) {

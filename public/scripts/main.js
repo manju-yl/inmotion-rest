@@ -74,6 +74,7 @@ $("#import_form").on('submit',function(e){
           processData:false,
           beforeSend:function(){
           	$('#importappintmentSubmit').attr('disabled', 'disabled');
+            $('#resetbtn').attr('disabled', 'disabled');
     		    $("#floormanager").prop("disabled", true);
           	$('#importappintmentSubmit').val('Importing...');
           },
@@ -131,6 +132,7 @@ $("#import_floor_form").on('submit',function(e){
           processData:false,
           beforeSend:function(){
           	$('#importFloormanagerSubmit').attr('disabled', 'disabled');
+            $('#boothresetbtn').attr('disabled', 'disabled');
             $("#resignappintment").prop("disabled", true);
           	$('#importFloormanagerSubmit').val('Importing...');
           },
