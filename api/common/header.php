@@ -19,17 +19,11 @@
 
 <div class="wrap-login100">
 <?php
-//session_start();
-/*if(!isset($_COOKIE['token'])) {
-    header("Location: index.php"); 
-    exit();
-}
-*/
 
 if (isset($_GET['logout'])) {
 	setcookie('token', '', time() - 3600);
 	setcookie('firstname', '', time() - 3600);
-	//unset($_COOKIE['firstname']); 
+	setcookie('userId', '', time() - 3600);
     header("Location: index.php"); 
 }
 
