@@ -110,12 +110,6 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 
 }
 $('#resignappintment').click(function(){
-    $('.infoAppointmentMessage').show();
-    $('.infoBoothMessage').hide();
-    $('#message').html('');
-    $('#floormanager').prop("checked", false);
-    $('#resignappintment_div').show();
-    $('#floormanager_div').hide();
     $.ajax({
       url: 'api/download.php',
       success: function(data) {
@@ -129,15 +123,16 @@ $('#resignappintment').click(function(){
       error: function(data) {
       }
       });
+    $('.infoAppointmentMessage').show();
+    $('.infoBoothMessage').hide();
+    $('#message').html('');
+    $('#floormanager').prop("checked", false);
+    $('#resignappintment_div').show();
+    $('#floormanager_div').hide();
+    
     });
 
 $('#floormanager').click(function(){
-    $('.infoBoothMessage').show();
-    $('.infoAppointmentMessage').hide();
-    $('#message').html('');
-    $('#resignappintment').prop("checked", false);
-    $('#resignappintment_div').hide();
-    $('#floormanager_div').show();
     $.ajax({
     url: 'api/downloadFloorManager.php',
     success: function(data) {
@@ -151,6 +146,13 @@ $('#floormanager').click(function(){
     error: function(data) {
     }
     }); 
+    $('.infoBoothMessage').show();
+    $('.infoAppointmentMessage').hide();
+    $('#message').html('');
+    $('#resignappintment').prop("checked", false);
+    $('#resignappintment_div').hide();
+    $('#floormanager_div').show();
+    
    });
 </script>   
 <?php
