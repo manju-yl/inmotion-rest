@@ -108,10 +108,11 @@ class Appointment {
             //$event_id = $row['event_id']; 
             $updatequery = "update company
                 SET company_name = :company_name,
-                    created_by = '$user_id' where co_id = '$company_id'";
+                    created_by = '$user_id', created_date=now() where co_id = :company_id";
                 $stmt = $this->conn->prepare($updatequery);
             
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 // execute query
                 $stmt->execute();
             
@@ -119,12 +120,14 @@ class Appointment {
                 UPDATE " . $this->table_name . "
                 SET day = :day,
                     time = :time,
-                    created_by='$user_id' where event_id = '$event_id' and company_id = '$company_id'";
+                    created_by='$user_id', created_date=now() where event_id = :event_id and company_id = :company_id";
 
         $stmt = $this->conn->prepare($updateAppointment); 
 
         $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
         $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
             
         }else{
         $query = "SELECT event_id FROM event WHERE event_id = ? LIMIT 0,1";
@@ -150,15 +153,21 @@ class Appointment {
             if ($companyCount > 0) {
                 $row = $companyExists->fetch(PDO::FETCH_ASSOC);
                $updatequery = "update company
-                SET company_name = '$company_name',
-                    created_by = '$user_id' where co_id = '$company_id';
+                SET company_name = :company_name,
+                    created_by = '$user_id', created_date=now() where co_id = :company_id;
                 INSERT INTO " . $this->table_name . "
-                SET company_id = '$company_id',
-                    event_id = '$event_id',
-                    day = '$day',
-                    time = '$time',
+                SET company_id = :company_id,
+                    event_id = :event_id,
+                    day = :day,
+                    time = :time,
                     created_by='$user_id'";
                 $stmt = $this->conn->prepare($updatequery);
+
+                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
+                $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
                 
             }else{
@@ -169,7 +178,7 @@ class Appointment {
                     created_by = '$user_id';
                 INSERT INTO " . $this->table_name . "
                 SET company_id = :company_id,
-                    event_id = $event_id,
+                    event_id = :event_id,
                     day = :day,
                     time = :time,
                     created_by='$user_id'"; 
@@ -177,6 +186,7 @@ class Appointment {
 
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
                 $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
             }
@@ -194,10 +204,11 @@ class Appointment {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $updatequery = "update company
                 SET company_name = :company_name,
-                    created_by = '$user_id' where co_id = '$company_id'";
+                    created_by = '$user_id', created_date=now() where co_id = :company_id";
                 $stmt = $this->conn->prepare($updatequery);
             
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 // execute query
                 $stmt->execute();
             
@@ -205,7 +216,7 @@ class Appointment {
                 INSERT INTO event
                 SET event_id = :event_id;
                 INSERT INTO " . $this->table_name . "
-                SET company_id = $company_id,
+                SET company_id = :company_id,
                     event_id = :event_id,
                     day = :day,
                     time = :time,
@@ -213,7 +224,7 @@ class Appointment {
 
                 $stmt = $this->conn->prepare($insertquery); 
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                //$stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
                 $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
                 $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
@@ -257,7 +268,7 @@ class Appointment {
             DISTINCT event_id, MAX(created_date)
         FROM
             " . $this->table_name . " 
-        WHERE ((company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL)) ";
+        WHERE ((day = '' OR day IS NULL)  OR (time = '' OR time IS NULL)) ";
         $query .= "GROUP BY event_id  order by MAX(created_date) desc";
 
         // prepare query statement
@@ -297,5 +308,36 @@ class Appointment {
         $stmt->execute();
         return $stmt;
     }
+
+    //get appointments having empty records based on eventid and company_id
+    function getEmptyAppointmentOnEventDetails($event_id, $company_id) {
+        $addCondition = "";
+        $query = "SELECT 
+                                event_id
+                            FROM
+                                " . $this->table_name . "
+                            WHERE ( (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))"; 
+        if ($event_id != "") {
+                $addCondition = "and event_id = ?";
+        }
+        if ($company_id != "") {
+            $addCondition .= "and company_id = ?";
+        }
+        $query .= $addCondition;
+        $query .= " order by created_date desc";
+        // prepare query statement
+        $stmt = $this->conn->prepare($query); 
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        if ($company_id != "") {
+            $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+        }
+        // execute query
+        $stmt->execute();  $stmt->debugDumpParams();
+
+
+        return $stmt;
+    }
+
+
 
 }

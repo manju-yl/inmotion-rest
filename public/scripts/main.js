@@ -6,16 +6,16 @@ function hideValidate(input){var thisAlert=$(input).parent();$(thisAlert).remove
 
 
 $( document ).ready(function() {
- 
+  $('.infoAppointmentMessage').show();
+  $('.infoBoothMessage').hide();
   $.ajax({
   url: 'api/download.php',
   success: function(data) {
-      if(data=="false"){
-      $("#dispEventLists").html('');
-      $("#dispDownloadBtn").hide();
+    if(data=="false"){
+      $("#appointmentDivDisp").hide();
     }else{
+      $("#appointmentDivDisp").show();
       $("#dispEventLists").html(data);
-      $("#dispDownloadBtn").show();
     }
   },
   error: function(data) {
@@ -62,6 +62,8 @@ $("#login_form").on('submit',function(e){
 
 
 $("#import_form").on('submit',function(e){
+  $('.infoAppointmentMessage').show();
+  $('.infoBoothMessage').hide();
 	e.preventDefault();
 	$.ajax({
           url:'api/import.php',
@@ -76,9 +78,7 @@ $("#import_form").on('submit',function(e){
           	$('#importappintmentSubmit').val('Importing...');
           },
           success:function(data){
-            
-            console.log(data); 
-            $('#message').html(data.error);
+            $('#message').html(data.message);
             if(data.totalRecords > 0){
               if(data.totalRecords == data.missedRowCount){
                 $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed Mandatory Records on the uploaded file.</div>' );
@@ -92,26 +92,16 @@ $("#import_form").on('submit',function(e){
               url:'api/download.php',
               cache:false,
               success:function(result){
-                console.log(result); 
                 if(result=="false"){
-                  $("#dispEventLists").html('');
-                  $("#dispDownloadBtn").hide();
+                  $("#appointmentDivDisp").hide();
                 }else{
+                  $("#appointmentDivDisp").show();
                   $("#dispEventLists").html(result);
-                  $("#recentEventId").html(data.selectbox);
-                  $("#dispDownloadBtn").show();
-                  var nextVal = $('#recenteventselection option:selected').next().val();
-                  if(data.emptyRowsCount == 1){
-                      var insertedId = $( "#recenteventselection option:selected" ).text(); 
+                  if(data.emptyUniqueAppointment == 1){
+                      var insertedId = $( "#eventselection option:selected" ).text(); 
                       $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
-                    }
-                    else if(data.emptyRowsCount > 1){
-                      var insertedId = $( "#recenteventselection option:selected" ).text();
-                      if(insertedId == nextVal){
-                        $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
-                      }else{
-                      $("#message").append( '<div class="alert alert-success">Please check the missing record section below for more details.</div>' );
-                      }
+                    }else if(data.emptyUniqueAppointment > 1){
+                      $("#message").append( '<div class="alert alert-success">'+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please check the missing record section below for more details.</div>' );
                     }
                 }
               }
@@ -129,6 +119,8 @@ $("#import_form").on('submit',function(e){
 });
 
 $("#import_floor_form").on('submit',function(e){
+  $('.infoBoothMessage').show();
+  $('.infoAppointmentMessage').hide();
 	e.preventDefault();
 	$.ajax({
           url:'api/import.php',
@@ -143,7 +135,7 @@ $("#import_floor_form").on('submit',function(e){
           	$('#importFloormanagerSubmit').val('Importing...');
           },
           success:function(data){
-            $('#message').html(data.error);
+            $('#message').html(data.message);
 
             if(data.totalRecords > 0){
               if(data.totalRecords == data.missedRowCount){
@@ -158,25 +150,15 @@ $("#import_floor_form").on('submit',function(e){
               url: 'api/downloadFloorManager.php',
               success: function(result) {
                 if(result=="false"){
-                  $("#dispFloorEventLists").html('');
-                  $("#dispFloorDownloadBtn").hide();
+                  $("#floorManagerDivDisp").hide();
                 }else{
+                  $("#floorManagerDivDisp").show();
                   $("#dispFloorEventLists").html(result);
-                  $("#recentFloorEventId").html(data.selectbox);
-                  $("#dispFloorDownloadBtn").show();
-                  var nextVal ='';
-                  nextVal = $('#recenteventselection option:selected').next().val();
-                  if(data.emptyRowsCount == 1){
+                  if(data.emptyUniqueAppointment == 1){
                     var insertedId = $( "#flooreventselection option:selected" ).text(); 
                     $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
-                  }
-                  else if(data.emptyRowsCount > 1){
-                    var insertedId = $( "#flooreventselection option:selected" ).text();
-                    if(insertedId == nextVal){
-                        $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
-                    }else{
-                    $("#message").append( '<div class="alert alert-success">Please check the missing record section below for more details.</div>' );
-                    }
+                  }else if(data.emptyUniqueAppointment > 1){
+                    $("#message").append( '<div class="alert alert-success">'+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please check the missing record section below for more details.</div>' );
                   }
                 }
               }

@@ -5727,7 +5727,7 @@ table.status tr.odd td {
 
 
 /* ADDED BY DHAKSHINAMURTHY ON 04-MAY-2011 - Error and Success Message Styles */
-.infoMessage, .successMessage, .warningMessage, .errorMessage {
+.infoAppointmentMessage, .successMessage, .warningMessage, .errorMessage {
 	margin-bottom:10px;
 	padding:5px 5px 7px 40px;
 	position:relative;
@@ -5735,7 +5735,20 @@ table.status tr.odd td {
 	-moz-border-radius:3px 3px 3px 3px;
 	border-radius:3px;
 }
-.infoMessage {
+.infoAppointmentMessage {
+	background: url("../images/icon_info_msg.png") no-repeat scroll 10px 6px #daeffb;
+	border: 1px solid #acdbef;
+}
+
+.infoBoothMessage, .successMessage, .warningMessage, .errorMessage {
+	margin-bottom:10px;
+	padding:5px 5px 7px 40px;
+	position:relative;
+	color:#343434;
+	-moz-border-radius:3px 3px 3px 3px;
+	border-radius:3px;
+}
+.infoBoothMessage {
 	background: url("../images/icon_info_msg.png") no-repeat scroll 10px 6px #daeffb;
 	border: 1px solid #acdbef;
 }

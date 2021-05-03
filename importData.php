@@ -39,13 +39,20 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 <div class="container">
         <div class="wrapper clearfix">
            <div id="message"></div>
-           <div class="infoMessage">
+           <div class="infoAppointmentMessage" style="display:none">
                   <?php $csvFilename = 'sample.xlsx'; ?>
                   <ol>
                       <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
                       <li>EVENTID and COID are Mandatory. </li>
                   </ol>
-              </div>
+            </div>
+            <div class="infoBoothMessage" style="display:none">
+                  <?php $csvFilename = 'sample.xlsx'; ?>
+                  <ol>
+                      <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
+                      <li>EVENTID and COID and Booth Number are Mandatory. </li>
+                  </ol>
+            </div>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_form">
                 <input type="radio" name="resignappintments" value="resignappintment"  id="resignappintment" checked />
@@ -57,16 +64,14 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <button id="resetbtn" class="button button4" type="button">Reset</button></p>
                 </div>
                 </form>
-                <div class="btn" id="appintmentDivDisp">
-              <form action="api/downloadFile.php" method="post">
-                    <div id="recentEventId"></div>
+                <div class="btn" id="appointmentDivDisp" style="display:none;">
+                <label>Fetch missing records for Event Id:</label>
+                <form action="api/downloadFile.php" method="post">
                     <div id="dispEventLists"></div>
-                    <div class="btn" id="dispDownloadBtn" style="display:none;">
-                            <button type="submit" id="btnExport" name='export'
-                                value="Export to Excel" class="button button4">Export
+                      <button type="submit" id="btnExport" name='export'
+                          value="Export to Excel" class="button button4">Export
                                 to Excel</button>
-                    </div>
-                  </form>
+                </form>
                 </div>
             </section>
             <section>
@@ -79,15 +84,13 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <p><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
                   <button id="boothresetbtn" class="button button4" type="button">Reset</button></p></div>
               </form>
-              <div class="btn" id="floorManagerDivDisp">
+              <div class="btn" id="floorManagerDivDisp" style="display:none">
+              <label>Fetch missing records for Event Id:</label>
               <form action="api/downloadFile.php" method="post">
-                  <div id="recentFloorEventId"></div>
                   <div id="dispFloorEventLists"></div>
-                  <div class="btn" id="dispFloorDownloadBtn" style="display:none;">
-                          <button type="submit" id="btnExport" name='exportEmptyFloorDetails'
-                              value="Export to Excel" class="button button4">Export
+                    <button type="submit" id="btnExport" name='exportEmptyFloorDetails'
+                        value="Export to Excel" class="button button4">Export
                               to Excel</button>
-                  </div>
                 </form>
               </div>
             </section>
@@ -107,31 +110,34 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 
 }
 $('#resignappintment').click(function(){
+    $('.infoAppointmentMessage').show();
+    $('.infoBoothMessage').hide();
     $('#message').html('');
     $('#floormanager').prop("checked", false);
     $('#resignappintment_div').show();
     $('#floormanager_div').hide();
-    $('#appintmentDivDisp').show();
+    $('#appointmentDivDisp').show();
     $('#floorManagerDivDisp').hide();
     });
 
 $('#floormanager').click(function(){
+    $('.infoBoothMessage').show();
+    $('.infoAppointmentMessage').hide();
     $('#message').html('');
     $('#resignappintment').prop("checked", false);
     $('#resignappintment_div').hide();
     $('#floormanager_div').show();
-    $('#appintmentDivDisp').hide();
+    $('#appointmentDivDisp').hide();
     $('#floorManagerDivDisp').show();
 
     $.ajax({
     url: 'api/downloadFloorManager.php',
     success: function(data) {
         if(data=="false"){
-        $("#dispFloorEventLists").html('');
-        $("#dispFloorDownloadBtn").hide();
+        $("#floorManagerDivDisp").hide();
       }else{
+        $("#floorManagerDivDisp").show();
         $("#dispFloorEventLists").html(data);
-        $("#dispFloorDownloadBtn").show();
       }
     },
     error: function(data) {

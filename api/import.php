@@ -40,7 +40,7 @@ if (isset($_POST["resignappintments"])) {
     //check if selected files are moved to temporary folder        
     if (!$ret) {
             $message = '<div class="errorMessage errormsgWrapperDi">There is an error in uploading the file.</div>';
-            echo json_encode(array('status' => 200, 'error' => $message)); exit;
+            echo json_encode(array('status' => 200, 'message' => $message)); exit;
         }
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(); 
 
@@ -56,8 +56,9 @@ if (isset($_POST["resignappintments"])) {
         $emptyRecordCount = 0;
         $missedRowCount = 0;
         $retArr = array();
-        $selectBoxDisplay = "";
         $missedRecordCount = 0;
+        $emptyUniqueAppointment = 0;
+        $addCondition = "";
 
 
         $createArray = array('COID', 'EventId', 'Re-Sign Appt Date Text', 'Re-sign Appt Time Text', 'Company Name');
@@ -96,42 +97,40 @@ if (isset($_POST["resignappintments"])) {
        
             
             $appointment = new appointment($conn);  
-            $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id);
+            $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id); 
            
             if ($stmt->execute()) {
+                $query = "SELECT 
+                                        event_id
+                                    FROM
+                                        appointment
+                                    WHERE ( (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))"; 
+                if ($event_id != "") {
+                        $addCondition = "and event_id = ?";
+                }
+                if ($company_id != "") {
+                    $addCondition .= "and company_id = ?";
+                }
+                $query .= $addCondition;
+                $query .= " order by created_date desc";
+                // prepare query statement
+                $stmt = $conn->prepare($query); 
+                $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+                if ($company_id != "") {
+                    $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+                }
+                // execute query
+                $stmt->execute();  //$stmt->debugDumpParams();
+                //$stmt = $appointment->getEmptyAppointmentOnEventDetails($event_id, $company_id);
 
-
-            $query = "SELECT 
-                                *
-                            FROM
-                                appointment
-                            WHERE ((company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))";
-            if ($event_id != "") {
-                    $addCondition = "and event_id = ?";
-            }
-            if ($company_id != "") {
-                $addCondition .= "and company_id = ?";
-            }
-            $query .= $addCondition;
-            $query .= " order by created_date desc";
-
-            // prepare query statement
-            $stmt = $conn->prepare($query);
-            $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-            if ($company_id != "") {
-                $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
-            }
-            // execute query
-            $stmt->execute(); 
-
-            $emptyRecordCount = $stmt->rowCount(); 
-            //check if records > 0
-            if ($emptyRecordCount > 0) {
-                array_push($retArr,$event_id);
-            }else{
-                       
-            }
-            $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
+                $emptyRecordCount = $stmt->rowCount(); 
+                //check if records > 0
+                if ($emptyRecordCount > 0) {
+                    array_push($retArr,$event_id);
+                }else{
+                           
+                }
+                $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
                 
             } else {
                 $missedRowCount++; 
@@ -139,53 +138,28 @@ if (isset($_POST["resignappintments"])) {
             } 
         $missedRecordCount = count($retArr);
         if($missedRecordCount > 0){
-            $eventIdValues = implode(",",$retArr);
-            $query = "SELECT 
-                                    *
-                                FROM
-                                    appointment
-                                WHERE ((company_id = '' OR company_id IS NULL)  OR (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))";
-                    $addCondition = "and event_id IN ($eventIdValues)";
-                $query .= $addCondition;
-                $query .= " order by created_date desc";
-
-                                // prepare query statement
-                                $stmt = $conn->prepare($query);
-                                // execute query
-                                $stmt->execute();     //$stmt->debugDumpParams();
-
-                                $emptyRecordCount = $stmt->rowCount(); 
-                                //check if records > 0
-                                if ($emptyRecordCount > 0) {
-                                    $selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
-                                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                            extract($row);
-                                            $selectBoxDisplay .= "<option>" . $event_id . "</option>";
-                                        }
-                                    $selectBoxDisplay .= "</select>";
-                                }else{    
-                                } 
-                            }
+            $emptyUniqueAppointment = count(array_unique($retArr)); 
+        }
         if($totalRecords == $missedRowCount){
             $message = '<div class="errorMessage errormsgWrapperDi">Re-sign appointment file upload is not complete.</div>';
         }
         //$successmessage = '<div class="alert alert-success">'.$message.'</div>';
-        echo json_encode(array('status' => 200, 'error' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
+        echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'emptyUniqueAppointment' =>  $emptyUniqueAppointment)); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Re-sign appointment file.</div>';
-            echo json_encode(array('status' => 401, 'error' => $message)); exit; 
+            echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
            $message = '<div class="errorMessage errormsgWrapperDi">Incorrect File. Please upload the correct Re-sign appointment file.</div>';
-        echo json_encode(array('status' => 401, 'error' => $message)); exit; 
+        echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
     } else {
         $message = '<div class="errorMessage errormsgWrapperDi">Invalid File Type. Upload Re-sign Appointment Excel File.</div>';
-        echo json_encode(array('status' => 401, 'error' => $message)); exit;
+        echo json_encode(array('status' => 401, 'message' => $message)); exit;
     }
     } else {
         $message = '<div class="errorMessage errormsgWrapperDi">Please Upload Re-sign Appointment Excel File.</div>';
-        echo json_encode(array('status' => 401, 'error' => $message)); exit;
+        echo json_encode(array('status' => 401, 'message' => $message)); exit;
     }
 }
 
@@ -210,7 +184,7 @@ if (isset($_POST["floormanager"])) {
     //check if selected files are moved to temporary folder        
     if (!$ret) {
             $message = '<div class="errorMessage errormsgWrapperDi">There is an error in uploading the file.</div>';
-            echo json_encode(array('status' => 200, 'error' => $message)); exit;
+            echo json_encode(array('status' => 200, 'message' => $message)); exit;
         }
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(); 
 
@@ -228,6 +202,8 @@ if (isset($_POST["floormanager"])) {
         $retArr = array();
         $selectBoxDisplay = "";
         $missedRecordCount = 0;
+        $emptyUniqueAppointment = 0;
+        $addCondition = "";
 
 
         $createArray = array('CoID', 'EventId', 'Exhibiting As', 'Booth Number', 'Company Contact First Name', 'Company Contact Last Name', 'Company Email', 'Hall', 'Floor Manager', 'Phone', 'GES ESE', 'Text Number');
@@ -284,8 +260,9 @@ if (isset($_POST["floormanager"])) {
             $stmt = $boothdetails->addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_firstname, $company_contact_lastname, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id);
             
             if ($stmt->execute()) {
+                //$stmt = $boothdetails->getEmptyFloorOnEventDetails($event_id, $company_id);
                 $query = "SELECT 
-                                    *
+                                    event_id
                                 FROM
                                     booth_details
                                 WHERE ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
@@ -319,55 +296,30 @@ if (isset($_POST["floormanager"])) {
             } else {
                 $missedRowCount++;
             }
-            } 
+            } //print_r($retArr);
             $missedRecordCount = count($retArr);
             if($missedRecordCount > 0){
-            $eventIdValues = implode(",",$retArr);
-            $query = "SELECT 
-                                    *
-                                FROM
-                                    booth_details
-                                WHERE ( (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
-            $addCondition = "and event_id IN ($eventIdValues)";
-            $query .= $addCondition;
-            $query .= " order by created_date desc";
-
-            // prepare query statement
-            $stmt = $conn->prepare($query);
-            // execute query
-            $stmt->execute();     //$stmt->debugDumpParams();
-
-            $emptyRecordCount = $stmt->rowCount(); 
-            //check if records > 0
-            if ($emptyRecordCount > 0) {
-                $selectBoxDisplay =  "<select id='recenteventselection' name='recenteventselection' style='display:none;'>";
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                        extract($row);
-                        $selectBoxDisplay .= "<option>" . $event_id . "</option>";
-                }
-            $selectBoxDisplay .= "</select>";
-            }else{    
-            } 
+                $emptyUniqueAppointment = count(array_unique($retArr));
         }
         if($totalRecords == $missedRowCount){
             $message = '<div class="errorMessage errormsgWrapperDi">Floor Manager file upload is not complete.</div>';
         }
         
-        echo json_encode(array('status' => 200, 'error' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords )); exit;
+        echo json_encode(array('status' => 200, 'message' => $message, 'selectbox' => $selectBoxDisplay,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'emptyUniqueAppointment' =>  $emptyUniqueAppointment )); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Floor Manager file.</div>';
-            echo json_encode(array('status' => 401, 'error' => $message)); exit; 
+            echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
            $message = '<div class="errorMessage errormsgWrapperDi">Incorrect File. Please upload the correct Floor Manager file.</div>';
-        echo json_encode(array('status' => 401, 'error' => $message)); exit; 
+        echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
     } else {
         $message = '<div class="errorMessage errormsgWrapperDi">Invalid File Type. Upload Floor Manager Excel File.</div>';
-        echo json_encode(array('status' => 401, 'error' => $message)); exit;
+        echo json_encode(array('status' => 401, 'message' => $message)); exit;
     }
     } else {
         $message = '<div class="errorMessage errormsgWrapperDi">Please Upload Floor Manager Excel File.</div>';
-        echo json_encode(array('status' => 401, 'error' => $message)); exit;
+        echo json_encode(array('status' => 401, 'message' => $message)); exit;
     }
 }

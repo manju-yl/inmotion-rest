@@ -77,7 +77,7 @@ class BoothDetails {
 
     //Add OR Update Booth details
     function addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_first_name, $company_contact_last_name, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id) {
-        if($event_id != "" && $company_id != ""){
+        if($event_id != "" && $company_id != "" && $booth != ""){
         $addCondition = "";
         if ($booth != "") {
             $addCondition .= " and bd.booth = ?";
@@ -114,21 +114,22 @@ class BoothDetails {
         $stmt->execute();  
         $num = $stmt->rowCount(); 
         if($num > 0){
-            //$row = $stmt->fetch(PDO::FETCH_ASSOC);
-            //$event_id = $row['event_id'];
             $updatequery = "update company
-                SET company_name = ?,
-                    company_contact_first_name = ?,
-                    company_contact_last_name = ?,
-                    company_email = ?,
-                    created_by = '$user_id' where co_id = '$company_id'";
+                SET company_name = :company_name,
+                    company_contact_first_name = :company_contact_first_name,
+                    company_contact_last_name = :company_contact_last_name,
+                    company_email = :company_email,
+                    created_by = '$user_id', created_date=now() where co_id = :company_id";
+
             $stmt = $this->conn->prepare($updatequery);
-            $stmt->bindParam(1, htmlspecialchars(strip_tags($company_name)));
-            $stmt->bindParam(2, htmlspecialchars(strip_tags($company_contact_first_name)));
-            $stmt->bindParam(3, htmlspecialchars(strip_tags($company_contact_last_name)));
-            $stmt->bindParam(4, htmlspecialchars(strip_tags($company_email)));
+
+            $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+            $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+            $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
+            $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
+            $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
             // execute query
-            $stmt->execute();//$stmt->debugDumpParams();
+            $stmt->execute();
 
             $updateBooth = "
                 UPDATE " . $this->table_name . "
@@ -137,7 +138,7 @@ class BoothDetails {
                     fm_name= :fm_name,
                     fm_phone= :fm_phone,
                     fm_text_number= :fm_text_number,
-                    ges_ese= :ges_ese, created_by = '$user_id' where event_id = '$event_id' and company_id = '$company_id'"; 
+                    ges_ese= :ges_ese, created_by = '$user_id', created_date=now() where event_id = :event_id and company_id = :company_id"; 
 
         $stmt = $this->conn->prepare($updateBooth); 
 
@@ -147,6 +148,8 @@ class BoothDetails {
         $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
         $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
         $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
         }else{
         
@@ -178,7 +181,7 @@ class BoothDetails {
                     company_contact_first_name = :company_contact_first_name,
                     company_contact_last_name = :company_contact_last_name,
                     company_email = :company_email,
-                    created_by = '$user_id' where co_id = '$company_id';
+                    created_by = '$user_id', created_date=now() where co_id = :company_id;
                 INSERT INTO " . $this->table_name . "
                 SET company_id = :company_id,
                     event_id = :event_id,
@@ -189,6 +192,7 @@ class BoothDetails {
                     fm_text_number= :fm_text_number,
                     ges_ese= :ges_ese, created_by = '$user_id'";
                 $stmt = $this->conn->prepare($updatequery);
+
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
@@ -254,13 +258,14 @@ class BoothDetails {
                     company_contact_first_name = :company_contact_first_name,
                     company_contact_last_name = :company_contact_last_name,
                     company_email = :company_email,
-                    created_by = '$user_id' where co_id = '$company_id'";
+                    created_by = '$user_id', created_date=now() where co_id = :company_id";
                 $stmt = $this->conn->prepare($updatequery);
             
                 $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
                 $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
                 $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
                 $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 // execute query
                 $stmt->execute(); 
             
@@ -340,7 +345,7 @@ class BoothDetails {
             DISTINCT event_id, MAX(created_date)
         FROM
             " . $this->table_name . " 
-        WHERE ((company_id = '' OR company_id IS NULL)  OR (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL)) ";
+        WHERE ( (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL)) ";
         $query .= "GROUP BY event_id  order by MAX(created_date) desc";
 
         // prepare query statement
@@ -377,12 +382,42 @@ class BoothDetails {
                             LEFT JOIN
                         event e ON e.event_id = bd.event_id
                     WHERE
-                        ((company_id = '' OR company_id IS NULL)  OR (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL)) and bd.event_id = ?";
+                        ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL)) and bd.event_id = ?";
         // prepare query statement
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
         // execute query
         $stmt->execute(); 
+        return $stmt;
+    }
+
+    //get floor manager having empty records based on eventid and company_id
+    function getEmptyFloorOnEventDetails($event_id, $company_id) {
+        $addCondition = "";
+        $query = "SELECT 
+                                    *
+                                FROM
+                                    " . $this->table_name . "
+                                WHERE ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
+        if ($event_id != "") {
+            $addCondition = "and event_id = ?";
+        }
+        if ($company_id != "") {
+            $addCondition .= "and company_id = ?";
+        }
+        $query .= $addCondition;
+        $query .= " order by created_date desc";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        if ($company_id != "") {
+            $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+        }
+        // execute query
+        $stmt->execute();     //$stmt->debugDumpParams();
+
+
         return $stmt;
     }
 
