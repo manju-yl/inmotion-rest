@@ -6,6 +6,63 @@ function hideValidate(input){var thisAlert=$(input).parent();$(thisAlert).remove
 
 
 $( document ).ready(function() {
+  if($('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
+    $('#resignappintment_div').show();
+    $('#floormanager_div').hide();
+
+}else if($('input:radio[name=floormanager]:checked').val()=='floormanager'){
+    $('#resignappintment_div').hide();
+    $('#floormanager_div').show();
+
+}
+$('#resignappintment').click(function(){
+    $("#floorManagerDivDisp").hide();
+    $.ajax({
+      url: 'api/download.php',
+      success: function(data) {
+        if(data=="false"){
+          $("#appointmentDivDisp").hide();
+        }else{
+          $("#appointmentDivDisp").show();
+          $("#dispEventLists").html(data);
+        }
+      },
+      error: function(data) {
+      }
+      });
+    $('.infoAppointmentMessage').show();
+    $('.infoBoothMessage').hide();
+    $('#message').html('');
+    $('#floormanager').prop("checked", false);
+    $('#resignappintment_div').show();
+    $('#floormanager_div').hide();
+    
+    });
+
+$('#floormanager').click(function(){
+    $("#appointmentDivDisp").hide();
+    $.ajax({
+    url: 'api/downloadFloorManager.php',
+    success: function(data) {
+        if(data=="false"){
+        $("#floorManagerDivDisp").hide();
+      }else{
+        $("#floorManagerDivDisp").show();
+        $("#dispFloorEventLists").html(data);
+      }
+    },
+    error: function(data) {
+    }
+    }); 
+    $('.infoBoothMessage').show();
+    $('.infoAppointmentMessage').hide();
+    $('#message').html('');
+    $('#resignappintment').prop("checked", false);
+    $('#resignappintment_div').hide();
+    $('#floormanager_div').show();
+    
+   });
+
   $('.infoAppointmentMessage').show();
   $('.infoBoothMessage').hide();
   $.ajax({

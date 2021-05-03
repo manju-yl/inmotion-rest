@@ -23,16 +23,8 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 }
 </script>
 
-<script type="text/javascript" language="JavaScript" src="scripts/jquery.js" ></script>
 <link rel="stylesheet" href="public/css/ipc_fbf.css">
-<link rel="stylesheet" href="css/impromptu.css">
-<script type='text/javascript' language='JavaScript' src='public/scripts/messages_lang.js'></script>
-<script type='text/javascript' language='JavaScript' src='public/scripts/impromptu.js'></script>
-<script type='text/javascript' language='JavaScript' src='public/scripts/import_users.js'></script>
-<script type="text/javascript" src="scripts/ui.datepicker.js"></script>
-<script language='JavaScript' src='scripts/jquery.selectbox.js' type='text/javascript'></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <span class="login100-form-title">Upload Form</span>
@@ -42,21 +34,19 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
            <div class="infoAppointmentMessage" style="display:none">
                   <?php $csvFilename = 'sample.xlsx'; ?>
                   <ol>
-                      <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
-                      <li>EVENTID and COID are Mandatory. </li>
+                      <li>EventId and COID are Mandatory. </li>
                   </ol>
             </div>
             <div class="infoBoothMessage" style="display:none">
                   <?php $csvFilename = 'sample.xlsx'; ?>
                   <ol>
-                      <!--<li>Please upload a excel file(<a href="api/sample.php?filename=<?php echo $csvFilename; ?>">Sample</a>). </li>-->
-                      <li>EVENTID and COID and Booth Number are Mandatory. </li>
+                      <li>EventId and  CoID and Booth Number are Mandatory. </li>
                   </ol>
             </div>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_form">
                 <input type="radio" name="resignappintments" value="resignappintment"  id="resignappintment" checked />
-                          <label>Re-sign Appointment</label>
+               <label>Re-sign Appointment</label>
                <div id='resignappintment_div'>
                <p><label>Choose Excel File</label> <input type="file"
                     name="file" id="file" class="txtbx" accept=".xls,.xlsx"></p>
@@ -96,65 +86,6 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
             </section>
     </div>  
 </div>
-
-
-<script type="text/javascript">
-
-if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
-    $('#resignappintment_div').show();
-    $('#floormanager_div').hide();
-
-}else if($('input:radio[name=floormanager]:checked').val()=='floormanager'){
-    $('#resignappintment_div').hide();
-    $('#floormanager_div').show();
-
-}
-$('#resignappintment').click(function(){
-    $.ajax({
-      url: 'api/download.php',
-      success: function(data) {
-        if(data=="false"){
-          $("#appointmentDivDisp").hide();
-        }else{
-          $("#appointmentDivDisp").show();
-          $("#dispEventLists").html(data);
-        }
-      },
-      error: function(data) {
-      }
-      });
-    $('.infoAppointmentMessage').show();
-    $('.infoBoothMessage').hide();
-    $('#message').html('');
-    $('#floormanager').prop("checked", false);
-    $('#resignappintment_div').show();
-    $('#floormanager_div').hide();
-    
-    });
-
-$('#floormanager').click(function(){
-    $.ajax({
-    url: 'api/downloadFloorManager.php',
-    success: function(data) {
-        if(data=="false"){
-        $("#floorManagerDivDisp").hide();
-      }else{
-        $("#floorManagerDivDisp").show();
-        $("#dispFloorEventLists").html(data);
-      }
-    },
-    error: function(data) {
-    }
-    }); 
-    $('.infoBoothMessage').show();
-    $('.infoAppointmentMessage').hide();
-    $('#message').html('');
-    $('#resignappintment').prop("checked", false);
-    $('#resignappintment_div').hide();
-    $('#floormanager_div').show();
-    
-   });
-</script>   
 <?php
 
 require './api/common/footer.php';

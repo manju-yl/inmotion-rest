@@ -9,14 +9,7 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 
-<link rel="stylesheet" type="text/css" href="css/animate.css">
-
-<link rel="stylesheet" type="text/css" href="css/hamburgers.min.css">
-
-<link rel="stylesheet" type="text/css" href="css/select2.min.css">
-
-<link rel="stylesheet" type="text/css" href="css/util.css">
-
+<script src="public/scripts/jquery-3.2.1.min.js"></script>
 
 </head>
 <body>

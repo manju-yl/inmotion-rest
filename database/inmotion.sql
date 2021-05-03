@@ -133,3 +133,6 @@ ALTER TABLE `booth_details` CHANGE `hall` `hall` VARCHAR(100) CHARACTER SET utf8
 ALTER TABLE `booth_details` CHANGE `ges_ese` `ges_ese` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `booth_details` 
 ADD COLUMN `created_by` INT(11) NULL AFTER `ges_ese`;
+ALTER TABLE `appointment` CHANGE `day` `day` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `appointment` CHANGE `time` `time` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `booth` `booth` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
