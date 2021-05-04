@@ -136,3 +136,7 @@ ADD COLUMN `created_by` INT(11) NULL AFTER `ges_ese`;
 ALTER TABLE `appointment` CHANGE `day` `day` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `appointment` CHANGE `time` `time` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `booth_details` CHANGE `booth` `booth` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` 
+CHANGE COLUMN `fm_name` `fm_name` VARCHAR(50) NULL DEFAULT NULL ,
+CHANGE COLUMN `fm_phone` `fm_phone` VARCHAR(50) NULL DEFAULT NULL ,
+CHANGE COLUMN `fm_text_number` `fm_text_number` VARCHAR(50) NULL DEFAULT NULL ;
