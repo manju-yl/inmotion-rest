@@ -120,7 +120,7 @@ if (isset($_POST["resignappintments"])) {
                     $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
                 }
                 // execute query
-                $stmt->execute();  //$stmt->debugDumpParams();
+                $stmt->execute(); 
                 //$stmt = $appointment->getEmptyAppointmentOnEventDetails($event_id, $company_id);
 
                 $emptyRecordCount = $stmt->rowCount(); 
@@ -136,14 +136,16 @@ if (isset($_POST["resignappintments"])) {
                 $missedRowCount++; 
             }
             } 
+        //to get missed record count
         $missedRecordCount = count($retArr);
         if($missedRecordCount > 0){
             $emptyUniqueAppointment = count(array_unique($retArr)); 
         }
+
         if($totalRecords == $missedRowCount){
             $message = '<div class="errorMessage errormsgWrapperDi">Re-sign appointment file upload is not complete.</div>';
         }
-        //$successmessage = '<div class="alert alert-success">'.$message.'</div>';
+        
         echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'emptyUniqueAppointment' =>  $emptyUniqueAppointment)); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Re-sign appointment file.</div>';
@@ -282,7 +284,7 @@ if (isset($_POST["floormanager"])) {
                     $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
                 }
                 // execute query
-                $stmt->execute();     //$stmt->debugDumpParams();
+                $stmt->execute(); 
 
                 $emptyRecordCount = $stmt->rowCount(); 
                 //check if records > 0
@@ -296,7 +298,7 @@ if (isset($_POST["floormanager"])) {
             } else {
                 $missedRowCount++;
             }
-            } //print_r($retArr);
+            } 
             $missedRecordCount = count($retArr);
             if($missedRecordCount > 0){
                 $emptyUniqueAppointment = count(array_unique($retArr));

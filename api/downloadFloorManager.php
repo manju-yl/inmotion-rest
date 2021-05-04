@@ -14,7 +14,7 @@ $conn = $databaseService->getConnection();
 
 //get booth object
 $boothdetails = new boothdetails($conn); 
-//get booth details
+//get booth details having missed records
 $stmt = $boothdetails->getEmptyBoothDetails(); 
 
 $num = $stmt->rowCount();  

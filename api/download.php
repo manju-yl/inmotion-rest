@@ -14,7 +14,7 @@ $conn = $databaseService->getConnection();
 
 //get appointment object
 $appointment = new appointment($conn);  
-//get appointment details
+//get appointment details having missed records
 $stmt = $appointment->getEmptyAppointmentDetails(); 
 
 $num = $stmt->rowCount(); 

@@ -15,19 +15,19 @@
 <body>
 <div class="limiter">
 
-<div class="container-login100">
+	<div class="container-login100">
 
-<div class="wrap-login100">
-<?php
+		<div class="wrap-login100">
+			<?php
 
-if (isset($_GET['logout'])) {
-	setcookie('token', '', time() - 3600);
-	setcookie('firstname', '', time() - 3600);
-	setcookie('userId', '', time() - 3600);
-    header("Location: index.php"); 
-}
+			if (isset($_GET['logout'])) {
+				setcookie('token', '', time() - 3600);
+				setcookie('firstname', '', time() - 3600);
+				setcookie('userId', '', time() - 3600);
+				header("Location: index.php"); 
+			}
 
-if (isset($_COOKIE['firstname'])){?>
-      <p>Welcome <strong><?php echo $_COOKIE['firstname']; ?></strong></p>
-      <p> <a href="importData.php?logout='1'" style="color: red;">Logout</a> </p>
-<?php } ?>
+			if (isset($_COOKIE['firstname'])){?>
+				<p>Welcome <strong><?php echo $_COOKIE['firstname']; ?></strong></p>
+				<p> <a href="importData.php?logout='1'" style="color: red;">Logout</a> </p>
+			<?php } ?>

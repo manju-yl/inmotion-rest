@@ -1,3 +1,23 @@
+<style>
+.wrap-login100 {
+    width: 80% !important;
+    align-items: center;
+    padding: 8px 50px !important;
+}
+.login100-form {
+    width: 290px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    min-height: 75vh;
+    padding: 4em 0px;
+}
+.login100-form-title {
+  padding-bottom: 30px;
+}
+</style>
 <?php
 if(!isset($_COOKIE['token'])) {
     header("Location: index.php"); 
@@ -27,7 +47,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-<span class="login100-form-title">Upload Form</span>
+<span class="login100-form-title">Upload Appointment and Floor Manager Data</span>
 <div class="container">
         <div class="wrapper clearfix">
            <div id="message"></div>
@@ -48,10 +68,10 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 <input type="radio" name="resignappintments" value="resignappintment"  id="resignappintment" checked />
                <label>Re-sign Appointment</label>
                <div id='resignappintment_div'>
-               <p><label>Choose Excel File</label> <input type="file"
+               <p><label>Choose Appointment Excel File</label> <input type="file"
                     name="file" id="file" class="txtbx" accept=".xls,.xlsx"></p>
                 <p><input type="submit" name="importappintmentSubmit" id="importappintmentSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
-                  <button id="resetbtn" class="button button4" type="button">Reset</button></p>
+                  <button id="resetbtn" class="button button4" type="button">Reset File</button></p>
                 </div>
                 </form>
                 <div class="btn" id="appointmentDivDisp" style="display:none;">
@@ -69,10 +89,10 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 <input type="radio" name="floormanager"  value="floormanager" id="floormanager"/>
                 <label>Floor Manager Lookup </label>
                 <div id='floormanager_div'>
-                  <p><label class="formlabel">Choose Excel File</label> <input type="file"
+                  <p><label class="formlabel">Choose Floor Manager Excel File</label> <input type="file"
                       name="myfile" id="myfile" class="txtbx"  accept=".xls,.xlsx"></p>
                   <p><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
-                  <button id="boothresetbtn" class="button button4" type="button">Reset</button></p></div>
+                  <button id="boothresetbtn" class="button button4" type="button">Reset File</button></p></div>
               </form>
               <div class="btn" id="floorManagerDivDisp" style="display:none">
               <label>Fetch missing records for Event Id:</label>

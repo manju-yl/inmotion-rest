@@ -1,4 +1,26 @@
-
+<style>
+.wrap-login100 {
+    width: 80% !important;
+    background: #fff;
+    display: flex;
+    justify-content: center !important;
+    align-items: center;
+    padding: 0px  !important;
+}
+.login100-form {
+    width: 290px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    min-height: 75vh;
+    padding: 4em 0px;
+}
+.login100-form-title {
+	padding-bottom: 30px !important;
+}
+</style>
 <?php
 if(isset($_COOKIE['token'])) {
     header("Location: importData.php"); 
