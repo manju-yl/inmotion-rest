@@ -95,7 +95,7 @@ if (isset($_POST["resignappintments"])) {
             $time = filter_var(trim($spreadSheetAry[$i][$time]), FILTER_SANITIZE_STRING);
             $company_name = filter_var(trim($spreadSheetAry[$i][$companyname]), FILTER_SANITIZE_STRING);
        
-            
+            //get appointment object
             $appointment = new appointment($conn);  
             $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id); 
            
@@ -257,7 +257,7 @@ if (isset($_POST["floormanager"])) {
             $fm_text_number = filter_var(trim($spreadSheetAry[$i][$text_number]), FILTER_SANITIZE_STRING);
        
        
-            
+            //get booth object
             $boothdetails = new boothdetails($conn);  
             $stmt = $boothdetails->addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_firstname, $company_contact_lastname, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id);
             

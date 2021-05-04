@@ -79,7 +79,7 @@ class BoothDetails {
     function addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_first_name, $company_contact_last_name, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id) {
         if($event_id != "" && $company_id != "" && $booth != ""){
             $addCondition = "";
-
+	    // select booths based on event_id and company_id and booth
             $query = "SELECT 
             c.co_id,
             e.event_id,

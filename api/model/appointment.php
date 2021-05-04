@@ -31,7 +31,7 @@ class Appointment {
         if ($company_email != "") {
             $addCondition .= " and c.company_email = ?";
         }
-        // select all query
+        // select appointments based on event_id and company_id
         $query = "SELECT 
         c.co_id,
         c.company_name,

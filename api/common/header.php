@@ -30,4 +30,4 @@
 			if (isset($_COOKIE['firstname'])){?>
 				<p>Welcome <strong><?php echo $_COOKIE['firstname']; ?></strong></p>
 				<p> <a href="importData.php?logout='1'" style="color: red;">Logout</a> </p>
-			<?php } ?>
+			<?php  }  ?>

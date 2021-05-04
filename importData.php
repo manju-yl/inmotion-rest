@@ -1,3 +1,14 @@
+<?php
+if(!isset($_COOKIE['token'])) {
+    header("Location: index.php"); 
+    exit();
+}
+
+require './api/common/header.php';
+ 
+?>
+
+<title>InMotion APP - Upload Form</title>
 <style>
 .wrap-login100 {
     width: 80% !important;
@@ -18,18 +29,6 @@
   padding-bottom: 30px;
 }
 </style>
-<?php
-if(!isset($_COOKIE['token'])) {
-    header("Location: index.php"); 
-    exit();
-}
-
-require './api/common/header.php';
- 
-?>
-
-<title>InMotion APP - Upload Form</title>
-
 <script type="text/javascript">
 
 if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
@@ -107,7 +106,5 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
     </div>  
 </div>
 <?php
-
 require './api/common/footer.php';
-
 ?>

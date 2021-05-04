@@ -1,3 +1,13 @@
+<?php
+if(isset($_COOKIE['token'])) {
+    header("Location: importData.php"); 
+    exit();
+}
+
+require './api/common/header.php';
+
+
+?>
 <style>
 .wrap-login100 {
     width: 80% !important;
@@ -21,16 +31,6 @@
 	padding-bottom: 30px !important;
 }
 </style>
-<?php
-if(isset($_COOKIE['token'])) {
-    header("Location: importData.php"); 
-    exit();
-}
-
-require './api/common/header.php';
-
-
-?>
 <form class="login100-form validate-form" method="post" id="login_form">
 <span class="login100-form-title">
 Member Login

@@ -4,7 +4,7 @@ else{if($(input).val().trim()==''){return false;}}}
 function showValidate(input){var thisAlert=$(input).parent();$(thisAlert).addClass('alert-validate');}
 function hideValidate(input){var thisAlert=$(input).parent();$(thisAlert).removeClass('alert-validate');}
 
-
+//on page load
 $( document ).ready(function() {
   if($('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
     $("#floorManagerDivDisp").hide();
