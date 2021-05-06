@@ -96,7 +96,7 @@ if ($num > 0) {
             extract($row); 
             $sheet->setCellValue('A' . $rowCount, $co_id);
             $sheet->setCellValue('B' . $rowCount, $event_id);
-            $sheet->setCellValue('C' . $rowCount, $company_name);
+            $sheet->setCellValue('C' . $rowCount, htmlspecialchars_decode($company_name, ENT_COMPAT));
             $sheet->setCellValue('D' . $rowCount, $booth);
             $sheet->setCellValue('E' . $rowCount, $company_contact_first_name);
             $sheet->setCellValue('F' . $rowCount, $company_contact_last_name);

@@ -31,27 +31,34 @@ if (isset($_POST["resignappintments"])) {
     ]; 
     //check if selected file type is proper
     if (in_array($_FILES["file"]["type"], $allowedFileType)) { 
+        $reader = new Xlsx();
+        $spreadSheet = $reader->load($_FILES['file']['tmp_name']);
+
+        $loadedSheetNames = $spreadSheet->getSheetNames(); 
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadSheet);
+
         if (!file_exists('uploads')) {
             mkdir('./uploads', 0777, true);
         }
-        $targetPath = 'uploads/' . $_FILES['file']['name'];
-        $ret = move_uploaded_file($_FILES['file']['tmp_name'], $targetPath);
-    
-    //check if selected files are moved to temporary folder        
-    if (!$ret) {
-            $message = '<div class="errorMessage errormsgWrapperDi">There is an error in uploading the file.</div>';
-            echo json_encode(array('status' => 200, 'message' => $message)); exit;
-        }
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(); 
+        $file = $_FILES['file']['name'];
+        $info = pathinfo($file);
+        $fileName =  $info['filename'];
 
+        $targetPath = 'uploads/' . $fileName.'.csv';
+        foreach($loadedSheetNames as $sheetIndex => $loadedSheetName) {
+            $writer->setSheetIndex($sheetIndex); 
+            $writer->save($targetPath);
+        } 
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         // file path
         $spreadSheet = $reader->load($targetPath);
-        $excelSheet = $spreadSheet->getActiveSheet();
-        $spreadSheetAry = $excelSheet->toArray();
-
+        $csvSheet = $spreadSheet->getActiveSheet();
+        $spreadSheetAry = $csvSheet->toArray(); 
 
         // array Count
-        $sheetCount = count($spreadSheetAry);
+        $sheetCount = count($spreadSheetAry); 
+        if($sheetCount > 1) {
         $flag = 0;
         $emptyRecordCount = 0;
         $missedRowCount = 0;
@@ -94,7 +101,7 @@ if (isset($_POST["resignappintments"])) {
             $day = filter_var(trim($spreadSheetAry[$i][$date]), FILTER_SANITIZE_STRING); 
             $time = filter_var(trim($spreadSheetAry[$i][$time]), FILTER_SANITIZE_STRING);
             $company_name = filter_var(trim($spreadSheetAry[$i][$companyname]), FILTER_SANITIZE_STRING);
-       
+            
             //get appointment object
             $appointment = new appointment($conn);  
             $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id); 
@@ -130,7 +137,7 @@ if (isset($_POST["resignappintments"])) {
                 }else{
                            
                 }
-                $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
+                $message = '<div class="alert alert-success">Re-sign Appointment File Upload Is Complete.</div>';
                 
             } else {
                 $missedRowCount++; 
@@ -143,16 +150,20 @@ if (isset($_POST["resignappintments"])) {
         }
 
         if($totalRecords == $missedRowCount){
-            $message = '<div class="errorMessage errormsgWrapperDi">Re-sign appointment file upload is not complete.</div>';
+            $message = '<div class="errorMessage errormsgWrapperDi">Re-sign Appointment file upload is not complete.</div>';
         }
         
         echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'emptyUniqueAppointment' =>  $emptyUniqueAppointment)); exit;
         }else{
-            $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct Re-sign appointment file.</div>';
+            $message = '<div class="errorMessage errormsgWrapperDi">Please Upload the correct Re-sign Appointment file.</div>';
             echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
-           $message = '<div class="errorMessage errormsgWrapperDi">Incorrect File. Please upload the correct Re-sign appointment file.</div>';
+           $message = '<div class="errorMessage errormsgWrapperDi">Incorrect File. Please upload the correct Re-sign Appointment file.</div>';
+        echo json_encode(array('status' => 401, 'message' => $message)); exit; 
+        }
+        }else{
+           $message = '<div class="errorMessage errormsgWrapperDi">Please check the file uploaded, There is no data to import.</div>';
         echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
     } else {
@@ -176,28 +187,35 @@ if (isset($_POST["floormanager"])) {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ]; 
     //check if selected file type is proper
-    if (in_array($_FILES["myfile"]["type"], $allowedFileType)) { 
+    if (in_array($_FILES["myfile"]["type"], $allowedFileType)) {
+        $reader = new Xlsx();
+        $spreadSheet = $reader->load($_FILES['myfile']['tmp_name']);
+
+        $loadedSheetNames = $spreadSheet->getSheetNames(); 
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Csv($spreadSheet);
+
         if (!file_exists('uploads')) {
             mkdir('./uploads', 0777, true);
         }
-        $targetPath = 'uploads/' . $_FILES['myfile']['name'];
-        $ret = move_uploaded_file($_FILES['myfile']['tmp_name'], $targetPath);
-    
-    //check if selected files are moved to temporary folder        
-    if (!$ret) {
-            $message = '<div class="errorMessage errormsgWrapperDi">There is an error in uploading the file.</div>';
-            echo json_encode(array('status' => 200, 'message' => $message)); exit;
-        }
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx(); 
+        $file = $_FILES['myfile']['name'];
+        $info = pathinfo($file);
+        $fileName =  $info['filename'];
 
+        $targetPath = 'uploads/' . $fileName.'.csv';
+        foreach($loadedSheetNames as $sheetIndex => $loadedSheetName) {
+            $writer->setSheetIndex($sheetIndex); 
+            $writer->save($targetPath);
+        } 
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         // file path
         $spreadSheet = $reader->load($targetPath);
-        $excelSheet = $spreadSheet->getActiveSheet();
-        $spreadSheetAry = $excelSheet->toArray();
-
+        $csvSheet = $spreadSheet->getActiveSheet();
+        $spreadSheetAry = $csvSheet->toArray();
 
         // array Count
         $sheetCount = count($spreadSheetAry);
+        if($sheetCount > 1) {
         $flag = 0;
         $emptyRecordCount = 0;
         $missedRowCount = 0;
@@ -314,6 +332,10 @@ if (isset($_POST["floormanager"])) {
         }
         }else{
            $message = '<div class="errorMessage errormsgWrapperDi">Incorrect File. Please upload the correct Floor Manager file.</div>';
+        echo json_encode(array('status' => 401, 'message' => $message)); exit; 
+        }
+        }else{
+           $message = '<div class="errorMessage errormsgWrapperDi">Please Check The File Uploaded, There is no data to import.</div>';
         echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
     } else {

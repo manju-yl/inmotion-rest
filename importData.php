@@ -10,6 +10,9 @@ require './api/common/header.php';
 
 <title>InMotion APP - Upload Form</title>
 <style>
+.container-login100 {
+    background: #11a7d9 !important;
+}
 .wrap-login100 {
     width: 80% !important;
     align-items: center;
@@ -70,7 +73,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                <p><label>Choose Appointment Excel File</label> <input type="file"
                     name="file" id="file" class="txtbx" accept=".xls,.xlsx"></p>
                 <p><input type="submit" name="importappintmentSubmit" id="importappintmentSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
-                  <button id="resetbtn" class="button button4" type="button">Reset File</button></p>
+                  <button id="resetbtn" class="button button4" type="button" alt="Reset">Reset File</button></p>
                 </div>
                 </form>
                 <div class="btn" id="appointmentDivDisp" style="display:none;">
@@ -91,7 +94,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <p><label class="formlabel">Choose Floor Manager Excel File</label> <input type="file"
                       name="myfile" id="myfile" class="txtbx"  accept=".xls,.xlsx"></p>
                   <p><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
-                  <button id="boothresetbtn" class="button button4" type="button">Reset File</button></p></div>
+                  <button id="boothresetbtn" class="button button4" type="button" alt="Reset">Reset File</button></p></div>
               </form>
               <div class="btn" id="floorManagerDivDisp" style="display:none">
               <label>Fetch missing records for Event Id:</label>

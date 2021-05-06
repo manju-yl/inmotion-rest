@@ -9,6 +9,9 @@ require './api/common/header.php';
 
 ?>
 <style>
+.container-login100 {
+    background: #11a7d9 !important;
+}
 .wrap-login100 {
     width: 80% !important;
     background: #fff;
