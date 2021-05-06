@@ -16,6 +16,26 @@ $conn = $databaseService->getConnection();
 $data = json_decode(file_get_contents("php://input"), true);
 $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
 $password = $data['password'];
+//check if email empty
+if ($email == "" || $email == null ) {
+    // set response code - 200 Not found
+    http_response_code(200);
+    // email id cannot be empty
+    echo json_encode(
+            array("message" => "Email id cannot be empty")
+    );
+    exit;
+}
+//check if password empty
+if ($password == "" || $password == null ) {
+    // set response code - 200 Not found
+    http_response_code(200);
+    // password cannot be empty
+    echo json_encode(
+            array("message" => "Password cannot be empty")
+    );
+    exit;
+}
 //get user object
 $user = new User($conn);
 //get user details by emailId
