@@ -128,15 +128,32 @@ CREATE TABLE `event` (
 -- Dump completed on 2021-04-14 14:44:19
 
 ALTER TABLE `booth_details` 
-ADD COLUMN `ges_ese` VARCHAR(45) NULL AFTER `created_date`;
-ALTER TABLE `booth_details` CHANGE `hall` `hall` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-ALTER TABLE `booth_details` CHANGE `ges_ese` `ges_ese` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ADD COLUMN `ges_ese` VARCHAR(200) NULL AFTER `created_date`;
+ALTER TABLE `booth_details` CHANGE `hall` `hall` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `ges_ese` `ges_ese` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `booth_details` 
 ADD COLUMN `created_by` INT(11) NULL AFTER `ges_ese`;
-ALTER TABLE `appointment` CHANGE `day` `day` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
-ALTER TABLE `appointment` CHANGE `time` `time` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `appointment` CHANGE `day` `day` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `appointment` CHANGE `time` `time` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `booth_details` CHANGE `booth` `booth` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `booth_details` 
 CHANGE COLUMN `fm_name` `fm_name` VARCHAR(50) NULL DEFAULT NULL ,
 CHANGE COLUMN `fm_phone` `fm_phone` VARCHAR(50) NULL DEFAULT NULL ,
 CHANGE COLUMN `fm_text_number` `fm_text_number` VARCHAR(50) NULL DEFAULT NULL ;
+ALTER TABLE `appointment` CHANGE `company_id` `company_id` INT(50) NULL DEFAULT NULL;
+ALTER TABLE `appointment` CHANGE `event_id` `event_id` INT(50) NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `company_id` `company_id` INT(50) NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `event_id` `event_id` INT(50) NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `booth` `booth` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `fm_name` `fm_name` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `fm_phone` `fm_phone` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `booth_details` CHANGE `fm_text_number` `fm_text_number` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `company` CHANGE `company_name` `company_name` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `company` CHANGE `company_contact_first_name` `company_contact_first_name` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `company` CHANGE `company_contact_last_name` `company_contact_last_name` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `company` CHANGE `company_email` `company_email` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `event` CHANGE `event_id` `event_id` INT(50) NOT NULL;
+ALTER TABLE `company` CHANGE `co_id` `co_id` INT(50) NOT NULL;
+
+
+
