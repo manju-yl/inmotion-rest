@@ -109,7 +109,7 @@ class Appointment {
                 created_by = '$user_id', created_date=now() where co_id = :company_id";
                 $stmt = $this->conn->prepare($updatequery);
 
-                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                $stmt->bindParam(':company_name', $company_name);
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
                 // execute query
@@ -124,8 +124,8 @@ class Appointment {
                 // prepare query statement
                 $stmt = $this->conn->prepare($updateAppointment); 
 
-                $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-                $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                $stmt->bindParam(':day', $day);
+                $stmt->bindParam(':time', $time);
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
@@ -166,9 +166,9 @@ class Appointment {
                         // prepare query statement
                         $stmt = $this->conn->prepare($updatequery);
 
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-                        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':day', $day);
+                        $stmt->bindParam(':time', $time);
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
@@ -190,10 +190,10 @@ class Appointment {
                         $stmt = $this->conn->prepare($query); 
 
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                        $stmt->bindParam(':company_name', $company_name);
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-                        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                        $stmt->bindParam(':day', $day);
+                        $stmt->bindParam(':time', $time);
                     }
 
                 }else{
@@ -213,7 +213,7 @@ class Appointment {
                         created_by = '$user_id', created_date=now() where co_id = :company_id";
                         $stmt = $this->conn->prepare($updatequery);
 
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
+                        $stmt->bindParam(':company_name', $company_name);
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
                         // execute query
@@ -233,9 +233,9 @@ class Appointment {
                         $stmt = $this->conn->prepare($insertquery); 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-                        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':day', $day);
+                        $stmt->bindParam(':time', $time);
                     }else{
                         $query = "
                         INSERT INTO event
@@ -256,9 +256,9 @@ class Appointment {
 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':day', htmlspecialchars(strip_tags($day)));
-                        $stmt->bindParam(':time', htmlspecialchars(strip_tags($time)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':day', $day);
+                        $stmt->bindParam(':time', $time);
 
                     }
                 }

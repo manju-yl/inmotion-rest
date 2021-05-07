@@ -160,9 +160,9 @@ $("#import_form").on('submit',function(e){
     $('#message').html(data.message);
     if(data.totalRecords > 0){
       if(data.totalRecords == data.missedRowCount){
-        $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed Mandatory Records on the uploaded file.</div>' );
+        $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed mandatory records on the uploaded file.</div>' );
       }else if(data.missedRowCount > 0){
-        $("#message").append( '<div class="alert alert-success"> ' + data.missedRowCount + ' record(s) were not inserted due to missed Mandatory Records on the uploaded file.</div>' );
+        $("#message").append( '<div class="alert alert-success"> ' + data.missedRowCount + ' record(s) were not inserted due to missed mandatory records on the uploaded file.</div>' );
 
       }
     }
@@ -180,7 +180,12 @@ $("#import_form").on('submit',function(e){
             var insertedId = $( "#eventselection option:selected" ).text(); 
             $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
           }else if(data.emptyUniqueAppointment > 1){
-            $("#message").append( '<div class="alert alert-success">'+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please check the missing record section below for more details.</div>' );
+            if(data.eventCount == 1){
+              var insertedId = $( "#eventselection option:selected" ).text(); 
+              $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
+            }else{
+              $("#message").append( '<div class="alert alert-success">'+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please check the missing record section below for more details.</div>' );
+            }
           }
         }
       }
@@ -222,9 +227,9 @@ $("#import_floor_form").on('submit',function(e){
 
     if(data.totalRecords > 0){
       if(data.totalRecords == data.missedRowCount){
-        $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed Mandatory Records on the uploaded file.</div>' );
+        $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed mandatory records on the uploaded file.</div>' );
       }else if(data.missedRowCount > 0){
-        $("#message").append( '<div class="alert alert-success"> ' + data.missedRowCount + ' record(s) were not inserted due to missed Mandatory Records on the uploaded file.</div>' );
+        $("#message").append( '<div class="alert alert-success"> ' + data.missedRowCount + ' record(s) were not inserted due to missed mandatory records on the uploaded file.</div>' );
 
       }
     }
@@ -237,13 +242,19 @@ $("#import_floor_form").on('submit',function(e){
         }else{
           $("#floorManagerDivDisp").show();
           $("#dispFloorEventLists").html(result);
-          if(data.emptyUniqueAppointment == 1){
+          if(data.emptyUniqueFloor == 1){
             var insertedId = $( "#flooreventselection option:selected" ).text(); 
             $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
-          }else if(data.emptyUniqueAppointment > 1){
-            $("#message").append( '<div class="alert alert-success">'+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please check the missing record section below for more details.</div>' );
-          }
+            
+          }else if(data.emptyUniqueFloor > 1){
+            if(data.eventCount == 1){
+              var insertedId = $( "#flooreventselection option:selected" ).text(); 
+              $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
+            }else{
+              $("#message").append( '<div class="alert alert-success">'+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please check the missing record section below for more details.</div>' );
+            }
         }
+      }
       }
     });
 

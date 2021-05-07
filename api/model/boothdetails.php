@@ -104,7 +104,6 @@ class BoothDetails {
             $stmt = $this->conn->prepare($query);
             $event_id = htmlspecialchars(strip_tags($event_id));
             $company_id = htmlspecialchars(strip_tags($company_id));
-            $booth = htmlspecialchars(strip_tags($booth));
 
             $stmt->bindParam(1, $event_id);
             $stmt->bindParam(2, $company_id);
@@ -124,10 +123,10 @@ class BoothDetails {
                 $stmt = $this->conn->prepare($updatequery);
 
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
-                $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
-                $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
+                $stmt->bindParam(':company_name', $company_name);
+                $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                $stmt->bindParam(':company_email', $company_email);
                 // execute query
                 $stmt->execute();
 
@@ -142,12 +141,12 @@ class BoothDetails {
                 // prepare query statement
                 $stmt = $this->conn->prepare($updateBooth); 
 
-                $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
-                $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
-                $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
-                $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
-                $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
-                $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+                $stmt->bindParam(':booth', $booth);
+                $stmt->bindParam(':hall', $hall);
+                $stmt->bindParam(':fm_name', $fm_name);
+                $stmt->bindParam(':fm_phone', $fm_phone);
+                $stmt->bindParam(':fm_text_number', $fm_text_number);
+                $stmt->bindParam(':ges_ese', $ges_ese);
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
@@ -196,16 +195,16 @@ class BoothDetails {
 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
-                        $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
-                        $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
-                        $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
-                        $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
-                        $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
-                        $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
-                        $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
-                        $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                        $stmt->bindParam(':company_email', $company_email);
+                        $stmt->bindParam(':booth', $booth);
+                        $stmt->bindParam(':hall', $hall);
+                        $stmt->bindParam(':fm_name', $fm_name);
+                        $stmt->bindParam(':fm_phone', $fm_phone);
+                        $stmt->bindParam(':fm_text_number', $fm_text_number);
+                        $stmt->bindParam(':ges_ese', $ges_ese);
                         
                     }else{
                         $query = "
@@ -231,16 +230,16 @@ class BoothDetails {
 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
-                        $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
-                        $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
-                        $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
-                        $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
-                        $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
-                        $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
-                        $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
-                        $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                        $stmt->bindParam(':company_email', $company_email);
+                        $stmt->bindParam(':booth', $booth);
+                        $stmt->bindParam(':hall', $hall);
+                        $stmt->bindParam(':fm_name', $fm_name);
+                        $stmt->bindParam(':fm_phone', $fm_phone);
+                        $stmt->bindParam(':fm_text_number', $fm_text_number);
+                        $stmt->bindParam(':ges_ese', $ges_ese);
 
                     }
             
@@ -263,10 +262,10 @@ class BoothDetails {
                         created_by = '$user_id', created_date=now() where co_id = :company_id";
                         $stmt = $this->conn->prepare($updatequery);
 
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
-                        $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
-                        $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                        $stmt->bindParam(':company_email', $company_email);
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                         // execute query
                         $stmt->execute(); 
@@ -288,12 +287,12 @@ class BoothDetails {
                         $stmt = $this->conn->prepare($insertquery); 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
-                        $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
-                        $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
-                        $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
-                        $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
-                        $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+                        $stmt->bindParam(':booth', $booth);
+                        $stmt->bindParam(':hall', $hall);
+                        $stmt->bindParam(':fm_name', $fm_name);
+                        $stmt->bindParam(':fm_phone', $fm_phone);
+                        $stmt->bindParam(':fm_text_number', $fm_text_number);
+                        $stmt->bindParam(':ges_ese', $ges_ese);
                     }else{
                         $query = "
                         INSERT INTO event
@@ -320,16 +319,16 @@ class BoothDetails {
 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', htmlspecialchars(strip_tags($company_name)));
-                        $stmt->bindParam(':company_contact_first_name', htmlspecialchars(strip_tags($company_contact_first_name)));
-                        $stmt->bindParam(':company_contact_last_name', htmlspecialchars(strip_tags($company_contact_last_name)));
-                        $stmt->bindParam(':company_email', htmlspecialchars(strip_tags($company_email)));
-                        $stmt->bindParam(':booth', htmlspecialchars(strip_tags($booth)));
-                        $stmt->bindParam(':hall', htmlspecialchars(strip_tags($hall)));
-                        $stmt->bindParam(':fm_name', htmlspecialchars(strip_tags($fm_name)));
-                        $stmt->bindParam(':fm_phone', htmlspecialchars(strip_tags($fm_phone)));
-                        $stmt->bindParam(':fm_text_number', htmlspecialchars(strip_tags($fm_text_number)));
-                        $stmt->bindParam(':ges_ese', htmlspecialchars(strip_tags($ges_ese)));
+                        $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                        $stmt->bindParam(':company_email', $company_email);
+                        $stmt->bindParam(':booth', $booth);
+                        $stmt->bindParam(':hall', $hall);
+                        $stmt->bindParam(':fm_name', $fm_name);
+                        $stmt->bindParam(':fm_phone', $fm_phone);
+                        $stmt->bindParam(':fm_text_number', $fm_text_number);
+                        $stmt->bindParam(':ges_ese', $ges_ese);
                     }
                 }
             }

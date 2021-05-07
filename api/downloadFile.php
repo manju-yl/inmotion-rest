@@ -17,7 +17,7 @@ $appointment = new appointment($conn);
 //get appointments having missed records by event_id
 $stmt = $appointment->downloadAppointmentDetails($event_id); 
 
-$fileName = 'appointment-'.time();
+$fileName = $event_id .' - appointment-'.time();
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
@@ -43,7 +43,7 @@ if ($num > 0) {
             $sheet->setCellValue('B' . $rowCount, $event_id);
             $sheet->setCellValue('C' . $rowCount, $day);
             $sheet->setCellValue('D' . $rowCount, $time);
-            $sheet->setCellValue('E' . $rowCount, htmlspecialchars_decode($company_name, ENT_COMPAT));
+            $sheet->setCellValue('E' . $rowCount, $company_name);
             $rowCount++; 
         }
 }
@@ -64,7 +64,7 @@ $event_id = filter_var($_POST['flooreventselection'], FILTER_SANITIZE_NUMBER_INT
 $boothDetails = new BoothDetails($conn); 
 //get booths having missed records by event_id
 $stmt = $boothDetails->downloadBoothDetails($event_id);
-$fileName = 'floormanager-'.time();
+$fileName = $event_id .' - floormanager-'.time();
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
@@ -96,7 +96,7 @@ if ($num > 0) {
             extract($row); 
             $sheet->setCellValue('A' . $rowCount, $co_id);
             $sheet->setCellValue('B' . $rowCount, $event_id);
-            $sheet->setCellValue('C' . $rowCount, htmlspecialchars_decode($company_name, ENT_COMPAT));
+            $sheet->setCellValue('C' . $rowCount, $company_name);
             $sheet->setCellValue('D' . $rowCount, $booth);
             $sheet->setCellValue('E' . $rowCount, $company_contact_first_name);
             $sheet->setCellValue('F' . $rowCount, $company_contact_last_name);
