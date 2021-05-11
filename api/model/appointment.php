@@ -348,6 +348,35 @@ class Appointment {
         return $stmt;
     }
 
+    //store uploaded file details to database
+    function insertOrUpdateUploadedFile($path, $type) {
+        $query = "SELECT 
+        filename, type
+        FROM
+        uploads
+        WHERE filename='$path' and type='$type'"; 
+        // prepare query statement
+        $stmt = $this->conn->prepare($query); 
+        // execute query
+        $stmt->execute(); 
+
+        $num = $stmt->rowCount(); 
+        if ($num > 0) {
+            $updatequery = "update uploads
+                        SET filename = '$path',
+                        type = '$type', created_date=now() where filename = '$path' and type = '$type'";
+            $stmt = $this->conn->prepare($updatequery);
+            // execute query
+            $stmt->execute(); 
+        }else{
+            $query = "INSERT INTO uploads
+                        SET filename = '$path', type = '$type', created_date=now()";
+            $stmt = $this->conn->prepare($query);
+            // execute query
+            $stmt->execute(); 
+        }
+    }
+
 
 
 }

@@ -50,6 +50,9 @@ if (isset($_POST["resignappintments"])) {
             $writer->setSheetIndex($sheetIndex); 
             $writer->save($targetPath);
         } 
+        $appointment = new appointment($conn); 
+        $appointment->insertOrUpdateUploadedFile($targetPath, 'appointment');
+        
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         // file path
         $spreadSheet = $reader->load($targetPath);
@@ -282,6 +285,9 @@ if (isset($_POST["floormanager"])) {
             $writer->setSheetIndex($sheetIndex); 
             $writer->save($targetPath);
         } 
+        $appointment = new appointment($conn); 
+        $appointment->insertOrUpdateUploadedFile($targetPath, 'floormanager');
+
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
         // file path
         $spreadSheet = $reader->load($targetPath);
