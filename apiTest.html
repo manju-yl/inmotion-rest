@@ -1,0 +1,174 @@
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Connect to API</title>
+        <style>
+            .table {
+                font-family: Arial, Helvetica, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            .table td, .table th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            .table tr:nth-child(even){background-color: #f2f2f2;}
+
+            .table tr:hover {background-color: #ddd;}
+
+            .table th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #4CAF50;
+                color: white;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    </head>
+    <body>
+        <select id='apiSelection' name='apiSelection'>
+            <option>Select API</option>
+            <option id="https://inmotion-app.iplatformsolutions.com/api/getAppointments.php">appointmentAPI</option>
+            <option id="https://inmotion-app.iplatformsolutions.com/api/getFloorManagerDetails.php">floorAPI</option>
+        </select>
+        <br/><br/>
+        <form method="post" id="appointment_form" style="display:none">
+            <input type="text" name="event_id" id="event_id" placeholder="Enter Event ID" required>
+            <input type="text" name="company_id" id="company_id" placeholder="Enter Company ID">
+            <input type="email" name="email" id="email" placeholder="Enter Company Email" style="display:none">
+            <input type="text" name="booth" id="booth" placeholder="Enter Booth Number" style="display:none">
+            <button type="submit" name="submit">
+            Submit
+            </button>
+        </form>
+        <script>
+        $("#apiSelection").on('change',function(){
+            $("#appointment_form")[0].reset();
+            var getValue=$(this).val(); 
+            var getId = $(this).children(":selected").attr("id"); 
+            if(getValue == "appointmentAPI"){
+                $("#appointment_form").show();
+                $("#appointments").show();
+                $("#email").show();
+                $("#floormanager").hide();
+                $("#booth").hide();
+            }else if(getValue == "floorAPI"){
+                $("#appointment_form").show();
+                $("#floormanager").show();
+                $("#appointments").hide();
+                $("#booth").show();
+                $("#email").hide();
+            }
+          });
+            
+        $("#appointment_form").on('submit',function(e){
+            // Preventing form to submit
+            e.preventDefault();
+           
+            var data = JSON.stringify({
+              event_id: $("#event_id").val(),
+              company_id: $("#company_id").val(),
+              company_email: $("#email").val(),
+              booth: $("#booth").val(),
+            });
+            var url = $("#apiSelection").children(":selected").attr("id"); 
+            var proxy = 'https://cors-anywhere.herokuapp.com/';
+            var finalurl = proxy+url;
+            var settings = {
+                "url": finalurl,
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjA3MjU4OTMsImV4cCI6MTYyMDgxMjI5MywiZGF0YSI6eyJpZCI6IjMiLCJmaXJzdG5hbWUiOiJzdWthbnlhIiwibGFzdG5hbWUiOiJzaGV0dHkiLCJlbWFpbCI6InN1a2FueWEuc0BpbXBlbHN5cy5jb20ifX0.Vb6yFUaPQNfPyqHVPw9nWuxEAXQwvbs8_3Q24smUGvY"
+                },
+                "data":data
+            };
+
+            var html = '';
+            var getValue=$("#apiSelection").val(); 
+            if(getValue == "appointmentAPI"){
+                $.ajax(settings).done(function (response) {
+                    $.each(response, function (index, value) {
+                        var eventId = value.eventId;
+                        var companyId = value.companyId;
+                        html += '<tr>' +
+                                '<td>' + value.eventId + '</td>' +
+                                '<td>' + value.eventName + '</td>' +
+                                '<td>' + value.companyId + '</td>' +
+                                '<td>' + value.companyName + '</td>' +
+                                '<td>' + value.day + '</td>' +
+                                '<td>' + value.time + '</td>' +
+                                '</tr>';
+                    });
+                    $('#appointments tbody').html(html);
+                }).fail(function(response){
+                    $("#appointments tbody").find("tr:gt(0)").remove();
+                    html = '<span>No Appointments found.</span>'; 
+                    $('#appointments tbody').html(html);
+                });
+            }else{
+                $.ajax(settings).done(function (response) {
+                $.each(response, function (index, value) {
+                    var eventId = value.eventId;
+                    var companyId = value.companyId;
+                    html += '<tr>' +
+                            '<td>' + value.eventId + '</td>' +
+                            '<td>' + value.eventName + '</td>' +
+                            '<td>' + value.companyId + '</td>' +
+                            '<td>' + value.companyName + '</td>' +
+                            '<td>' + value.booth + '</td>' +
+                            '<td>' + value.hall + '</td>' +
+                            '<td>' + value.fm_name + '</td>' +
+                            '<td>' + value.fm_text_number + '</td>' +
+                            '<td>' + value.ges_ese + '</td>' +
+                            '</tr>';
+                }); 
+                $('#floormanager tbody').html(html);
+                }).fail(function(response){
+                    $("#floormanager tbody").find("tr:gt(0)").remove();
+                    html = '<span>No Booth details and Floor Manager details found.</span>'; 
+                    $('#floormanager tbody').html(html);
+                });
+            }
+        });
+        </script>
+        <div>
+            <table class="table table-striped table-bordered " id="appointments"  style="display:none">
+                <thead>
+                <tr>
+                    <th>Event ID</th> 
+                    <th>Event Name</th> 
+                    <th>Company ID</th>
+                    <th>Company Name</th>  
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> 
+            <table class="table table-striped table-bordered " id="floormanager" style="display:none">
+                <thead>
+                <tr>
+                    <th>Event ID</th> 
+                    <th>Event Name</th> 
+                    <th>Company ID</th>
+                    <th>Company Name</th>  
+                    <th>Booth Number</th>
+                    <th>Hall</th>
+                    <th>Floor Manager</th>
+                    <th>Text Number</th>
+                    <th>GES ESE</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> 
+        </div>
+    </body>
+</html>
