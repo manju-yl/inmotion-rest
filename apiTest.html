@@ -32,8 +32,8 @@
     <body>
         <select id='apiSelection' name='apiSelection'>
             <option>Select API</option>
-            <option id="https://inmotion-app.iplatformsolutions.com/api/getAppointments.php">appointmentAPI</option>
-            <option id="https://inmotion-app.iplatformsolutions.com/api/getFloorManagerDetails.php">floorAPI</option>
+            <option id="https://inmotion-app.iplatformsolutions.com/api/getAppointments.php">Appointment API</option>
+            <option id="https://inmotion-app.iplatformsolutions.com/api/getFloorManagerDetails.php">Floor Manager API</option>
         </select>
         <br/><br/>
         <form method="post" id="appointment_form" style="display:none">
@@ -50,13 +50,13 @@
             $("#appointment_form")[0].reset();
             var getValue=$(this).val(); 
             var getId = $(this).children(":selected").attr("id"); 
-            if(getValue == "appointmentAPI"){
+            if(getValue == "Appointment API"){
                 $("#appointment_form").show();
                 $("#appointments").show();
                 $("#email").show();
                 $("#floormanager").hide();
                 $("#booth").hide();
-            }else if(getValue == "floorAPI"){
+            }else{
                 $("#appointment_form").show();
                 $("#floormanager").show();
                 $("#appointments").hide();
@@ -91,7 +91,7 @@
 
             var html = '';
             var getValue=$("#apiSelection").val(); 
-            if(getValue == "appointmentAPI"){
+            if(getValue == "Appointment API"){
                 $.ajax(settings).done(function (response) {
                     $.each(response, function (index, value) {
                         var eventId = value.eventId;
