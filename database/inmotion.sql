@@ -154,6 +154,7 @@ ALTER TABLE `company` CHANGE `company_contact_last_name` `company_contact_last_n
 ALTER TABLE `company` CHANGE `company_email` `company_email` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `event` CHANGE `event_id` `event_id` INT(50) NOT NULL;
 ALTER TABLE `company` CHANGE `co_id` `co_id` INT(50) NOT NULL;
+ALTER TABLE `event` CHANGE `event_name` `event_name` VARCHAR(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 
 DROP TABLE IF EXISTS `uploads`;
