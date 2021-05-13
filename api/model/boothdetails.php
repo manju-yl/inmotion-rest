@@ -23,7 +23,7 @@ class BoothDetails {
     function getBoothDetails($data) {
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $company_id = filter_var($data->company_id, FILTER_SANITIZE_NUMBER_INT);
-        $booth = filter_var($data->booth, FILTER_SANITIZE_NUMBER_INT);
+        $booth = filter_var($data->booth, FILTER_SANITIZE_STRING);
         $addCondition = "";
         if ($company_id != "") {
             $addCondition = "and bd.company_id = ?";
