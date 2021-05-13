@@ -76,7 +76,7 @@ class BoothDetails {
     }
 
     //Add OR Update Booth details
-    function addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_first_name, $company_contact_last_name, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id) {
+    function addOrUpdateBoothDetails($event_id, $company_id, $booth, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $company_name, $company_contact_first_name, $company_contact_last_name, $company_email, $user_id) {
         if($event_id != "" && $company_id != "" && $booth != ""){
             $addCondition = "";
 	    // select booths based on event_id and company_id and booth
@@ -122,11 +122,11 @@ class BoothDetails {
                 // prepare query statement
                 $stmt = $this->conn->prepare($updatequery);
 
-                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 $stmt->bindParam(':company_name', $company_name);
                 $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
                 $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
                 $stmt->bindParam(':company_email', $company_email);
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 // execute query
                 $stmt->execute();
 
@@ -141,7 +141,6 @@ class BoothDetails {
                 // prepare query statement
                 $stmt = $this->conn->prepare($updateBooth); 
 
-                $stmt->bindParam(':booth', $booth);
                 $stmt->bindParam(':hall', $hall);
                 $stmt->bindParam(':fm_name', $fm_name);
                 $stmt->bindParam(':fm_phone', $fm_phone);
@@ -149,6 +148,7 @@ class BoothDetails {
                 $stmt->bindParam(':ges_ese', $ges_ese);
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':booth', $booth);
 
             }else{
 
@@ -193,12 +193,12 @@ class BoothDetails {
                         // prepare query statement
                         $stmt = $this->conn->prepare($updatequery);
 
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                         $stmt->bindParam(':company_name', $company_name);
                         $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
                         $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
                         $stmt->bindParam(':company_email', $company_email);
+                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':booth', $booth);
                         $stmt->bindParam(':hall', $hall);
                         $stmt->bindParam(':fm_name', $fm_name);
@@ -228,12 +228,12 @@ class BoothDetails {
                         // prepare query statement
                         $stmt = $this->conn->prepare($query); 
 
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                         $stmt->bindParam(':company_name', $company_name);
                         $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
                         $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
                         $stmt->bindParam(':company_email', $company_email);
+                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':booth', $booth);
                         $stmt->bindParam(':hall', $hall);
                         $stmt->bindParam(':fm_name', $fm_name);

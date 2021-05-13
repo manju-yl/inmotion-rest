@@ -167,10 +167,10 @@ class Appointment {
                         $stmt = $this->conn->prepare($updatequery);
 
                         $stmt->bindParam(':company_name', $company_name);
+                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':day', $day);
                         $stmt->bindParam(':time', $time);
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
 
 
                     }else{
@@ -233,7 +233,6 @@ class Appointment {
                         $stmt = $this->conn->prepare($insertquery); 
                         $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
                         $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', $company_name);
                         $stmt->bindParam(':day', $day);
                         $stmt->bindParam(':time', $time);
                     }else{

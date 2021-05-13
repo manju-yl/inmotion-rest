@@ -97,6 +97,7 @@
                         var eventId = value.eventId;
                         var companyId = value.companyId;
                         html += '<tr>' +
+                                '<td>' + (index+1) + '</td>' +
                                 '<td>' + value.eventId + '</td>' +
                                 '<td>' + value.eventName + '</td>' +
                                 '<td>' + value.companyId + '</td>' +
@@ -118,6 +119,7 @@
                     var eventId = value.eventId;
                     var companyId = value.companyId;
                     html += '<tr>' +
+                            '<td>' + (index+1) + '</td>' +
                             '<td>' + value.eventId + '</td>' +
                             '<td>' + value.eventName + '</td>' +
                             '<td>' + value.companyId + '</td>' +
@@ -142,6 +144,7 @@
             <table class="table table-striped table-bordered " id="appointments"  style="display:none">
                 <thead>
                 <tr>
+                    <th>ID</th> 
                     <th>Event ID</th> 
                     <th>Event Name</th> 
                     <th>Company ID</th>
@@ -157,6 +160,7 @@
             <table class="table table-striped table-bordered " id="floormanager" style="display:none">
                 <thead>
                 <tr>
+		    <th>ID</th> 
                     <th>Event ID</th> 
                     <th>Event Name</th> 
                     <th>Company ID</th>

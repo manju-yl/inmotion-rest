@@ -153,6 +153,7 @@ $("#import_form").on('submit',function(e){
     beforeSend:function(){
      $('#importappintmentSubmit').attr('disabled', 'disabled');
      $('#resetbtn').attr('disabled', 'disabled');
+     $('#file').attr('disabled', 'disabled');
      $("#floormanager").prop("disabled", true);
      $('#importappintmentSubmit').val('Importing...');
    },
@@ -197,6 +198,7 @@ $("#import_form").on('submit',function(e){
     $("#import_form")[0].reset();
     $('#resignappintment').prop("checked", true);
     $('#resetbtn').attr('disabled', false);
+    $('#file').attr('disabled', false);
   }
 });
 
@@ -219,6 +221,7 @@ $("#import_floor_form").on('submit',function(e){
     beforeSend:function(){
      $('#importFloormanagerSubmit').attr('disabled', 'disabled');
      $('#boothresetbtn').attr('disabled', 'disabled');
+     $('#myfile').attr('disabled', 'disabled');
      $("#resignappintment").prop("disabled", true);
      $('#importFloormanagerSubmit').val('Importing...');
    },
@@ -267,6 +270,7 @@ $("#import_floor_form").on('submit',function(e){
     $("#import_floor_form")[0].reset();
     $('#floormanager').prop("checked", true);
     $('#boothresetbtn').attr('disabled', false);
+    $('#myfile').attr('disabled', false);
   }
 });
 

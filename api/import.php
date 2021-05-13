@@ -84,6 +84,7 @@ if (isset($_POST["resignappintments"])) {
                     $SheetDataKey[trim($value)] = $key;
                 } 
             }
+            break;
         } 
         $dataDiff = array_diff_key($makeArray, $SheetDataKey); 
         if (empty($dataDiff)) {
@@ -237,7 +238,7 @@ if (isset($_POST["resignappintments"])) {
             echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
-           $message = '<div class="errorMessage errormsgWrapperDi">Incorrect file. Please upload the correct re-sign appointment file.</div>';
+           $message = '<div class="errorMessage errormsgWrapperDi">Incorrect column names. Please upload the correct re-sign appointment file.</div>';
         echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
@@ -319,7 +320,8 @@ if (isset($_POST["floormanager"])) {
                     $sheetDataKey[trim($value)] = $key;
                 } 
             }
-        }  
+            break;
+        } 
         $dataDiff = array_diff_key($makeArray, $sheetDataKey); 
         if (empty($dataDiff)) {
             $flag = 1;
@@ -335,8 +337,8 @@ if (isset($_POST["floormanager"])) {
             $eventid = $sheetDataKey['EventId'];
             $exhibiting_as = $sheetDataKey['ExhibitingAs'];
             $booth_number = $sheetDataKey['BoothNumber'];
-            $company_contact_first_name = $sheetDataKey['CompanyContactFirstName'];
-            $company_contact_last_name = $sheetDataKey['CompanyContactLastName'];
+            $first_name = $sheetDataKey['CompanyContactFirstName'];
+            $last_name = $sheetDataKey['CompanyContactLastName'];
             $company_email = $sheetDataKey['CompanyEmail'];
             $hall = $sheetDataKey['Hall'];
             $floor_manager = $sheetDataKey['FloorManager'];
@@ -348,8 +350,8 @@ if (isset($_POST["floormanager"])) {
             $event_id = filter_var(trim($spreadSheetAry[$i][$eventid]), FILTER_SANITIZE_NUMBER_INT);
             $company_name = trim($spreadSheetAry[$i][$exhibiting_as]);
             $booth = trim($spreadSheetAry[$i][$booth_number]);
-            $company_contact_firstname = trim($spreadSheetAry[$i][$company_contact_first_name]);
-            $company_contact_lastname = trim($spreadSheetAry[$i][$company_contact_last_name]);
+            $first_name = trim($spreadSheetAry[$i][$first_name]);
+            $last_name = trim($spreadSheetAry[$i][$last_name]); 
             $company_email = trim($spreadSheetAry[$i][$company_email]);
             $hall = trim($spreadSheetAry[$i][$hall]);
             $fm_name = trim($spreadSheetAry[$i][$floor_manager]);
@@ -357,10 +359,9 @@ if (isset($_POST["floormanager"])) {
             $ges_ese = trim($spreadSheetAry[$i][$ges_ese]);
             $fm_text_number = trim($spreadSheetAry[$i][$text_number]);
        
-       
             //get booth object
             $boothdetails = new boothdetails($conn);  
-            $stmt = $boothdetails->addOrUpdateBoothDetails($event_id, $company_id, $company_name, $booth, $company_contact_firstname, $company_contact_lastname, $company_email, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $user_id);
+            $stmt = $boothdetails->addOrUpdateBoothDetails($event_id, $company_id, $booth, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $company_name, $first_name, $last_name, $company_email, $user_id);
             
             if ($stmt->execute()) {//$stmt->debugDumpParams();
                 //$stmt = $boothdetails->getEmptyFloorOnEventDetails($event_id, $company_id);
@@ -368,22 +369,16 @@ if (isset($_POST["floormanager"])) {
                                     event_id
                                 FROM
                                     booth_details
-                                WHERE ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
-                if ($event_id != "") {
-                    $addCondition = "and event_id = ?";
-                }
-                if ($company_id != "") {
-                    $addCondition .= "and company_id = ?";
-                }
+                                WHERE ((hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
+                $addCondition = "and event_id = ?";
+                $addCondition .= "and company_id = ?";
                 $query .= $addCondition;
                 $query .= " order by created_date desc";
 
                 // prepare query statement
                 $stmt = $conn->prepare($query);
                 $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-                if ($company_id != "") {
-                    $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
-                }
+                $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
                 // execute query
                 $stmt->execute(); 
 
@@ -401,8 +396,6 @@ if (isset($_POST["floormanager"])) {
 
                 array_push($eventIdArray,$event_id);
                 
-                //$message = '<div class="alert alert-success">Floor manager file upload is complete.</div>';
-                
             } else {
                 $missedRowCount++;
             }
@@ -413,17 +406,14 @@ if (isset($_POST["floormanager"])) {
         $missedFloorRecordCount = count($floorArr); 
         if($missedFloorRecordCount > 0){
             $missedRecordUniqueArray = array_unique($floorArr, SORT_REGULAR);
-            //$missedRecordCount = count($missedRecordUniqueArray);
             $tempArr = array_unique(array_column($floorArr, 'eventId')); 
-            //$emptyUniqueFloor = count($tempArr);
             $eventCount = count($tempArr);
-            //$message = '<div class="alert alert-success">Floor manager file upload is complete.</div>';
             foreach($missedRecordUniqueArray as $key => $value){
                     $query = "SELECT 
                                     event_id
                                 FROM
                                     booth_details
-                                WHERE ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
+                                WHERE ((hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
                 $addCondition = "and event_id = ?";
                 $addCondition .= "and company_id = ?";
                 $query .= $addCondition;
@@ -495,7 +485,7 @@ if (isset($_POST["floormanager"])) {
             echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
-           $message = '<div class="errorMessage errormsgWrapperDi">Incorrect file. Please upload the correct floor manager file.</div>';
+           $message = '<div class="errorMessage errormsgWrapperDi">Incorrect column names. Please upload the correct floor manager file.</div>';
         echo json_encode(array('status' => 401, 'message' => $message)); exit; 
         }
         }else{
