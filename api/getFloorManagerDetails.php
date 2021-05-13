@@ -78,6 +78,7 @@ if ($jwt) {
                     "booth" => $booth,
                     "hall" => $hall,
                     "fm_name" => $fm_name,
+                    "fm_phone" => $fm_phone,
                     "fm_text_number" => $fm_text_number,
                     "ges_ese" => $ges_ese
                 );

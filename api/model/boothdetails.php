@@ -41,7 +41,8 @@ class BoothDetails {
         bd.fm_text_number,
         c.company_name,
         e.event_name,
-        bd.ges_ese
+        bd.ges_ese,
+        bd.fm_phone
         FROM
         " . $this->table_name . " bd
         LEFT JOIN

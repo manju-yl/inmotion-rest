@@ -77,14 +77,14 @@
             });
             var url = $("#apiSelection").children(":selected").attr("id"); 
             var proxy = 'https://cors-anywhere.herokuapp.com/';
-            var finalurl = proxy+url;
+            var finalurl = url;
             var settings = {
                 "url": finalurl,
                 "method": "POST",
                 "timeout": 0,
                 "headers": {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjA3OTcwNTcsImV4cCI6MTYyMDg4MzQ1NywiZGF0YSI6eyJpZCI6IjMiLCJmaXJzdG5hbWUiOiJzdWthbnlhIiwibGFzdG5hbWUiOiJzaGV0dHkiLCJlbWFpbCI6InN1a2FueWEuc0BpbXBlbHN5cy5jb20ifX0.FKrzLZOAA9g-brM-kdTdEf1Xv_DAF-svsHHLczZvpB0"
+                    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2MjA4OTg5NDksImV4cCI6MTYyMDk4NTM0OSwiZGF0YSI6eyJpZCI6IjEiLCJmaXJzdG5hbWUiOiJpbm1vdGlvbl9maXJzdE5hbWUiLCJsYXN0bmFtZSI6ImlubW90aW9uX2xhc3ROYW1lIiwiZW1haWwiOiJpbm1vdGlvbkBnbWFpbC5jb20ifX0.aHVnhAv9TQkUt3egjc1Yfv7JL_FTwaEHZ6W0AHHh1T4"
                 },
                 "data":data
             };
