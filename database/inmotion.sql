@@ -156,4 +156,14 @@ ALTER TABLE `event` CHANGE `event_id` `event_id` INT(50) NOT NULL;
 ALTER TABLE `company` CHANGE `co_id` `co_id` INT(50) NOT NULL;
 
 
-
+DROP TABLE IF EXISTS `uploads`;
+CREATE TABLE `uploads` (
+  `id` int(4) NOT NULL,
+  `filename` varchar(200) DEFAULT NULL,
+  `type` varchar(20) DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+ALTER TABLE `uploads`
+  ADD PRIMARY KEY (`id`);
+ALTER TABLE `uploads`
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
