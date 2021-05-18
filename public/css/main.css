@@ -156,3 +156,43 @@ select#eventselection, select#flooreventselection {
 .wrap-login100 a:hover {
     color: #06f !important;
 }
+
+.loaderContainer {
+    width: 23%;
+    height: auto;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    -webkit-transition: all .4s;
+    -o-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+    text-align: center;
+    position: absolute;
+    margin: 0px auto;
+    padding: 10px;
+}
+.loader {
+    border: 5px solid #eaeaea;
+    border-radius: 50%;
+    border-top: 5px solid #57b846;
+    width: 20px;
+    height: 20px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    margin: 0px auto;
+    display: inline-block;
+    vertical-align: middle;
+    justify-content: center;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

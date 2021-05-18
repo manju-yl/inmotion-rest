@@ -54,15 +54,17 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
         <div class="wrapper clearfix">
            <div id="message"></div>
            <div class="infoAppointmentMessage" style="display:none">
-                  <?php $csvFilename = 'sample.xlsx'; ?>
+                  <?php $appointmentSampleExcel = 'downloadfile/appointment.xlsx'; ?>
                   <ol>
-                      <li>EventId and COID are Mandatory. </li>
+                    <li>Please upload a excel file(<a href="<?php echo $appointmentSampleExcel; ?>">Sample</a>). </li>
+                    <li>EventId and COID are Mandatory. </li>
                   </ol>
             </div>
             <div class="infoBoothMessage" style="display:none">
-                  <?php $csvFilename = 'sample.xlsx'; ?>
+                  <?php $floorSampleExcel = 'downloadfile/floormanager.xlsx'; ?>
                   <ol>
-                      <li>EventId and  CoID and Booth Number are Mandatory. </li>
+                    <li>Please upload a excel file(<a href="<?php echo $floorSampleExcel; ?>">Sample</a>). </li>
+                    <li>EventId and  CoID and Booth Number are Mandatory. </li>
                   </ol>
             </div>
             <section>
@@ -72,7 +74,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                <div id='resignappintment_div'>
                <p><label>Choose Appointment Excel File</label> <input type="file"
                     name="file" id="file" class="txtbx" accept=".xls,.xlsx"></p>
-                <p><input type="submit" name="importappintmentSubmit" id="importappintmentSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
+                <p><span class="loaderContainer" style="display:none"><span class="loader" ></span></span><input type="submit" name="importappintmentSubmit" id="importappintmentSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
                   <button id="resetbtn" class="button button4" type="button" alt="Reset">Reset File</button></p>
                 </div>
                 </form>
@@ -93,7 +95,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 <div id='floormanager_div'>
                   <p><label class="formlabel">Choose Floor Manager Excel File</label> <input type="file"
                       name="myfile" id="myfile" class="txtbx"  accept=".xls,.xlsx"></p>
-                  <p><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
+                  <p><span class="loaderContainer" style="display:none"><span class="loader" ></span></span><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
                   <button id="boothresetbtn" class="button button4" type="button" alt="Reset">Reset File</button></p></div>
               </form>
               <div class="btn" id="floorManagerDivDisp" style="display:none">
