@@ -56,14 +56,14 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
            <div class="infoAppointmentMessage" style="display:none">
                   <?php $appointmentSampleExcel = 'downloadfile/appointment.xlsx'; ?>
                   <ol>
-                    <li>Please upload a excel file(<a href="<?php echo $appointmentSampleExcel; ?>">Sample</a>). </li>
+                    <li>Please upload a Re-sign appointment excel file (<a href="<?php echo $appointmentSampleExcel; ?>">Sample</a>). </li>
                     <li>EventId and COID are Mandatory. </li>
                   </ol>
             </div>
             <div class="infoBoothMessage" style="display:none">
                   <?php $floorSampleExcel = 'downloadfile/floormanager.xlsx'; ?>
                   <ol>
-                    <li>Please upload a excel file(<a href="<?php echo $floorSampleExcel; ?>">Sample</a>). </li>
+                    <li>Please upload a Floor Manager excel file (<a href="<?php echo $floorSampleExcel; ?>">Sample</a>). </li>
                     <li>EventId and  CoID and Booth Number are Mandatory. </li>
                   </ol>
             </div>
