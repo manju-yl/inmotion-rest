@@ -109,6 +109,8 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
               </div>
             </section>
     </div>  
+    
+    <button onclick="window.open('deleteAppointmentFloorEvents.php', '_blank');"  class="button button4">  Delete Events</button>
 </div>
 <?php
 require './api/common/footer.php';
