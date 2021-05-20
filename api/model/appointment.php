@@ -375,6 +375,40 @@ class Appointment {
             $stmt->execute(); 
         }
     }
+    
+    function deleteEventData($data) {
+        $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
+        $query = "DELETE
+        FROM
+        " . $this->table_name . "
+        WHERE
+        event_id = ? ";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        // execute query
+        return $stmt->execute();
+
+    }
+    
+    function checkIfEventExists($data) {
+        $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
+        $query = "SELECT *
+        FROM
+        " . $this->table_name . "
+        WHERE
+        event_id = ? ";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+        // execute query
+        $stmt->execute();
+        // execute query
+        return $stmt;
+    }
+
 
 
 
