@@ -114,14 +114,14 @@ font-family: Montserrat-Bold;
     </div>  
 </div>
 <script type="text/javascript">
-function Confirm(title, msg, $true, $false) { 
+function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) { 
         var $content =  "<div class='dialog-ovelay'>" +
                         "<div class='dialog'><header>" +
                          "<i class='fa fa-close'></i>" +
                          " <h3> " + title + " </h3> " +
                      "</header>" +
                      "<div class='dialog-msg'>" +
-                         " <p> " + msg + " </p> " +
+                         " <p> " + msg + getSelectedOption + " having EventId: "+ selectedEventId + "</p> " +
                      "</div>" +
                      "<footer>" +
                          "<div class='controls'>" +
@@ -164,7 +164,9 @@ function Confirm(title, msg, $true, $false) {
       
 }
 $('.delete').click(function () {
-        Confirm('Confirm', 'Are you sure you want to delete the event?', 'Yes', 'Cancel'); /*change*/
+        var selectedEventId = $( "#eventdeletion option:selected" ).text();
+        var getSelectedOption = $("#appointflooroption option:selected").text(); 
+        Confirm('Confirm', 'Are you sure you want to delete the ', 'Yes', 'Cancel', selectedEventId, getSelectedOption);
     });
 </script>
 
