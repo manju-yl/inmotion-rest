@@ -5,7 +5,7 @@ if(!isset($_COOKIE['token'])) {
 }
 
 require "./vendor/autoload.php";
-include_once './api//config/database.php';
+include_once './api/config/database.php';
 require './api/common/header.php';
 require "./start.php";
 
@@ -77,7 +77,7 @@ font-family: Montserrat-Bold;
     <?php 
           $query = "SELECT * FROM event";
           $stmt = $conn->prepare($query); 
-          $stmt->execute();//$stmt->debugDumpParams();
+          $stmt->execute();
           $result = $stmt->rowCount(); 
 
           if ($result > 0) {?>
@@ -109,7 +109,9 @@ font-family: Montserrat-Bold;
    <div class="col-md-4"></div>
     </div>
 
-    <?php }?>
+    <?php }else{
+      echo "<div class='errorMessage errormsgWrapperDi'>There are no events to display.</div>";
+    }?>
 
     </div>  
 </div>
