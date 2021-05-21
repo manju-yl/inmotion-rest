@@ -38,12 +38,10 @@ if ($data->event_id != "" || $data->event_id != null ) {
     }
 }
 //get authorization header
-$authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_STRING);
 
-$arr = explode(" ", $authHeader);
 
-$jwt = $arr[1];
 //check if jwt token exists
+$jwt = $_COOKIE['token'];
 if ($jwt) {
 
     try {
