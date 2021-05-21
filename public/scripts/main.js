@@ -21,6 +21,19 @@ $( document ).ready(function() {
       error: function(data) {
       }
     });
+    $.ajax({
+      url: 'api/getEventSelectOption.php',
+      success: function(data) {
+        if(data=="false"){
+            $(".deleteBtn").hide();
+          }else{
+            $(".deleteBtn").show();
+          }
+          
+      },
+      error: function(data) {
+      }
+    });
     $('.infoAppointmentMessage').show();
     $('.infoBoothMessage').hide();
     $('#message').html('');
@@ -39,6 +52,19 @@ $( document ).ready(function() {
           $("#floorManagerDivDisp").show();
           $("#dispFloorEventLists").html(data);
         }
+      },
+      error: function(data) {
+      }
+    });
+    $.ajax({
+      url: 'api/getEventSelectOption.php',
+      success: function(data) {
+        if(data=="false"){
+            $(".deleteBtn").hide();
+          }else{
+            $(".deleteBtn").show();
+          }
+          
       },
       error: function(data) {
       }
@@ -62,6 +88,19 @@ $('#resignappintment').click(function(){
         $("#appointmentDivDisp").show();
         $("#dispEventLists").html(data);
       }
+    },
+    error: function(data) {
+    }
+  });
+  $.ajax({
+    url: 'api/getEventSelectOption.php',
+    success: function(data) {
+      if(data=="false"){
+          $(".deleteBtn").hide();
+        }else{
+          $(".deleteBtn").show();
+        }
+        
     },
     error: function(data) {
     }
@@ -91,6 +130,19 @@ $('#floormanager').click(function(){
     error: function(data) {
     }
   }); 
+  $.ajax({
+    url: 'api/getEventSelectOption.php',
+    success: function(data) {
+      if(data=="false"){
+          $(".deleteBtn").hide();
+        }else{
+          $(".deleteBtn").show();
+        }
+        
+    },
+    error: function(data) {
+    }
+  });
   $('.infoBoothMessage').show();
   $('.infoAppointmentMessage').hide();
   $('#message').html('');
@@ -193,6 +245,20 @@ $("#import_form").on('submit',function(e){
         }
       }
     });
+
+    $.ajax({
+      url: 'api/getEventSelectOption.php',
+      success: function(data) {
+        if(data=="false"){
+            $(".deleteBtn").hide();
+          }else{
+            $(".deleteBtn").show();
+          }
+          
+      },
+      error: function(data) {
+      }
+    });
     $('#importappintmentSubmit').attr('disabled', false);
     $('.loaderContainer').hide();
     $('#importappintmentSubmit').val('Import');
@@ -265,7 +331,19 @@ $("#import_floor_form").on('submit',function(e){
       }
     });
 
-
+    $.ajax({
+      url: 'api/getEventSelectOption.php',
+      success: function(data) {
+        if(data=="false"){
+            $(".deleteBtn").hide();
+          }else{
+            $(".deleteBtn").show();
+          }
+          
+      },
+      error: function(data) {
+      }
+    });
     
     $('#importFloormanagerSubmit').attr('disabled', false);
     $('.loaderContainer').hide();

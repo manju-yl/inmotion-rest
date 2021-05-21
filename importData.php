@@ -110,7 +110,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
             </section>
     </div>  
     
-    <button onclick="window.open('deleteAppointmentFloorEvents.php', '_blank');"  class="button button4">  Delete Events</button>
+    <button onclick="window.open('deleteAppointmentFloorEvents.php', '_blank');"  class="button button4 deleteBtn" style="display:none;">  Delete Events</button>
 </div>
 <?php
 require './api/common/footer.php';
