@@ -409,9 +409,20 @@ class Appointment {
         return $stmt;
     }
 
-    //get all event details
+    //get all floor and appointment event details
     function getAllEventDetails() {
-        $query = "SELECT * FROM event";
+        $query = "SELECT e.event_id
+                    FROM event e
+                    LEFT OUTER JOIN appointment p 
+                     ON p.event_id = e.event_id
+                    LEFT OUTER JOIN booth_details s 
+                      ON s.event_id=e.event_id 
+                      where (
+                        p.event_id IS NOT NULL
+                        OR
+                        s.event_id IS NOT NULL
+                      )
+                    GROUP BY e.event_id";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);

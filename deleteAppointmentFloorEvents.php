@@ -33,29 +33,6 @@ select {
     width: 100%;
     padding: .5em 1em;
 }
-button.delete {
-font-family: Montserrat-Bold;
-    font-size: 15px;
-    line-height: 1.5;
-    color: #fff;
-    text-transform: uppercase;
-    width: 50%;
-    height: 38px;
-    border-radius: 25px;
-    background: #57b846;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: inline-block;
-    justify-content: center;
-    align-items: center;
-    padding: 0 25px;
-    -webkit-transition: all .4s;
-    -o-transition: all .4s;
-    -moz-transition: all .4s;
-    transition: all .4s;
-}
 
 </style>
 
@@ -63,8 +40,9 @@ font-family: Montserrat-Bold;
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-<span class="login100-form-title">Delete Appointment and Floor Manager Data</span>
 <div class="container">
+  <span><a href="importData.php">Back</a></span>
+  <span class="login100-form-title">Delete Appointment and Floor Manager Data</span>
   <div id="message"></div>
     <div class="wrapper clearfix">
     <div class="row eventDeletionDiv">
@@ -80,7 +58,8 @@ font-family: Montserrat-Bold;
             </select>
     </div>
     <div class="form-group">
-    <button class="delete button button4">Delete</button>
+    <button class="delete button button4" title="Delete">Delete</button>
+    <button class="cancel button button4" onclick="window.location.href = 'importData.php'" title="Cancel">Cancel</button>
     </div>
     </div>
    <div class="col-md-4"></div>
@@ -92,7 +71,7 @@ $.ajax({
     url: 'api/getEventSelectOption.php',
     success: function(data) {
       if(data=="false"){
-          $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to delete.</div>');
+          $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
           $(".eventDeletionDiv").hide();
         }else{
           $("#dispAllEventIds").html(data);
@@ -110,6 +89,7 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
                      "</header>" +
                      "<div class='dialog-msg'>" +
                          " <p> " + msg + getSelectedOption + " having EventId: "+ selectedEventId + "</p> " +
+                         " <p> Once deleted all data will be permanenetly removed. </p> " +
                      "</div>" +
                      "<footer>" +
                          "<div class='controls'>" +
@@ -135,6 +115,20 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
                 data: JSON.stringify({ "event_id":selectedEventId,"deleteFlag":getSelectedOption }),
                 success: function(response){
                   $('#message').html('<div class="alert alert-success">'+response.message+'</div>');
+                  $.ajax({
+                    url: 'api/getEventSelectOption.php',
+                    success: function(data) {
+                      if(data=="false"){
+                          $('#message').append('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
+                          $(".eventDeletionDiv").hide();
+                        }else{
+                          $("#dispAllEventIds").html(data);
+                        }
+                        
+                    },
+                    error: function(data) {
+                    }
+                  });
                 },
                 error: function(data, result) {
                   $('#message').html('<div class="errorMessage errormsgWrapperDi">No Data found.</div>');

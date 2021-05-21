@@ -60,6 +60,8 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                     <li>EventId and COID are Mandatory. </li>
                   </ol>
             </div>
+            
+            <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i>Clear Event Data</a></p>
             <div class="infoBoothMessage" style="display:none">
                   <?php $floorSampleExcel = 'downloadfile/floormanager.xlsx'; ?>
                   <ol>
@@ -108,9 +110,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 </form>
               </div>
             </section>
-    </div>  
-    
-    <button onclick="window.open('deleteAppointmentFloorEvents.php', '_blank');"  class="button button4 deleteBtn" style="display:none;">  Delete Events</button>
+    </div>
 </div>
 <?php
 require './api/common/footer.php';

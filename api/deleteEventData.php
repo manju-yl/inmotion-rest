@@ -37,16 +37,11 @@ if ($data->event_id != "" || $data->event_id != null ) {
     exit;
     }
 }
-//get authorization header
-
 
 //check if jwt token exists
-$jwt = $_COOKIE['token'];
-if ($jwt) {
+if(isset($_COOKIE['token'])) {
 
     try {
-        //decode the jwt token
-        $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
         
         if ($data->deleteFlag == "appointment") {
             //get appointment object
