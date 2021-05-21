@@ -409,6 +409,18 @@ class Appointment {
         return $stmt;
     }
 
+    //get all event details
+    function getAllEventDetails() {
+        $query = "SELECT * FROM event";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
+    }
+
 
 
 

@@ -4,14 +4,7 @@ if(!isset($_COOKIE['token'])) {
     exit();
 }
 
-require "./vendor/autoload.php";
-include_once './api/config/database.php';
 require './api/common/header.php';
-require "./start.php";
-
-$databaseService = new DatabaseService(); 
-$conn = $databaseService->getConnection();
- 
 ?>
 
 <title>InMotion APP - Delete Appointment and Floor Form</title>
@@ -74,48 +67,41 @@ font-family: Montserrat-Bold;
 <div class="container">
   <div id="message"></div>
     <div class="wrapper clearfix">
-    <?php 
-          $query = "SELECT * FROM event";
-          $stmt = $conn->prepare($query); 
-          $stmt->execute();
-          $result = $stmt->rowCount(); 
-
-          if ($result > 0) {?>
-
-    <div class="row">
+    <div class="row eventDeletionDiv">
     <div class="col-md-4"></div>
     <div class="col-md-4 text-center form-container">
     <div class="form-group">
-    <?php
-            echo "<select id='eventdeletion' name='eventdeletion'>";
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    extract($row);
-                    echo "<option>" . $event_id . "</option>";
-                }
-            echo "</select>";?>
+    <div id="dispAllEventIds"></div>
     </div>
-    
     <div class="form-group">
     <select id='appointflooroption' name='appointflooroption'>
                 <option id="appointment">Re-Sign Appointment</option>
                 <option id="floorManager">Floor Manager</option>
             </select>
     </div>
-   
     <div class="form-group">
     <button class="delete button button4">Delete</button>
     </div>
     </div>
    <div class="col-md-4"></div>
     </div>
-
-    <?php }else{
-      echo "<div class='errorMessage errormsgWrapperDi'>There are no events to display.</div>";
-    }?>
-
     </div>  
 </div>
 <script type="text/javascript">
+$.ajax({
+    url: 'api/getEventSelectOption.php',
+    success: function(data) {
+      if(data=="false"){
+          $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to delete.</div>');
+          $(".eventDeletionDiv").hide();
+        }else{
+          $("#dispAllEventIds").html(data);
+        }
+        
+    },
+    error: function(data) {
+    }
+  });
 function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) { 
         var $content =  "<div class='dialog-ovelay'>" +
                         "<div class='dialog'><header>" +
