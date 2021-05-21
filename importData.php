@@ -61,7 +61,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   </ol>
             </div>
             
-            <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i>Clear Event Data</a></p>
+            <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i>Clear Event Data</a></p>
             <div class="infoBoothMessage" style="display:none">
                   <?php $floorSampleExcel = 'downloadfile/floormanager.xlsx'; ?>
                   <ol>
@@ -77,7 +77,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                <p><label>Choose Appointment Excel File</label> <input type="file"
                     name="file" id="file" class="txtbx" accept=".xls,.xlsx"></p>
                 <p><span class="loaderContainer" style="display:none"><span class="loader" ></span></span><input type="submit" name="importappintmentSubmit" id="importappintmentSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
-                  <button id="resetbtn" class="button button4" type="button" alt="Reset">Reset File</button></p>
+                  <button id="resetbtn" class="button button4" type="button" alt="Reset" title="Reset File">Reset File</button></p>
                 </div>
                 </form>
                 <div class="btn" id="appointmentDivDisp" style="display:none;">
@@ -85,7 +85,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 <form action="api/downloadFile.php" method="post">
                     <div id="dispEventLists"></div>
                       <button type="submit" id="btnExport" name='export'
-                          value="Export to Excel" class="button button4">Export
+                          value="Export to Excel" class="button button4" title="Export to Excel">Export
                                 to Excel</button>
                 </form>
                 </div>
@@ -98,14 +98,14 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <p><label class="formlabel">Choose Floor Manager Excel File</label> <input type="file"
                       name="myfile" id="myfile" class="txtbx"  accept=".xls,.xlsx"></p>
                   <p><span class="loaderContainer" style="display:none"><span class="loader" ></span></span><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
-                  <button id="boothresetbtn" class="button button4" type="button" alt="Reset">Reset File</button></p></div>
+                  <button id="boothresetbtn" class="button button4" type="button" alt="Reset" title="Reset File">Reset File</button></p></div>
               </form>
               <div class="btn" id="floorManagerDivDisp" style="display:none">
               <label>Fetch missing records for Event Id:</label>
               <form action="api/downloadFile.php" method="post">
                   <div id="dispFloorEventLists"></div>
                     <button type="submit" id="btnExport" name='exportEmptyFloorDetails'
-                        value="Export to Excel" class="button button4">Export
+                        value="Export to Excel" class="button button4" title="Export to Excel">Export
                               to Excel</button>
                 </form>
               </div>
