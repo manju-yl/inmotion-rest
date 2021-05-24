@@ -122,11 +122,16 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
                   $('#message').html('<div class="alert alert-success">'+response.message+'</div>');
                   $.ajax({
                     url: 'api/getEventSelectOption.php',
+                    cache:false,
+                    beforeSend:function(){
+                      $(".eventDeletionDiv").hide();
+                    },
                     success: function(data) {
                       if(data=="false"){
                           $('#message').append('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
                           $(".eventDeletionDiv").hide();
                         }else{
+                          $(".eventDeletionDiv").show();
                           $("#dispAllEventIds").html(data);
                         }
                         
