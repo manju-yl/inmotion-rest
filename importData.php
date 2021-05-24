@@ -53,6 +53,8 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 <div class="container">
         <div class="wrapper clearfix">
            <div id="message"></div>
+           <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
+           <p></p>
            <div class="infoAppointmentMessage" style="display:none">
                   <?php $appointmentSampleExcel = 'downloadfile/appointment.xlsx'; ?>
                   <ol>
@@ -61,7 +63,6 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   </ol>
             </div>
             
-            <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
             <div class="infoBoothMessage" style="display:none">
                   <?php $floorSampleExcel = 'downloadfile/floormanager.xlsx'; ?>
                   <ol>
