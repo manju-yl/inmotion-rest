@@ -69,11 +69,16 @@ select {
 <script type="text/javascript">
 $.ajax({
     url: 'api/getEventSelectOption.php',
+    cache:false,
+    beforeSend:function(){
+      $(".eventDeletionDiv").hide();
+    },
     success: function(data) {
       if(data=="false"){
           $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
           $(".eventDeletionDiv").hide();
         }else{
+          $(".eventDeletionDiv").show();
           $("#dispAllEventIds").html(data);
         }
         
@@ -88,7 +93,7 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
                          " <h3> " + title + " </h3> " +
                      "</header>" +
                      "<div class='dialog-msg'>" +
-                         " <p> " + msg + getSelectedOption + " having EventId: "+ selectedEventId + "</p> " +
+                         " <p> " + msg + getSelectedOption + " having EventId: "+ selectedEventId + "?</p> " +
                          " <p> Once deleted all data will be permanenetly removed. </p> " +
                      "</div>" +
                      "<footer>" +
