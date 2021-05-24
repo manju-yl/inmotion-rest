@@ -157,7 +157,11 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
 $('.delete').click(function () {
     var selectedEventId = $( "#eventdeletion option:selected" ).text();
     var getSelectedOption = $("#appointflooroption option:selected").text(); 
+    if(selectedEventId == "Select Event"){
+      $('#message').html('<div class="errorMessage errormsgWrapperDi">Please select the event.</div>');
+    }else{
     Confirm('Confirm', 'Are you sure you want to delete the ', 'Yes', 'Cancel', selectedEventId, getSelectedOption);
+    }
 });
 
 $(document).on('change','#eventdeletion',function(e){
