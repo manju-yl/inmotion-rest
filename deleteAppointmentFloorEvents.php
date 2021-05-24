@@ -52,10 +52,7 @@ select {
     <div id="dispAllEventIds"></div>
     </div>
     <div class="form-group">
-    <select id='appointflooroption' name='appointflooroption'>
-                <option id="appointment">Re-Sign Appointment</option>
-                <option id="floorManager">Floor Manager</option>
-            </select>
+    <div id="dispAllOptions"></div>
     </div>
     <div class="form-group">
     <button class="delete button button4" title="Delete">Delete</button>
@@ -68,98 +65,130 @@ select {
 </div>
 <script type="text/javascript">
 $.ajax({
-    url: 'api/getEventSelectOption.php',
-    cache:false,
-    beforeSend:function(){
-      $(".eventDeletionDiv").hide();
-    },
-    success: function(data) {
-      if(data=="false"){
-          $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
-          $(".eventDeletionDiv").hide();
-        }else{
-          $(".eventDeletionDiv").show();
-          $("#dispAllEventIds").html(data);
-        }
-        
-    },
-    error: function(data) {
+  url: 'api/getEventSelectOption.php',
+  cache:false,
+  beforeSend:function(){
+    $(".eventDeletionDiv").hide();
+  },
+  success: function(data) {
+    if(data=="false"){
+        $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
+        $(".eventDeletionDiv").hide();
+    }else{
+        $(".eventDeletionDiv").show();
+        $("#dispAllEventIds").html(data);
+        $("#dispAllOptions").hide();
     }
-  });
+  },
+  error: function(data) {
+  }
+});
 function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) { 
-        var $content =  "<div class='dialog-ovelay'>" +
-                        "<div class='dialog'><header>" +
-                         "<i class='fa fa-close'></i>" +
-                         " <h3> " + title + " </h3> " +
-                     "</header>" +
-                     "<div class='dialog-msg'>" +
-                         " <p> " + msg + getSelectedOption + " having EventId: "+ selectedEventId + "?</p> " +
-                         " <p> Once deleted all data will be permanenetly removed. </p> " +
-                     "</div>" +
-                     "<footer>" +
-                         "<div class='controls'>" +
-                             " <button class='button button-danger doAction'>" + $true + "</button> " +
-                             " <button class='button button-default cancelAction'>" + $false + "</button> " +
-                         "</div>" +
-                     "</footer>" +
-                  "</div>" +
-                "</div>";
-        $('body').prepend($content);
-        $('.doAction').click(function () {
-          $(this).parents('.dialog-ovelay').fadeOut(500, function () {
-            var selectedEventId = $( "#eventdeletion option:selected" ).text();
-            var getSelectedOption = $("#appointflooroption option:selected").attr("id"); 
+  var $content =  "<div class='dialog-ovelay'>" +
+                  "<div class='dialog'><header>" +
+                   "<i class='fa fa-close'></i>" +
+                   " <h3> " + title + " </h3> " +
+               "</header>" +
+               "<div class='dialog-msg'>" +
+                   " <p> " + msg + getSelectedOption + " having EventId: "+ selectedEventId + "?</p> " +
+                   " <p> Once deleted all data will be permanenetly removed. </p> " +
+               "</div>" +
+               "<footer>" +
+                   "<div class='controls'>" +
+                       " <button class='button button-danger doAction'>" + $true + "</button> " +
+                       " <button class='button button-default cancelAction'>" + $false + "</button> " +
+                   "</div>" +
+               "</footer>" +
+            "</div>" +
+          "</div>";
+  $('body').prepend($content);
+  $('.doAction').click(function () {
+    $(this).parents('.dialog-ovelay').fadeOut(500, function () {
+      var selectedEventId = $( "#eventdeletion option:selected" ).text();
+      var getSelectedOption = $("#appointflooroption option:selected").attr("id"); 
+      $.ajax({
+         type: "post",
+         dataType: "json",
+         headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json'
+         },
+          url: 'api/deleteEventData.php',
+          data: JSON.stringify({ "event_id":selectedEventId,"deleteFlag":getSelectedOption }),
+          success: function(response){
             $.ajax({
-               type: "post",
-               dataType: "json",
-               headers: {
-                 'Accept': 'application/json',
-                 'Content-Type': 'application/json'
-               },
-                url: 'api/deleteEventData.php',
-                data: JSON.stringify({ "event_id":selectedEventId,"deleteFlag":getSelectedOption }),
-                success: function(response){
-                  $('#message').html('<div class="alert alert-success">'+response.message+'</div>');
-                  $.ajax({
-                    url: 'api/getEventSelectOption.php',
-                    cache:false,
-                    beforeSend:function(){
-                      $(".eventDeletionDiv").hide();
-                    },
-                    success: function(data) {
-                      if(data=="false"){
-                          $('#message').append('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
-                          $(".eventDeletionDiv").hide();
-                        }else{
-                          $(".eventDeletionDiv").show();
-                          $("#dispAllEventIds").html(data);
-                        }
-                        
-                    },
-                    error: function(data) {
-                    }
-                  });
-                },
-                error: function(data, result) {
-                  $('#message').html('<div class="errorMessage errormsgWrapperDi">No Data found.</div>');
-                }
+              url: 'api/getEventSelectOption.php',
+              cache:false,
+              beforeSend:function(){
+                $(".eventDeletionDiv").hide();
+              },
+              success: function(data) {
+                if(data=="false"){
+                    $('#message').append('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
+                    $(".eventDeletionDiv").hide();
+                  }else{
+                    $(".eventDeletionDiv").show();
+                    $("#dispAllEventIds").html(data);
+                    $("#dispAllOptions").hide();
+                  }
+                  
+              },
+              error: function(data) {
+              }
             });
-            $(this).remove();
-                  });
 
-          });
-        $('.cancelAction, .fa-close').click(function () {
-                $(this).parents('.dialog-ovelay').fadeOut(500, function () {
-                  $(this).remove();
-                });
-              });
+            $('#message').html('<div class="alert alert-success">'+response.message+'</div>');
+          },
+          error: function(data, result) {
+            $('#message').html('<div class="errorMessage errormsgWrapperDi">No Data found.</div>');
+          }
+      });
+      $(this).remove();
+            });
+
+  });
+  $('.cancelAction, .fa-close').click(function () {
+    $(this).parents('.dialog-ovelay').fadeOut(500, function () {
+      $(this).remove();
+    });
+  });
       
 }
 $('.delete').click(function () {
-        var selectedEventId = $( "#eventdeletion option:selected" ).text();
-        var getSelectedOption = $("#appointflooroption option:selected").text(); 
-        Confirm('Confirm', 'Are you sure you want to delete the ', 'Yes', 'Cancel', selectedEventId, getSelectedOption);
+    var selectedEventId = $( "#eventdeletion option:selected" ).text();
+    var getSelectedOption = $("#appointflooroption option:selected").text(); 
+    Confirm('Confirm', 'Are you sure you want to delete the ', 'Yes', 'Cancel', selectedEventId, getSelectedOption);
+});
+
+$(document).on('change','#eventdeletion',function(e){
+    // Preventing form to submit
+    e.preventDefault();
+    var selectedEventId = $( "#eventdeletion option:selected" ).text();
+    var data = JSON.stringify({
+      event_id: selectedEventId
     });
+    var settings = {
+        "url": 'api/getEventFlagList.php',
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json",
+            'Accept': 'application/json'
+        },
+        "data":data
+    };
+
+    var html = '';
+    $.ajax(settings).done(function (response) {
+        $("#dispAllOptions").show();
+        html += '<select id="appointflooroption" name="appointflooroption">';
+        $.each(response, function (index, value) {
+            html += '<option id=' + value.option_key + '>' + value.option_value + '</option>';
+        });
+        $('#dispAllOptions').html(html);
+    })
+});
+
 </script>
 
 <?php

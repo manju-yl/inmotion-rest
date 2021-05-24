@@ -1,14 +1,10 @@
 <?php 
 require "../vendor/autoload.php";
 include_once './config/database.php';
-include_once './model/appointment.php';
 include_once './model/boothdetails.php';
 require "../start.php";
 
-use Phppot\DataSource;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
+//database connection
 $databaseService = new DatabaseService(); 
 $conn = $databaseService->getConnection();
 

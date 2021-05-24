@@ -61,7 +61,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   </ol>
             </div>
             
-            <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i>Clear Event Data</a></p>
+            <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
             <div class="infoBoothMessage" style="display:none">
                   <?php $floorSampleExcel = 'downloadfile/floormanager.xlsx'; ?>
                   <ol>

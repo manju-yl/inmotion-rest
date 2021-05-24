@@ -113,14 +113,15 @@ if (isset($_POST["resignappintments"])) {
             $appointment = new appointment($conn);  
             $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id); 
            
-            if ($stmt->execute()) {//$stmt->debugDumpParams();
+            // execute query
+            if ($stmt->execute()) {
                 $query = "SELECT 
                                         event_id
                                     FROM
                                         appointment
                                     WHERE ( (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))"; 
                 if ($event_id != "") {
-                        $addCondition = "and event_id = ?";
+                    $addCondition = "and event_id = ?";
                 }
                 if ($company_id != "") {
                     $addCondition .= "and company_id = ?";
@@ -132,8 +133,7 @@ if (isset($_POST["resignappintments"])) {
                 $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
                 // execute query
-                $stmt->execute(); //$stmt->debugDumpParams();
-                //$stmt = $appointment->getEmptyAppointmentOnEventDetails($event_id, $company_id);
+                $stmt->execute(); 
 
                 $emptyRecordCount = $stmt->rowCount(); 
                 //check if records > 0
@@ -162,7 +162,6 @@ if (isset($_POST["resignappintments"])) {
             $tempArr = array_unique(array_column($appointmentArr, 'eventId'));
             $uniqueAppointmentCount = count($missedRecordUniqueArray);
             $eventCount = count($tempArr);
-            //print_r($missedRecordUniqueArray);
                 foreach($missedRecordUniqueArray as $key => $value){
                     $query = "SELECT 
                                         event_id
@@ -178,7 +177,7 @@ if (isset($_POST["resignappintments"])) {
                     $stmt->bindParam(1, htmlspecialchars(strip_tags($value[eventId])));
                     $stmt->bindParam(2, htmlspecialchars(strip_tags($value[companyId])));
                     // execute query
-                    $stmt->execute(); //$stmt->debugDumpParams();
+                    $stmt->execute(); 
 
                     $emptyCount = $stmt->rowCount(); 
                     if($emptyCount > 0){
@@ -363,8 +362,7 @@ if (isset($_POST["floormanager"])) {
             $boothdetails = new boothdetails($conn);  
             $stmt = $boothdetails->addOrUpdateBoothDetails($event_id, $company_id, $booth, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $company_name, $first_name, $last_name, $company_email, $user_id);
             
-            if ($stmt->execute()) {//$stmt->debugDumpParams();
-                //$stmt = $boothdetails->getEmptyFloorOnEventDetails($event_id, $company_id);
+            if ($stmt->execute()) {
                 $query = "SELECT 
                                     event_id
                                 FROM

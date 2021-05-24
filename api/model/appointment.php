@@ -73,7 +73,7 @@ class Appointment {
         return $stmt;
     }
 
-    //Add OR Update Appointment details
+    //add or update appointment details
     function addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id) {
         if($event_id != "" && $company_id != ""){
             $query = "SELECT 
@@ -319,34 +319,6 @@ class Appointment {
         return $stmt;
     }
 
-    //get appointments having empty records based on eventid and company_id
-    function getEmptyAppointmentOnEventDetails($event_id, $company_id) {
-        $addCondition = "";
-        $query = "SELECT 
-        event_id
-        FROM
-        " . $this->table_name . "
-        WHERE ( (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))"; 
-        if ($event_id != "") {
-            $addCondition = "and event_id = ?";
-        }
-        if ($company_id != "") {
-            $addCondition .= "and company_id = ?";
-        }
-        $query .= $addCondition;
-        $query .= " order by created_date desc";
-        // prepare query statement
-        $stmt = $this->conn->prepare($query); 
-        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-        if ($company_id != "") {
-            $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
-        }
-        // execute query
-        $stmt->execute(); 
-
-        return $stmt;
-    }
-
     //store uploaded file details to database
     function insertOrUpdateUploadedFile($path, $type) {
         $query = "SELECT 
@@ -376,6 +348,7 @@ class Appointment {
         }
     }
     
+    //to delete event
     function deleteEventData($data) {
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $query = "DELETE
@@ -392,6 +365,7 @@ class Appointment {
 
     }
     
+    //function to check if event exists or not
     function checkIfEventExists($data) {
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT *
@@ -431,8 +405,6 @@ class Appointment {
 
         return $stmt;
     }
-
-
 
 
 }

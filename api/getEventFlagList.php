@@ -42,14 +42,10 @@ if ($data->event_id != "" || $data->event_id != null) {
     }
 }
 
-$jwt = $arr[1];
-
-if ($jwt) {
+//check if jwt token exists
+if(isset($_COOKIE['token'])) {
 
     try {
-        //decode the jwt token
-        $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
-
         $event_keys = array();
         //get appointment object
         $appointment = new Appointment($conn);
@@ -63,11 +59,19 @@ if ($jwt) {
 
         //check if records > 0
         if ($stmt_appointment_check->rowCount() > 0) {
-            array_push($event_keys, "Re-Sign Appointment");
+            $appointment_item = array(
+                    "option_key" => "appointment",
+                    "option_value" => "Re-Sign Appointment"
+                    );
+            array_push($event_keys, $appointment_item);
         }
 
         if ($stmt_booth_check->rowCount() > 0) {
-            array_push($event_keys, "Floor Manager");
+            $floor_item = array(
+                    "option_key" => "floorManager",
+                    "option_value" => "Floor Manager"
+                    );
+            array_push($event_keys, $floor_item);
         }
 
         if (sizeof($event_keys) == 0) {

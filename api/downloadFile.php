@@ -6,9 +6,11 @@ include_once './model/boothdetails.php';
 require "../start.php";
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
+//database connection
 $databaseService = new DatabaseService(); 
 $conn = $databaseService->getConnection();
 
+//on click of appointment export to excel
 if(isset($_POST['export'])){
 $event_id = filter_var($_POST['eventselection'], FILTER_SANITIZE_NUMBER_INT); 
 
@@ -57,6 +59,7 @@ header("Cache-Control: max-age=0");
 $writer->save('php://output'); exit;
 }
 
+//on click of floor manager export to excel
 if(isset($_POST['exportEmptyFloorDetails'])){
 $event_id = filter_var($_POST['flooreventselection'], FILTER_SANITIZE_NUMBER_INT); 
 

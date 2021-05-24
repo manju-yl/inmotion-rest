@@ -351,9 +351,9 @@ class BoothDetails {
         WHERE ( (booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL)) ";
         $query .= "GROUP BY event_id  order by MAX(created_date) desc";
 
-            // prepare query statement
+        // prepare query statement
         $stmt = $this->conn->prepare($query);
-            // execute query
+        // execute query
         $stmt->execute();
 
         return $stmt;
@@ -361,9 +361,7 @@ class BoothDetails {
 
     //download particular events having empty records in booth details
     function downloadBoothDetails($event_id) {
-
-            // select all query
-            // select all query
+        // select all query
         $query = "SELECT 
         c.co_id,
         e.event_id,
@@ -386,44 +384,15 @@ class BoothDetails {
         event e ON e.event_id = bd.event_id
         WHERE
         ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL)) and bd.event_id = ?";
-            // prepare query statement
+        // prepare query statement
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-            // execute query
+        // execute query
         $stmt->execute(); 
         return $stmt;
     }
 
-    //get floor manager having empty records based on eventid and company_id
-    function getEmptyFloorOnEventDetails($event_id, $company_id) {
-        $addCondition = "";
-        $query = "SELECT 
-                                        *
-        FROM
-        " . $this->table_name . "
-        WHERE ((booth = '' OR booth IS NULL)  OR (hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
-        if ($event_id != "") {
-            $addCondition = "and event_id = ?";
-        }
-        if ($company_id != "") {
-            $addCondition .= "and company_id = ?";
-        }
-        $query .= $addCondition;
-        $query .= " order by created_date desc";
-
-            // prepare query statement
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-        if ($company_id != "") {
-            $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
-        }
-            // execute query
-            $stmt->execute();     //$stmt->debugDumpParams();
-
-
-            return $stmt;
-        }
-        
+    //to delete event    
     function deleteEventData($data) {
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $query = "DELETE
@@ -440,6 +409,7 @@ class BoothDetails {
 
     }
     
+    //to check if event exist or not
     function checkIfEventExists($data) {
         $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
         $query = "SELECT *

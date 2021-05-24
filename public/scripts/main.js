@@ -354,12 +354,11 @@ $("#import_floor_form").on('submit',function(e){
     $('#floormanager').prop("checked", true);
     $('#boothresetbtn').attr('disabled', false);
     $('#myfile').attr('disabled', false);
-  }
+   }
+  });
 });
 
-
-});
-
+//on click of appointment reset file button
 $('#resetbtn').on('click', function(e) {
   var $el = $('#file');
   $el.wrap('<form>').closest(
@@ -367,12 +366,12 @@ $('#resetbtn').on('click', function(e) {
   $el.unwrap();
 });
 
+//on click of floor manager reset file button
 $('#boothresetbtn').on('click', function(e) {
   var $el = $('#myfile');
   $el.wrap('<form>').closest(
     'form').get(0).reset();
   $el.unwrap();
 });
-
 
 })(jQuery);

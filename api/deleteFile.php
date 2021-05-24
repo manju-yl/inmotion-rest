@@ -4,15 +4,17 @@ require "../vendor/autoload.php";
 include_once './config/database.php';
 require "../start.php";
 
+//database connection
 $databaseService = new DatabaseService(); 
 $conn = $databaseService->getConnection();
+//uploaded file expiry days
 $day = $_ENV['UPLOAD_FILE_EXPIRY_DAYS'];
 if ($day != "") {
     $days = $day;
 } else {
     $days = 0;
 }
-$days               =   ($days == 0) ? 60 : $days; 
+$days  =   ($days == 0) ? 60 : $days; 
 $query = "SELECT filename FROM `uploads` WHERE datediff(now(), created_date) >= $days";
 // prepare query statement
 $stmt = $conn->prepare($query); 
