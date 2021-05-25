@@ -144,14 +144,19 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
               url: 'api/getEventSelectOption.php',
               cache:false,
               beforeSend:function(){
-                $(".eventDeletionDiv").hide();
+                $('.deleteLoader').show();
+                $('.delete').hide();
+                $('.cancel').hide();
               },
               success: function(data) {
+                $('.deleteLoader').hide();
                 if(data=="false"){
                     $('#message').append('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
                     $(".eventDeletionDiv").hide();
                   }else{
                     $(".eventDeletionDiv").show();
+                    $('.delete').show();
+                    $('.cancel').show();
                     $("#dispAllEventIds").html(data);
                     $("#dispAllOptions").hide();
                   }
