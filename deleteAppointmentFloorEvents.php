@@ -196,6 +196,9 @@ $(document).on('change','#eventdeletion',function(e){
     // Preventing form to submit
     e.preventDefault();
     var selectedEventId = $( "#eventdeletion option:selected" ).text();
+    if(selectedEventId == "Select Event"){
+      $("#dispAllOptions").hide();
+    }
     var data = JSON.stringify({
       event_id: selectedEventId
     });
