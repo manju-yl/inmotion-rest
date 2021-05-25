@@ -43,9 +43,13 @@ if ($data->event_id != "" || $data->event_id != null) {
 }
 
 //check if jwt token exists
-if(isset($_COOKIE['token'])) {
+$jwt = $arr[1];
 
+if ($jwt) {
     try {
+        //decode the jwt token
+        $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
+        
         $event_keys = array();
         //get appointment object
         $appointment = new Appointment($conn);

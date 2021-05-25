@@ -15,6 +15,9 @@ $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
 //get filter data from input request
 $data = json_decode(file_get_contents("php://input"));
+//get authorization header
+$authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_STRING);
+$arr = explode(" ", $authHeader);
 //check if eventId value exists
 if ($data->event_id == "" || $data->event_id == null ) {
     // set response code - 404 Not found
@@ -39,9 +42,14 @@ if ($data->event_id != "" || $data->event_id != null ) {
 }
 
 //check if jwt token exists
-if(isset($_COOKIE['token'])) {
+$jwt = $arr[1];
+
+if ($jwt) {
 
     try {
+      
+        //decode the jwt token
+        $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
         
         if ($data->deleteFlag == "appointment") {
             //get appointment object

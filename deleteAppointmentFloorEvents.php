@@ -111,7 +111,8 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
          dataType: "json",
          headers: {
            'Accept': 'application/json',
-           'Content-Type': 'application/json'
+           'Content-Type': 'application/json',
+           'Authorization': 'Bearer <?php echo $_COOKIE['token'] ?> '
          },
           url: 'api/deleteEventData.php',
           data: JSON.stringify({ "event_id":selectedEventId,"deleteFlag":getSelectedOption }),
@@ -177,7 +178,8 @@ $(document).on('change','#eventdeletion',function(e){
         "timeout": 0,
         "headers": {
             "Content-Type": "application/json",
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'Bearer <?php echo $_COOKIE['token'] ?> '
         },
         "data":data
     };
