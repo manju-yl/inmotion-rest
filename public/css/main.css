@@ -331,7 +331,7 @@ i.glyphicon.glyphicon-trash {
   cursor: pointer
 }
 
-.excelLoader{
+.excelLoader, .excelfloorLoader{
     width: 100%;
     background: #eaeaea;
 }

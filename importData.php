@@ -106,7 +106,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <p><span class="loaderContainer" style="display:none"><span class="loader" ></span></span><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
                   <button id="boothresetbtn" class="button button4" type="button" alt="Reset" title="Reset File">Reset File</button></p></div>
               </form>
-              <div class="excelLoader btn btnexcel" style="display:none"><span class="loader" ></span></div>
+              <div class="excelfloorLoader btn btnexcel" style="display:none"><span class="loader" ></span></div>
               <div class="btn" id="floorManagerDivDisp" style="display:none">
               <label>Fetch missing records for Event Id:</label>
               <form action="api/downloadFile.php" method="post">

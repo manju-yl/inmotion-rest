@@ -8,6 +8,7 @@ function hideValidate(input){var thisAlert=$(input).parent();$(thisAlert).remove
 $( document ).ready(function() {
   if($('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
     $("#floorManagerDivDisp").hide();
+    $(".excelfloorLoader").hide();
     $.ajax({
       url: 'api/download.php',
       cache:false,
@@ -49,15 +50,16 @@ $( document ).ready(function() {
 
   }else if($('input:radio[name=floormanager]:checked').val()=='floormanager'){
     $("#appointmentDivDisp").hide();
+    $('.excelLoader').hide();
     $.ajax({
       url: 'api/downloadFloorManager.php',
       cache:false,
       beforeSend:function(){
-        $('.excelLoader').show();
+        $('.excelfloorLoader').show();
         $("#floorManagerDivDisp").hide();
       },
       success: function(data) {
-        $('.excelLoader').hide();
+        $('.excelfloorLoader').hide();
         if(data=="false"){
           $("#floorManagerDivDisp").hide();
         }else{
@@ -91,6 +93,7 @@ $( document ).ready(function() {
 //when appointment radio button is clicked
 $('#resignappintment').click(function(){
   $("#floorManagerDivDisp").hide();
+  $(".excelfloorLoader").hide();
   $.ajax({
     url: 'api/download.php',
     cache:false,
@@ -135,15 +138,16 @@ $('#resignappintment').click(function(){
 //when floor manager radio button is clicked
 $('#floormanager').click(function(){
   $("#appointmentDivDisp").hide();
+  $('.excelLoader').hide();
   $.ajax({
     url: 'api/downloadFloorManager.php',
     cache:false,
     beforeSend:function(){
-      $('.excelLoader').show();
+      $('.excelfloorLoader').show();
       $("#floorManagerDivDisp").hide();
     },
     success: function(data) {
-      $('.excelLoader').hide();
+      $('.excelfloorLoader').hide();
       if(data=="false"){
         $("#floorManagerDivDisp").hide();
       }else{
@@ -218,6 +222,7 @@ $("#import_form").on('submit',function(e){
   $('.infoAppointmentMessage').show();
   $('.infoBoothMessage').hide();
   $("#floorManagerDivDisp").hide();
+  $(".excelfloorLoader").hide();
   e.preventDefault();
   $.ajax({
     url:'api/import.php',
@@ -308,6 +313,7 @@ $("#import_floor_form").on('submit',function(e){
   $('.infoBoothMessage').show();
   $('.infoAppointmentMessage').hide();
   $("#appointmentDivDisp").hide();
+  $('.excelLoader').hide();
   e.preventDefault();
   $.ajax({
     url:'api/import.php',
@@ -340,11 +346,11 @@ $("#import_floor_form").on('submit',function(e){
       url: 'api/downloadFloorManager.php',
       cache:false,
       beforeSend:function(){
-        $('.excelLoader').show();
+        $('.excelfloorLoader').show();
         $("#floorManagerDivDisp").hide();
       },
       success: function(result) {
-        $('.excelLoader').hide();
+        $('.excelfloorLoader').hide();
         if(result=="false"){
           $("#floorManagerDivDisp").hide();
         }else{

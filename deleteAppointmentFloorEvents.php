@@ -45,7 +45,6 @@ select {
     -moz-transition: all .4s;
     transition: all .4s;
     text-align: center;
-    position: absolute;
     margin: 0px auto;
     padding: 10px;
 }
