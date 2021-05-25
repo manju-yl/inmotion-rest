@@ -330,3 +330,8 @@ i.glyphicon.glyphicon-trash {
   padding: 5px 10px;
   cursor: pointer
 }
+
+.excelLoader{
+    width: 100%;
+    background: #eaeaea;
+}

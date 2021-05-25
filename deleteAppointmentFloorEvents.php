@@ -34,6 +34,22 @@ select {
     padding: .5em 1em;
 }
 
+.deleteLoader {
+    width: 23%;
+    height: auto;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    -webkit-transition: all .4s;
+    -o-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+    text-align: center;
+    position: absolute;
+    margin: 0px auto;
+    padding: 10px;
+}
+
 </style>
 
 <link rel="stylesheet" href="public/css/ipc_fbf.css">
@@ -49,7 +65,9 @@ select {
     <div class="col-md-4"></div>
     <div class="col-md-4 text-center form-container">
     <div class="form-group">
-    <div id="dispAllEventIds"></div>
+    <div id="dispAllEventIds">
+      <span class="deleteLoader" style="display:none"><span class="loader" ></span></span>
+    </div>
     </div>
     <div class="form-group">
     <div id="dispAllOptions"></div>
@@ -68,14 +86,19 @@ $.ajax({
   url: 'api/getEventSelectOption.php',
   cache:false,
   beforeSend:function(){
-    $(".eventDeletionDiv").hide();
+    $('.deleteLoader').show();
+    $('.delete').hide();
+    $('.cancel').hide();
   },
   success: function(data) {
+    $('.deleteLoader').hide();
     if(data=="false"){
         $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
         $(".eventDeletionDiv").hide();
     }else{
         $(".eventDeletionDiv").show();
+        $('.delete').show();
+        $('.cancel').show();
         $("#dispAllEventIds").html(data);
         $("#dispAllOptions").hide();
     }

@@ -31,6 +31,9 @@ require './api/common/header.php';
 .login100-form-title {
   padding-bottom: 30px;
 }
+.btnexcel{
+  padding:50px 12px !important;
+}
 </style>
 <script type="text/javascript">
 
@@ -81,10 +84,12 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <button id="resetbtn" class="button button4" type="button" alt="Reset" title="Reset File">Reset File</button></p>
                 </div>
                 </form>
-                <div class="btn" id="appointmentDivDisp" style="display:none;">
+                <div class="excelLoader btn btnexcel" style="display:none"><span class="loader" ></span></div>
+                <div class="btn" id="appointmentDivDisp" style="display:none">
                 <label>Fetch missing records for Event Id:</label>
                 <form action="api/downloadFile.php" method="post">
-                    <div id="dispEventLists"></div>
+                    <div id="dispEventLists"> 
+                    </div>
                       <button type="submit" id="btnExport" name='export'
                           value="Export to Excel" class="button button4" title="Export to Excel">Export
                                 to Excel</button>
@@ -101,6 +106,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                   <p><span class="loaderContainer" style="display:none"><span class="loader" ></span></span><input type="submit" name="importFloormanagerSubmit" id="importFloormanagerSubmit" alt="Upload" title="Upload" class="button button4" value="Import"/>
                   <button id="boothresetbtn" class="button button4" type="button" alt="Reset" title="Reset File">Reset File</button></p></div>
               </form>
+              <div class="excelLoader btn btnexcel" style="display:none"><span class="loader" ></span></div>
               <div class="btn" id="floorManagerDivDisp" style="display:none">
               <label>Fetch missing records for Event Id:</label>
               <form action="api/downloadFile.php" method="post">

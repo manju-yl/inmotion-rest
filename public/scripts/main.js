@@ -10,7 +10,13 @@ $( document ).ready(function() {
     $("#floorManagerDivDisp").hide();
     $.ajax({
       url: 'api/download.php',
+      cache:false,
+      beforeSend:function(){
+        $('.excelLoader').show();
+        $("#appointmentDivDisp").hide();
+      },
       success: function(data) {
+        $('.excelLoader').hide();
         if(data=="false"){
           $("#appointmentDivDisp").hide();
         }else{
@@ -45,7 +51,13 @@ $( document ).ready(function() {
     $("#appointmentDivDisp").hide();
     $.ajax({
       url: 'api/downloadFloorManager.php',
+      cache:false,
+      beforeSend:function(){
+        $('.excelLoader').show();
+        $("#floorManagerDivDisp").hide();
+      },
       success: function(data) {
+        $('.excelLoader').hide();
         if(data=="false"){
           $("#floorManagerDivDisp").hide();
         }else{
@@ -81,7 +93,13 @@ $('#resignappintment').click(function(){
   $("#floorManagerDivDisp").hide();
   $.ajax({
     url: 'api/download.php',
+    cache:false,
+    beforeSend:function(){
+      $('.excelLoader').show();
+      $("#appointmentDivDisp").hide();
+    },
     success: function(data) {
+      $('.excelLoader').hide();
       if(data=="false"){
         $("#appointmentDivDisp").hide();
       }else{
@@ -119,7 +137,13 @@ $('#floormanager').click(function(){
   $("#appointmentDivDisp").hide();
   $.ajax({
     url: 'api/downloadFloorManager.php',
+    cache:false,
+    beforeSend:function(){
+      $('.excelLoader').show();
+      $("#floorManagerDivDisp").hide();
+    },
     success: function(data) {
+      $('.excelLoader').hide();
       if(data=="false"){
         $("#floorManagerDivDisp").hide();
       }else{
@@ -225,7 +249,12 @@ $("#import_form").on('submit',function(e){
     $.ajax({
       url:'api/download.php',
       cache:false,
+      beforeSend:function(){
+        $('.excelLoader').show();
+        $("#appointmentDivDisp").hide();
+      },
       success:function(result){
+        $('.excelLoader').hide();
         if(result=="false"){
           $("#appointmentDivDisp").hide();
         }else{
@@ -309,7 +338,13 @@ $("#import_floor_form").on('submit',function(e){
     
     $.ajax({
       url: 'api/downloadFloorManager.php',
+      cache:false,
+      beforeSend:function(){
+        $('.excelLoader').show();
+        $("#floorManagerDivDisp").hide();
+      },
       success: function(result) {
+        $('.excelLoader').hide();
         if(result=="false"){
           $("#floorManagerDivDisp").hide();
         }else{
