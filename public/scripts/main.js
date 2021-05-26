@@ -228,6 +228,7 @@ $("#login_form").on('submit',function(e){
       $.cookie('token',data.jwt);
       $.cookie('firstname',data.firstname);
       $.cookie('userId',data.userId);
+      $.cookie('expireAt',data.expireAt);
       window.location = 'importData.php';
     }else{
       $(".error").html(data.error)

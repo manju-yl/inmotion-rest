@@ -19,11 +19,20 @@
 
 		<div class="wrap-login100">
 			<?php
-
+			if (isset($_COOKIE['expireAt'])) { 
+				if(time() > $_COOKIE['expireAt']){
+					setcookie('token', '', time() - 3600);
+					setcookie('expireAt', '', time() - 3600);
+					setcookie('firstname', '', time() - 3600);
+					setcookie('userId', '', time() - 3600);
+					header("Location: index.php"); 
+				}
+			}
 			if (isset($_GET['logout'])) {
 				setcookie('token', '', time() - 3600);
 				setcookie('firstname', '', time() - 3600);
 				setcookie('userId', '', time() - 3600);
+				setcookie('expireAt', '', time() - 3600);
 				header("Location: index.php"); 
 			}
 
