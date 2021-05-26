@@ -28,6 +28,6 @@
 			}
 
 			if (isset($_COOKIE['firstname'])){?>
-				<p>Welcome <strong><?php echo $_COOKIE['firstname']; ?></strong></p>
+				<p>Welcome: <strong><?php echo $_COOKIE['firstname']; ?></strong></p>
 				<p> <a href="importData.php?logout='1'">Logout</a> </p>
 			<?php  }  ?>

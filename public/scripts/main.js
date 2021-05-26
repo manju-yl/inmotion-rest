@@ -30,7 +30,13 @@ $( document ).ready(function() {
     });
     $.ajax({
       url: 'api/getEventSelectOption.php',
+      cache:false,
+      beforeSend:function(){
+        $('.deleteLoaderContainer').show();
+        $(".deleteBtn").hide();
+      },
       success: function(data) {
+        $('.deleteLoaderContainer').hide();
         if(data=="false"){
             $(".deleteBtn").hide();
           }else{
@@ -72,7 +78,13 @@ $( document ).ready(function() {
     });
     $.ajax({
       url: 'api/getEventSelectOption.php',
+      cache:false,
+      beforeSend:function(){
+        $('.deleteLoaderContainer').show();
+        $(".deleteBtn").hide();
+      },
       success: function(data) {
+        $('.deleteLoaderContainer').hide();
         if(data=="false"){
             $(".deleteBtn").hide();
           }else{
@@ -115,7 +127,13 @@ $('#resignappintment').click(function(){
   });
   $.ajax({
     url: 'api/getEventSelectOption.php',
+    cache:false,
+    beforeSend:function(){
+      $('.deleteLoaderContainer').show();
+      $(".deleteBtn").hide();
+    },
     success: function(data) {
+      $('.deleteLoaderContainer').hide();
       if(data=="false"){
           $(".deleteBtn").hide();
         }else{
@@ -160,7 +178,13 @@ $('#floormanager').click(function(){
   }); 
   $.ajax({
     url: 'api/getEventSelectOption.php',
+    cache:false,
+    beforeSend:function(){
+      $('.deleteLoaderContainer').show();
+      $(".deleteBtn").hide();
+    },
     success: function(data) {
+      $('.deleteLoaderContainer').hide();
       if(data=="false"){
           $(".deleteBtn").hide();
         }else{
@@ -282,7 +306,13 @@ $("#import_form").on('submit',function(e){
 
     $.ajax({
       url: 'api/getEventSelectOption.php',
+      cache:false,
+      beforeSend:function(){
+        $('.deleteLoaderContainer').show();
+        $(".deleteBtn").hide();
+      },
       success: function(data) {
+        $('.deleteLoaderContainer').hide();
         if(data=="false"){
             $(".deleteBtn").hide();
           }else{
@@ -374,7 +404,13 @@ $("#import_floor_form").on('submit',function(e){
 
     $.ajax({
       url: 'api/getEventSelectOption.php',
+      cache:false,
+      beforeSend:function(){
+        $('.deleteLoaderContainer').show();
+        $(".deleteBtn").hide();
+      },
       success: function(data) {
+        $('.deleteLoaderContainer').hide();
         if(data=="false"){
             $(".deleteBtn").hide();
           }else{

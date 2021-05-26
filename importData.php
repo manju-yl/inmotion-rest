@@ -56,7 +56,7 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 <div class="container">
         <div class="wrapper clearfix">
            <div id="message"></div>
-           <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
+           <p><span class="deleteLoaderContainer" style="display:none;"><span class="loader" style="border-color:rgb(255, 0, 0) rgb(234, 234, 234) rgb(234, 234, 234) !important"></span></span><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
            <p></p>
            <div class="infoAppointmentMessage" style="display:none">
                   <?php $appointmentSampleExcel = 'downloadfile/appointment.xlsx'; ?>

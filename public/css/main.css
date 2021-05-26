@@ -335,3 +335,17 @@ i.glyphicon.glyphicon-trash {
     width: 100%;
     background: #eaeaea;
 }
+
+.deleteLoaderContainer {
+    height: auto;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    -webkit-transition: all .4s;
+    -o-transition: all .4s;
+    -moz-transition: all .4s;
+    transition: all .4s;
+    text-align: center;
+    margin: 0px auto;
+    float:right;
+}
