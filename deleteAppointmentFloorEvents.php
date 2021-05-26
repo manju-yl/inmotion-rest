@@ -46,7 +46,7 @@ select {
     transition: all .4s;
     text-align: center;
     margin: 0px auto;
-    padding: 10px;
+    padding: 30px;
 }
 
 </style>
