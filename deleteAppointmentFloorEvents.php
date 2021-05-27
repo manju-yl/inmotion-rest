@@ -125,6 +125,7 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
           "</div>";
   $('body').prepend($content);
   $('.doAction').click(function () {
+    $(this).parents('.dialog-ovelay').fadeOut(500, function () {
       var selectedEventId = $( "#eventdeletion option:selected" ).text();
       var getSelectedOption = $("#appointflooroption option:selected").attr("id"); 
       $.ajax({
@@ -170,13 +171,16 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
             $('#message').html('<div class="errorMessage errormsgWrapperDi">No Data found.</div>');
           }
       });
-      $('.dialog-ovelay').remove();
+      $(this).remove();
+            });
+
   });
   $('.cancelAction, .fa-close').click(function () {
     $(this).parents('.dialog-ovelay').fadeOut(500, function () {
       $(this).remove();
     });
   });
+      
 }
 
 $('.delete').click(function () {
