@@ -406,5 +406,39 @@ class Appointment {
         return $stmt;
     }
 
+    //get all floor and appointment company details
+    function getAllCompanyDetails($data = "") {
+        $event_id = filter_var($data->event_id, FILTER_SANITIZE_NUMBER_INT);
+        $addCondition = "";
+        if ($event_id != "") {
+            $addCondition = "and 
+                       (
+                        p.event_id = '$event_id'
+                        OR
+                        s.event_id = '$event_id'
+                      )";
+        }
+        $query = "SELECT c.co_id
+                    FROM company c
+                    LEFT OUTER JOIN appointment p 
+                     ON p.company_id = c.co_id
+                    LEFT OUTER JOIN booth_details s 
+                      ON s.company_id=c.co_id 
+                      where (
+                        p.company_id IS NOT NULL
+                        OR
+                        s.company_id IS NOT NULL
+                      )";
+        $query .= $addCondition;
+        $query .= "GROUP BY c.co_id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
+    }
+
 
 }
