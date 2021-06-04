@@ -71,11 +71,11 @@
           <span class="deleteLoader" style="display:none"><span class="loader" ></span></span>
         </div><br/>
         <?php require "start.php"; ?>
-        <script src="https://inmotion-app.iplatformsolutions.com/public/scripts/jquery.cookie.js"></script>
+        <script src="<?php echo $_ENV['SERVER_URL'] ?>/public/scripts/jquery.cookie.js"></script>
         <script>
-        var url = 'https://inmotion-app.iplatformsolutions.com/api/validateToken.php'; 
+        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/validateToken.php'; 
         var proxy = 'https://cors-anywhere.herokuapp.com/';
-        var tokenfinalurl = proxy+url;
+        var tokenfinalurl = url;
 
         var datasetting = {
                 "url": tokenfinalurl,
@@ -90,9 +90,8 @@
             $.ajax(datasetting).done(function (response) {
                 return false;
             }).fail(function(response){
-                var url = 'https://inmotion-app.iplatformsolutions.com/api/generateToken.php'; 
-                var proxy = 'https://cors-anywhere.herokuapp.com/';
-                var finalurl = proxy+url;
+                var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/generateToken.php';
+                var finalurl = url;
                 $.ajax({
                        type: "post",
                        dataType: "json",
@@ -104,7 +103,7 @@
                          "email" : '<?php echo $_ENV['USER_NAME'] ?>',
                          "password" : '<?php echo $_ENV['PASSWORD'] ?>'
                        }),
-                       url: url,
+                       url: finalurl,
                        success: function(data, result) {
                          if(data.status ==200){
                           $.cookie('token',data.jwt);
@@ -121,12 +120,12 @@
                 });
             });
         
-        var url = 'https://inmotion-app.iplatformsolutions.com/api/getEventSelectOption.php'; 
-        var proxy = 'https://cors-anywhere.herokuapp.com/';
-        var eventurl = proxy+url;
+        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getEventSelectOption.php'; 
+        var eventurl = url; 
         $.ajax({
               url: eventurl,
               cache:false,
+              dataType : 'html',
               beforeSend:function(){
                 $('.deleteLoader').show();
               },
@@ -136,12 +135,12 @@
                     $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
                 }else{
                     $("#dispAllEventIds").html(data);
-                    var url = 'https://inmotion-app.iplatformsolutions.com/api/getCompanySelectOption.php'; 
-                    var proxy = 'https://cors-anywhere.herokuapp.com/';
-                    var companyurl = proxy+url;
+                    var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getCompanySelectOption.php';
+                    var companyurl = url;
                     $.ajax({
                           url: companyurl,
                           cache:false,
+                          dataType : 'html',
                           beforeSend:function(){
                             $('.deleteLoader').show();
                           },
@@ -173,9 +172,8 @@
             var data = JSON.stringify({
               event_id: selectedEventId
             });
-            var url = 'https://inmotion-app.iplatformsolutions.com/api/getEventCompanys.php'; 
-            var proxy = 'https://cors-anywhere.herokuapp.com/';
-            var eventcompanyurl = proxy+url;
+            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getEventCompanys.php'; 
+            var eventcompanyurl = url;
             var settings = {
                 "url": eventcompanyurl,
                 "method": "POST",
@@ -202,9 +200,8 @@
               event_id: selectedEventId,
               company_id: selectedCompanyId
             });
-            var url = 'https://inmotion-app.iplatformsolutions.com/api/getAppointments.php'; 
-            var proxy = 'https://cors-anywhere.herokuapp.com/';
-            var finalurl = proxy+url;
+            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getAppointments.php'; 
+            var finalurl = url;
             var datasetting = {
                 "url": finalurl,
                 "method": "POST",
@@ -230,9 +227,8 @@
                 appointmentHtml = '<span>No Appointments found.</span>'; 
                 $('#appointments').html(appointmentHtml);
             });
-            var url = 'https://inmotion-app.iplatformsolutions.com/api/getFloorManagerDetails.php'; 
-            var proxy = 'https://cors-anywhere.herokuapp.com/';
-            var finalurl = proxy+url;
+            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getFloorManagerDetails.php'; 
+            var finalurl = url;
             var datasettings = {
                 "url": finalurl,
                 "method": "POST",
@@ -271,9 +267,8 @@
                   event_id: selectedEventId,
                   company_id: selectedCompanyId
                 });
-            var url = 'https://inmotion-app.iplatformsolutions.com/api/getAppointments.php'; 
-            var proxy = 'https://cors-anywhere.herokuapp.com/';
-            var finalurl = proxy+url;
+            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getAppointments.php'; 
+            var finalurl = url;
             var datasetting = {
                 "url": finalurl,
                 "method": "POST",
@@ -299,9 +294,8 @@
                 appointmentHtml = '<span>No Appointments found.</span>'; 
                 $('#appointments').html(appointmentHtml);
             });
-            var url = 'https://inmotion-app.iplatformsolutions.com/api/getFloorManagerDetails.php'; 
-            var proxy = 'https://cors-anywhere.herokuapp.com/';
-            var finalurl = proxy+url;
+            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getFloorManagerDetails.php'; 
+            var finalurl = url;
             var datasettings = {
                 "url": finalurl,
                 "method": "POST",
