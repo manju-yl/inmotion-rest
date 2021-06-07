@@ -25,12 +25,12 @@ if ($jwt) {
         //decode the jwt token
         $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
         
-        $company_keys = array();
+        $event_keys = array();
 
         //get appointment object
 		$appointment = new appointment($conn);  
 		//get all appointment and floor manager events
-		$stmt = $appointment->getAllCompanyDetails(); 
+		$stmt = $appointment->getAllEventDetails(); 
 
         $num = $stmt->rowCount(); 
 		//check if records > 0
@@ -38,14 +38,14 @@ if ($jwt) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             extract($row);
 
-                $company_items = array(
-                    "option_value" => $co_id
+                $event_items = array(
+                    "option_value" => $event_id
                 );
-                array_push($company_keys, $company_items);
+                array_push($event_keys, $event_items);
             }
         }
 
-        if (sizeof($company_keys) == 0) {
+        if (sizeof($event_keys) == 0) {
             // set response code - 404 Not found
             http_response_code(404);
 
@@ -60,7 +60,7 @@ if ($jwt) {
         http_response_code(200);
 
         // show user data in json format
-        echo json_encode($company_keys);
+        echo json_encode($event_keys);
     } catch (Exception $e) {
 
         http_response_code(401);

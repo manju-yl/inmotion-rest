@@ -70,7 +70,7 @@
         <div id="dispAllCompanyIds">
           <span class="deleteLoader" style="display:none"><span class="loader" ></span></span>
         </div><br/>
-        <?php require "start.php"; ?>
+        <?php require "./start.php"; ?>
         <script src="<?php echo $_ENV['SERVER_URL'] ?>/public/scripts/jquery.cookie.js"></script>
         <script>
         var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/validateToken.php'; 
@@ -78,97 +78,117 @@
         var tokenfinalurl = url;
 
         var datasetting = {
-                "url": tokenfinalurl,
-                "method": "POST",
-                "timeout": 0,
-                "headers": {
-                    "Content-Type": "application/json",
-                    'Accept': 'application/json',
-                    'Authorization': 'Bearer <?php echo $_COOKIE['token'] ?>'
-                }
-            };
-            $.ajax(datasetting).done(function (response) {
-                return false;
-            }).fail(function(response){
-                var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/generateToken.php';
-                var finalurl = url;
-                $.ajax({
-                       type: "post",
-                       dataType: "json",
-                       headers: {
-                         'Accept': 'application/json',
-                         'Content-Type': 'application/json'
-                       },
-                       data: JSON.stringify({ 
-                         "email" : '<?php echo $_ENV['USER_NAME'] ?>',
-                         "password" : '<?php echo $_ENV['PASSWORD'] ?>'
-                       }),
-                       url: finalurl,
-                       success: function(data, result) {
-                         if(data.status ==200){
-                          $.cookie('token',data.jwt);
-                          $.cookie('firstname',data.firstname);
-                          $.cookie('userId',data.userId);
-                          $.cookie('expireAt',data.expireAt);
-                        }else{
-                          $(".error").html(data.error)
-                        }
-                      },
-                      error: function(data, result) {
-                        console.log(data.status);
-                      }
-                });
+            "url": tokenfinalurl,
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json",
+                'Accept': 'application/json',
+                'Authorization': 'Bearer <?php echo $_COOKIE['token'] ?>'
+            }
+        };
+        $.ajax(datasetting).done(function (response) {
+            return false;
+        }).fail(function(response){
+            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/generateToken.php';
+            var finalurl = url;
+            $.ajax({
+                   type: "post",
+                   dataType: "json",
+                   headers: {
+                     'Accept': 'application/json',
+                     'Content-Type': 'application/json'
+                   },
+                   data: JSON.stringify({ 
+                     "email" : '<?php echo $_ENV['USER_NAME'] ?>',
+                     "password" : '<?php echo $_ENV['PASSWORD'] ?>'
+                   }),
+                   url: finalurl,
+                   success: function(data, result) {
+                     if(data.status ==200){
+                      $.cookie('token',data.jwt);
+                      $.cookie('firstname',data.firstname);
+                      $.cookie('userId',data.userId);
+                      $.cookie('expireAt',data.expireAt);
+                    }else{
+                      $(".error").html(data.error)
+                    }
+                  },
+                  error: function(data, result) {
+                    console.log(data.status);
+                  }
             });
-        
-        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getEventSelectOption.php'; 
-        var eventurl = url; 
-        $.ajax({
-              url: eventurl,
-              cache:false,
-              dataType : 'html',
-              beforeSend:function(){
+        });
+
+        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/dispEventOptions.php'; 
+        var eventurl = url;
+        var eventHtml = "";
+        var eventsettings = {
+            "url": eventurl,
+            "method": "GET",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json",
+                'Accept': 'application/json',
+                'Authorization': 'Bearer <?php echo $_COOKIE['token'] ?> '
+            },
+            beforeSend:function(){
                 $('.deleteLoader').show();
-              },
-              success: function(data) {
-                $('.deleteLoader').hide();
-                if(data=="false"){
-                    $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
-                }else{
-                    $("#dispAllEventIds").html(data);
-                    var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getCompanySelectOption.php';
-                    var companyurl = url;
-                    $.ajax({
-                          url: companyurl,
-                          cache:false,
-                          dataType : 'html',
-                          beforeSend:function(){
-                            $('.deleteLoader').show();
-                          },
-                          success: function(data) {
-                            $('.deleteLoader').hide();
-                            if(data=="false"){
-                                $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
-                            }else{
-                                $("#dispAllCompanyIds").html(data);
-                            }
-                          },
-                          error: function(data) {
-                          }
-                    });
-                }
-              },
-              error: function(data) {
               }
+        };
+
+        $.ajax(eventsettings).done(function (response) {
+            $('.deleteLoader').hide();
+            eventHtml += '<select id="eventselection" name="eventselection">';
+            eventHtml += '<option>Select Event</option>';
+            $.each(response, function (index, value) {
+                eventHtml += '<option>' + value.option_value + '</option>'; 
+            });
+            $('#dispAllEventIds').html(eventHtml);
+        }).fail(function(response){
+            $('.deleteLoader').hide();
+            eventHtml = '<span>There are no events to display.</span>'; 
+            $('#message').html(eventHtml);
+        });
+        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getCompanySelectOption.php';
+        var companyurl = url;
+        var companyHtml = "";
+        var companysettings = {
+            "url": companyurl,
+            "method": "GET",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json",
+                'Accept': 'application/json',
+                'Authorization': 'Bearer <?php echo $_COOKIE['token'] ?> '
+            },
+            beforeSend:function(){
+                $('.deleteLoader').show();
+              }
+        };
+
+        $.ajax(companysettings).done(function (response) {
+            $('.deleteLoader').hide();
+            companyHtml += '<select id="companyselection" name="companyselection">';
+            companyHtml += '<option>Select Company</option>';
+            $.each(response, function (index, value) {
+                companyHtml += '<option>' + value.option_value + '</option>'; 
+            });
+            $('#dispAllCompanyIds').html(companyHtml);
+        }).fail(function(response){
+            $('.deleteLoader').hide();
+            companyHtml = '<span>There are no events to display.</span>'; 
+            $('#message').html(companyHtml);
         });
 
         
 
-        $(document).on('change','#eventdeletion',function(e){
+        $(document).on('change','#eventselection',function(e){
             // Preventing form to submit
             e.preventDefault();
             $('#appointments tbody').html('');
             $('#floormanager tbody').html('');
-            var selectedEventId = $( "#eventdeletion option:selected" ).text();
+            var selectedEventId = $( "#eventselection option:selected" ).text();
             var data = JSON.stringify({
               event_id: selectedEventId
             });
@@ -215,7 +235,7 @@
             };
             $.ajax(datasetting).done(function (response) {
                 $.each(response, function (index, value) {
-                if(value.day != null && value.day != ""){
+                if((value.day != null && value.day != "") && (value.time != null && value.time != "")){
                     appointmentHtml += 'Your Re-Sign Appointment is on <b>' + value.day + ' </b>at <b>' + value.time+ ' </b><br/>';
                 }else{
                     appointmentHtml = '<span>No Appointments found.</span>'; 
@@ -256,9 +276,7 @@
         $(document).on('change','#companyselection',function(e){
             // Preventing form to submit
             e.preventDefault();
-            $('#appointments tbody').html('');
-            $('#floormanager tbody').html('');
-            var selectedEventId = $( "#eventdeletion option:selected" ).text();
+            var selectedEventId = $( "#eventselection option:selected" ).text();
             var html = '';
             var appointmentHtml = '';
             var floorHtml = '';
@@ -282,7 +300,7 @@
             };
             $.ajax(datasetting).done(function (response) {
                 $.each(response, function (index, value) {
-                if(value.day != null && value.day != ""){
+                if((value.day != null && value.day != "") && (value.time != null && value.time != "")){
                     appointmentHtml += 'Your Re-Sign Appointment is on <b>' + value.day + ' </b>at <b>' + value.time+ ' </b><br/>';
                 }else{
                     appointmentHtml = '<span>No Appointments found.</span>'; 
