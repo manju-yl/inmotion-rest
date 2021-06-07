@@ -84,6 +84,7 @@ select {
 $.ajax({
   url: 'api/getEventSelectOption.php',
   cache:false,
+  dataType:"html",
   beforeSend:function(){
     $('.deleteLoader').show();
     $('.delete').hide();
@@ -141,6 +142,7 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
             $.ajax({
               url: 'api/getEventSelectOption.php',
               cache:false,
+              dataType:"html",
               beforeSend:function(){
                 $('.deleteLoader').show();
                 $('.delete').hide();

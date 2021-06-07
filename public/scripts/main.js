@@ -12,6 +12,7 @@ $( document ).ready(function() {
     $.ajax({
       url: 'api/download.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.excelLoader').show();
         $("#appointmentDivDisp").hide();
@@ -31,6 +32,7 @@ $( document ).ready(function() {
     $.ajax({
       url: 'api/getEventSelectOption.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.deleteLoaderContainer').show();
         $(".deleteBtn").hide();
@@ -47,6 +49,7 @@ $( document ).ready(function() {
       error: function(data) {
       }
     });
+
     $('.infoAppointmentMessage').show();
     $('.infoBoothMessage').hide();
     $('#message').html('');
@@ -59,6 +62,7 @@ $( document ).ready(function() {
     $('.excelLoader').hide();
     $.ajax({
       url: 'api/downloadFloorManager.php',
+      dataType:"html",
       cache:false,
       beforeSend:function(){
         $('.excelfloorLoader').show();
@@ -79,6 +83,7 @@ $( document ).ready(function() {
     $.ajax({
       url: 'api/getEventSelectOption.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.deleteLoaderContainer').show();
         $(".deleteBtn").hide();
@@ -109,6 +114,7 @@ $('#resignappintment').click(function(){
   $.ajax({
     url: 'api/download.php',
     cache:false,
+    dataType:"html",
     beforeSend:function(){
       $('.excelLoader').show();
       $("#appointmentDivDisp").hide();
@@ -128,6 +134,7 @@ $('#resignappintment').click(function(){
   $.ajax({
     url: 'api/getEventSelectOption.php',
     cache:false,
+    dataType:"html",
     beforeSend:function(){
       $('.deleteLoaderContainer').show();
       $(".deleteBtn").hide();
@@ -160,6 +167,7 @@ $('#floormanager').click(function(){
   $.ajax({
     url: 'api/downloadFloorManager.php',
     cache:false,
+    dataType:"html",
     beforeSend:function(){
       $('.excelfloorLoader').show();
       $("#floorManagerDivDisp").hide();
@@ -179,6 +187,7 @@ $('#floormanager').click(function(){
   $.ajax({
     url: 'api/getEventSelectOption.php',
     cache:false,
+    dataType:"html",
     beforeSend:function(){
       $('.deleteLoaderContainer').show();
       $(".deleteBtn").hide();
@@ -279,6 +288,7 @@ $("#import_form").on('submit',function(e){
     $.ajax({
       url:'api/download.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.excelLoader').show();
         $("#appointmentDivDisp").hide();
@@ -308,6 +318,7 @@ $("#import_form").on('submit',function(e){
     $.ajax({
       url: 'api/getEventSelectOption.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.deleteLoaderContainer').show();
         $(".deleteBtn").hide();
@@ -376,6 +387,7 @@ $("#import_floor_form").on('submit',function(e){
     $.ajax({
       url: 'api/downloadFloorManager.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.excelfloorLoader').show();
         $("#floorManagerDivDisp").hide();
@@ -406,6 +418,7 @@ $("#import_floor_form").on('submit',function(e){
     $.ajax({
       url: 'api/getEventSelectOption.php',
       cache:false,
+      dataType:"html",
       beforeSend:function(){
         $('.deleteLoaderContainer').show();
         $(".deleteBtn").hide();
