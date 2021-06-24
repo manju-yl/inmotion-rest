@@ -9,7 +9,7 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
 
-<script src="public/scripts/jquery-3.2.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 
 </head>
 <body>

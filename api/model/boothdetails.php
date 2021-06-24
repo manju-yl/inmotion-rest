@@ -76,21 +76,14 @@ class BoothDetails {
         return $stmt;
     }
 
-    //Add OR Update Booth details
+    //Add or Update Booth details
     function addOrUpdateBoothDetails($event_id, $company_id, $booth, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $company_name, $company_contact_first_name, $company_contact_last_name, $company_email, $user_id) {
         if($event_id != "" && $company_id != "" && $booth != ""){
-            $addCondition = "";
-	    // select booths based on event_id and company_id and booth
+            // select booths based on event_id and company_id and booth
             $query = "SELECT 
             c.co_id,
             e.event_id,
-            bd.booth,
-            bd.hall,
-            bd.fm_name,
-            bd.fm_text_number,
-            c.company_name,
-            e.event_name,
-            bd.ges_ese
+            bd.booth
             FROM
             " . $this->table_name . " bd
             LEFT JOIN
@@ -99,7 +92,6 @@ class BoothDetails {
             event e ON e.event_id = bd.event_id
             WHERE
             bd.event_id = ? and bd.company_id= ? and bd.booth = ?";
-            $query .= $addCondition;
 
             // prepare query statement
             $stmt = $this->conn->prepare($query);
@@ -110,28 +102,17 @@ class BoothDetails {
             $stmt->bindParam(2, $company_id);
             $stmt->bindParam(3, $booth);
             // execute query
-            $stmt->execute();  
+            $stmt->execute();
             $num = $stmt->rowCount(); 
             if($num > 0){
-                $updatequery = "update company
+
+                $updateBooth = "
+                update company
                 SET company_name = :company_name,
                 company_contact_first_name = :company_contact_first_name,
                 company_contact_last_name = :company_contact_last_name,
                 company_email = :company_email,
-                created_by = '$user_id', created_date=now() where co_id = :company_id";
-
-                // prepare query statement
-                $stmt = $this->conn->prepare($updatequery);
-
-                $stmt->bindParam(':company_name', $company_name);
-                $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
-                $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
-                $stmt->bindParam(':company_email', $company_email);
-                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                // execute query
-                $stmt->execute();
-
-                $updateBooth = "
+                created_by = '$user_id', created_date=now() where co_id = :company_id;
                 UPDATE " . $this->table_name . "
                 SET hall = :hall,
                 fm_name= :fm_name,
@@ -142,6 +123,10 @@ class BoothDetails {
                 // prepare query statement
                 $stmt = $this->conn->prepare($updateBooth); 
 
+                $stmt->bindParam(':company_name', $company_name);
+                $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                $stmt->bindParam(':company_email', $company_email);
                 $stmt->bindParam(':hall', $hall);
                 $stmt->bindParam(':fm_name', $fm_name);
                 $stmt->bindParam(':fm_phone', $fm_phone);
@@ -151,72 +136,14 @@ class BoothDetails {
                 $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 $stmt->bindParam(':booth', $booth);
 
-            }else{
-
-                $query = "SELECT event_id FROM event WHERE event_id = ? LIMIT 0,1";
-                // prepare query statement
-                $stmt = $this->conn->prepare($query);
-                $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-
-                // execute query
                 $stmt->execute();
-                $num = $stmt->rowCount(); 
-                if ($num > 0) {
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $event_id = $row['event_id'];
-                    $checkCompanyExists = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
 
-                    // prepare query statement
-                    $companyExists = $this->conn->prepare($checkCompanyExists);
-                    $companyExists->bindParam(1, htmlspecialchars(strip_tags($company_id)));
-                    // execute query
-                    $companyExists->execute(); 
-                    $companyCount = $companyExists->rowCount(); 
-                    if ($companyCount > 0) {
-                        $row = $companyExists->fetch(PDO::FETCH_ASSOC);
-
-                        $updatequery = "update company
-                        SET company_name = :company_name,
-                        company_contact_first_name = :company_contact_first_name,
-                        company_contact_last_name = :company_contact_last_name,
-                        company_email = :company_email,
-                        created_by = '$user_id', created_date=now() where co_id = :company_id;
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        booth = :booth,
-                        hall = :hall,
-                        fm_name= :fm_name,
-                        fm_phone= :fm_phone,
-                        fm_text_number= :fm_text_number,
-                        ges_ese= :ges_ese, created_by = '$user_id', created_date=now()";
-
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($updatequery);
-
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
-                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
-                        $stmt->bindParam(':company_email', $company_email);
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':booth', $booth);
-                        $stmt->bindParam(':hall', $hall);
-                        $stmt->bindParam(':fm_name', $fm_name);
-                        $stmt->bindParam(':fm_phone', $fm_phone);
-                        $stmt->bindParam(':fm_text_number', $fm_text_number);
-                        $stmt->bindParam(':ges_ese', $ges_ese);
-                        
-                    }else{
-                        $query = "
-                        INSERT INTO company
-                        SET co_id = :company_id,
-                        company_name = :company_name,
-                        company_contact_first_name = :company_contact_first_name,
-                        company_contact_last_name = :company_contact_last_name,
-                        company_email = :company_email,
-                        created_by = '$user_id', created_date=now();
-                        INSERT INTO " . $this->table_name . "
+            }else{
+                $query = "INSERT INTO event (event_id) VALUES(:event_id)
+                ON DUPLICATE KEY UPDATE event_id= :event_id, created_date= now();
+                INSERT INTO company (co_id, company_name, company_contact_first_name, company_contact_last_name, company_email, created_by) VALUES(:company_id, :company_name, :company_contact_first_name, :company_contact_last_name, :company_email, '$user_id')
+                ON DUPLICATE KEY UPDATE co_id= :company_id, company_name = :company_name, company_contact_first_name = :company_contact_first_name, company_contact_last_name = :company_contact_last_name, company_email = :company_email, created_by = '$user_id', created_date= now();
+                INSERT INTO " . $this->table_name . "
                         SET company_id = :company_id,
                         event_id = :event_id,
                         booth = :booth,
@@ -227,120 +154,28 @@ class BoothDetails {
                         ges_ese= :ges_ese, created_by = '$user_id', created_date=now()"; 
 
                         // prepare query statement
-                        $stmt = $this->conn->prepare($query); 
+                $stmt = $this->conn->prepare($query); 
 
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
-                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
-                        $stmt->bindParam(':company_email', $company_email);
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':booth', $booth);
-                        $stmt->bindParam(':hall', $hall);
-                        $stmt->bindParam(':fm_name', $fm_name);
-                        $stmt->bindParam(':fm_phone', $fm_phone);
-                        $stmt->bindParam(':fm_text_number', $fm_text_number);
-                        $stmt->bindParam(':ges_ese', $ges_ese);
 
-                    }
-            
-                }else{
 
-                    $query = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
-                    // prepare query statement
-                    $stmt = $this->conn->prepare($query);
-                    $stmt->bindParam(1, htmlspecialchars(strip_tags($company_id)));
-                    // execute query
-                    $stmt->execute(); 
-                    $num = $stmt->rowCount(); 
-                    if ($num > 0) {
-                        $row = $stmt->fetch(PDO::FETCH_ASSOC); 
-                        $updatequery = "update company
-                        SET company_name = :company_name,
-                        company_contact_first_name = :company_contact_first_name,
-                        company_contact_last_name = :company_contact_last_name,
-                        company_email = :company_email,
-                        created_by = '$user_id', created_date=now() where co_id = :company_id";
-                        $stmt = $this->conn->prepare($updatequery);
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                $stmt->bindParam(':company_name', $company_name);
+                $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
+                $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
+                $stmt->bindParam(':company_email', $company_email);
+                $stmt->bindParam(':booth', $booth);
+                $stmt->bindParam(':hall', $hall);
+                $stmt->bindParam(':fm_name', $fm_name);
+                $stmt->bindParam(':fm_phone', $fm_phone);
+                $stmt->bindParam(':fm_text_number', $fm_text_number);
+                $stmt->bindParam(':ges_ese', $ges_ese);
 
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
-                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
-                        $stmt->bindParam(':company_email', $company_email);
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        // execute query
-                        $stmt->execute(); 
-
-                        $insertquery = "
-                        INSERT INTO event
-                        SET event_id = :event_id, created_date=now();
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        booth = :booth,
-                        hall = :hall,
-                        fm_name= :fm_name,
-                        fm_phone= :fm_phone,
-                        fm_text_number= :fm_text_number,
-                        ges_ese= :ges_ese,
-                        created_by = '$user_id', created_date=now()";
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($insertquery); 
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':booth', $booth);
-                        $stmt->bindParam(':hall', $hall);
-                        $stmt->bindParam(':fm_name', $fm_name);
-                        $stmt->bindParam(':fm_phone', $fm_phone);
-                        $stmt->bindParam(':fm_text_number', $fm_text_number);
-                        $stmt->bindParam(':ges_ese', $ges_ese);
-                    }else{
-                        $query = "
-                        INSERT INTO event
-                        SET event_id = :event_id, created_date=now();
-                        INSERT INTO company
-                        SET co_id = :company_id,
-                        company_name = :company_name,
-                        company_contact_first_name = :company_contact_first_name,
-                        company_contact_last_name = :company_contact_last_name,
-                        company_email = :company_email,
-                        created_by = '$user_id', created_date=now();
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        booth = :booth,
-                        hall = :hall,
-                        fm_name= :fm_name,
-                        fm_phone= :fm_phone,
-                        fm_text_number= :fm_text_number,
-                        ges_ese= :ges_ese,
-                        created_by = '$user_id', created_date=now()";
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($query); 
-
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':company_contact_first_name', $company_contact_first_name);
-                        $stmt->bindParam(':company_contact_last_name', $company_contact_last_name);
-                        $stmt->bindParam(':company_email', $company_email);
-                        $stmt->bindParam(':booth', $booth);
-                        $stmt->bindParam(':hall', $hall);
-                        $stmt->bindParam(':fm_name', $fm_name);
-                        $stmt->bindParam(':fm_phone', $fm_phone);
-                        $stmt->bindParam(':fm_text_number', $fm_text_number);
-                        $stmt->bindParam(':ges_ese', $ges_ese);
-                    }
+                $stmt->execute();
                 }
             }
-        }else{
-            $query = "";
-            // prepare query statement
-            $stmt = $this->conn->prepare($query); 
-        }
         return $stmt;
     }
-
 
     //get empty booth details
     function getEmptyBoothDetails() {

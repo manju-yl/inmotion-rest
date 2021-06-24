@@ -300,10 +300,10 @@ $("#import_form").on('submit',function(e){
         }else{
           $("#appointmentDivDisp").show();
           $("#dispEventLists").html(result);
-          if(data.emptyUniqueAppointment == 1){
+          if(data.emptyRowsCount == 1){
             var insertedId = $( "#eventselection option:selected" ).text(); 
             $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
-          }else if(data.emptyUniqueAppointment > 1){
+          }else if(data.emptyRowsCount > 1){
             if(data.eventCount == 1){
               var insertedId = $( "#eventselection option:selected" ).text(); 
               $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
@@ -399,11 +399,11 @@ $("#import_floor_form").on('submit',function(e){
         }else{
           $("#floorManagerDivDisp").show();
           $("#dispFloorEventLists").html(result);
-          if(data.emptyUniqueFloor == 1){
+          if(data.emptyRowsCount == 1){
             var insertedId = $( "#flooreventselection option:selected" ).text(); 
             $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );
             
-          }else if(data.emptyUniqueFloor > 1){
+          }else if(data.emptyRowsCount > 1){
             if(data.eventCount == 1){
               var insertedId = $( "#flooreventselection option:selected" ).text(); 
               $("#message").append( '<div class="alert alert-success"> '+data.emptyRowsCount+ ' record(s) were inserted with missing data. Please find the missing data in the section below for event ID: '+insertedId+'</div>' );

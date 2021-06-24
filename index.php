@@ -34,7 +34,7 @@ require './api/common/header.php';
 	padding-bottom: 30px !important;
 }
 </style>
-<form class="login100-form validate-form" method="post" id="login_form">
+<form class="login100-form validate-form" method="post" id="login_form" autocomplete="off">
 <span class="login100-form-title">
 Member Login
 </span>

@@ -78,14 +78,7 @@ class Appointment {
         if($event_id != "" && $company_id != ""){
             $query = "SELECT 
             c.co_id,
-            c.company_name,
-            e.event_id,
-            e.event_name,
-            a.day,
-            a.time,
-            c.company_contact_first_name,
-            c.company_contact_last_name,
-            c.company_email
+            e.event_id
             FROM
             " . $this->table_name . " a
             LEFT JOIN
@@ -104,18 +97,10 @@ class Appointment {
             $stmt->execute();
             $num = $stmt->rowCount(); 
             if ($num > 0) {
-                $updatequery = "update company
-                SET company_name = :company_name,
-                created_by = '$user_id', created_date=now() where co_id = :company_id";
-                $stmt = $this->conn->prepare($updatequery);
-
-                $stmt->bindParam(':company_name', $company_name);
-                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-
-                // execute query
-                $stmt->execute();
-
                 $updateAppointment = "
+                update company
+                SET company_name = :company_name,
+                created_by = '$user_id', created_date=now() where co_id = :company_id;
                 UPDATE " . $this->table_name . "
                 SET day = :day,
                 time = :time,
@@ -124,149 +109,36 @@ class Appointment {
                 // prepare query statement
                 $stmt = $this->conn->prepare($updateAppointment); 
 
+                $stmt->bindParam(':company_name', $company_name);
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
                 $stmt->bindParam(':day', $day);
                 $stmt->bindParam(':time', $time);
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->execute();  echo $stmt->debugDumpParams();
 
             }else{
-                $query = "SELECT event_id FROM event WHERE event_id = ? LIMIT 0,1";
+                $query = "INSERT INTO event (event_id) VALUES(:event_id)
+                ON DUPLICATE KEY UPDATE event_id= :event_id, created_date= now();
+                INSERT INTO company (co_id, company_name, created_by) VALUES(:company_id, :company_name, '$user_id')
+                ON DUPLICATE KEY UPDATE co_id= :company_id, company_name = :company_name, created_date= now(), created_by='$user_id';
+                INSERT INTO " . $this->table_name . "
+                        SET company_id = :company_id,
+                        event_id = :event_id,
+                        day = :day,
+                        time = :time,
+                        created_by='$user_id', 
+                        created_date=now()"; 
 
                 // prepare query statement
-                $stmt = $this->conn->prepare($query);
-                $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
+                $stmt = $this->conn->prepare($query); 
 
-                // execute query
-                $stmt->execute(); 
-                $num = $stmt->rowCount();  
-                if ($num > 0) {
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $event_id = $row['event_id'];
-                    $checkCompanyExists = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
-
-                    // prepare query statement
-                    $companyExists = $this->conn->prepare($checkCompanyExists);
-                    $companyExists->bindParam(1, htmlspecialchars(strip_tags($company_id)));
-
-                    // execute query
-                    $companyExists->execute(); 
-                    $companyCount = $companyExists->rowCount(); 
-                    if ($companyCount > 0) {
-                        $row = $companyExists->fetch(PDO::FETCH_ASSOC);
-                        $updatequery = "update company
-                        SET company_name = :company_name,
-                        created_by = '$user_id', created_date=now() where co_id = :company_id;
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        day = :day,
-                        time = :time,
-                        created_by='$user_id', created_date=now()";
-
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($updatequery);
-
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':day', $day);
-                        $stmt->bindParam(':time', $time);
-
-
-                    }else{
-                        $query = "
-                        INSERT INTO company
-                        SET co_id = :company_id,
-                        company_name = :company_name,
-                        created_by = '$user_id', created_date=now();
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        day = :day,
-                        time = :time,
-                        created_by='$user_id', created_date=now()"; 
-
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($query); 
-
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':day', $day);
-                        $stmt->bindParam(':time', $time);
-                    }
-
-                }else{
-                    $query = "SELECT co_id FROM company WHERE co_id = ? LIMIT 0,1";
-
-                    // prepare query statement
-                    $stmt = $this->conn->prepare($query);
-                    $stmt->bindParam(1, htmlspecialchars(strip_tags($company_id)));
-
-                    // execute query
-                    $stmt->execute(); 
-                    $num = $stmt->rowCount(); 
-                    if ($num > 0) {
-                        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $updatequery = "update company
-                        SET company_name = :company_name,
-                        created_by = '$user_id', created_date=now() where co_id = :company_id";
-                        $stmt = $this->conn->prepare($updatequery);
-
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-
-                        // execute query
-                        $stmt->execute();
-
-                        $insertquery = "
-                        INSERT INTO event
-                        SET event_id = :event_id, created_date=now();
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        day = :day,
-                        time = :time,
-                        created_by='$user_id', created_date=now()";
-
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($insertquery); 
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':day', $day);
-                        $stmt->bindParam(':time', $time);
-                    }else{
-                        $query = "
-                        INSERT INTO event
-                        SET event_id = :event_id, created_date=now();
-                        INSERT INTO company
-                        SET co_id = :company_id,
-                        company_name = :company_name,
-                        created_by = '$user_id', created_date=now();
-                        INSERT INTO " . $this->table_name . "
-                        SET company_id = :company_id,
-                        event_id = :event_id,
-                        day = :day,
-                        time = :time,
-                        created_by='$user_id', created_date=now()";
-
-                        // prepare query statement
-                        $stmt = $this->conn->prepare($query); 
-
-                        $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                        $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
-                        $stmt->bindParam(':company_name', $company_name);
-                        $stmt->bindParam(':day', $day);
-                        $stmt->bindParam(':time', $time);
-
-                    }
-                }
+                $stmt->bindParam(':company_id', htmlspecialchars(strip_tags($company_id)));
+                $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
+                $stmt->bindParam(':company_name', $company_name);
+                $stmt->bindParam(':day', $day);
+                $stmt->bindParam(':time', $time);
+                $stmt->execute();  echo $stmt->debugDumpParams();
             }
-        }else{
-            $query = ""; 
-
-            // prepare query statement
-            $stmt = $this->conn->prepare($query); 
         }
         return $stmt;
     }
@@ -438,6 +310,15 @@ class Appointment {
         $stmt->execute();
 
         return $stmt;
+    }
+
+    function batchImport($totalcount){
+        for ($i=1; $i<=$totalcount; $i++) {
+           if ($i%1000 == 0) {
+               $finalmultiple = $i;
+           }
+        }
+        return $finalmultiple;
     }
 
 

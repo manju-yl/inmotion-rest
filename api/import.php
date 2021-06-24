@@ -96,6 +96,7 @@ if (isset($_POST["resignappintments"])) {
         $totalRecords = ($sheetCount-1); 
         if($totalRecords > 0){
         //loop through the excel data
+        $finalmultiple = $appointment->batchImport($totalRecords); 
         for ($i = 1; $i <= $totalRecords; $i ++) {
             $coid = $SheetDataKey['COID'];
             $eventid = $SheetDataKey['EventId'];
@@ -105,55 +106,87 @@ if (isset($_POST["resignappintments"])) {
 
             $company_id = filter_var(trim($spreadSheetAry[$i][$coid]), FILTER_SANITIZE_NUMBER_INT);
             $event_id = filter_var(trim($spreadSheetAry[$i][$eventid]), FILTER_SANITIZE_NUMBER_INT);
-            $day = trim($spreadSheetAry[$i][$date]); 
-            $time = trim($spreadSheetAry[$i][$time]);
-            $company_name = trim($spreadSheetAry[$i][$companyname]);
-            
-            //get appointment object
-            $appointment = new appointment($conn);  
-            $stmt = $appointment->addOrUpdateAppointment($event_id, $company_id,  $day, $time, $company_name, $user_id); 
-           
-            // execute query
-            if ($stmt->execute()) {
+            $day = filter_var(addslashes(trim($spreadSheetAry[$i][$date]))); 
+            $time = filter_var(addslashes(trim($spreadSheetAry[$i][$time])));
+            $company_name = filter_var(addslashes(trim($spreadSheetAry[$i][$companyname])));
+
+            if(empty($company_id) || empty($event_id)){
+                $missedRowCount++;
+            }else{
                 $query = "SELECT 
-                                        event_id
-                                    FROM
-                                        appointment
-                                    WHERE ( (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))"; 
-                if ($event_id != "") {
-                    $addCondition = "and event_id = ?";
-                }
-                if ($company_id != "") {
-                    $addCondition .= "and company_id = ?";
-                }
-                $query .= $addCondition;
-                $query .= " order by created_date desc";
+                c.co_id,
+                e.event_id
+                FROM
+                appointment a
+                LEFT JOIN
+                company c ON a.company_id = c.co_id
+                LEFT JOIN
+                event e ON e.event_id = a.event_id
+                WHERE
+                a.event_id = ? and a.company_id = ?";
+
                 // prepare query statement
-                $stmt = $conn->prepare($query); 
+                $stmt = $conn->prepare($query);
                 $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
                 $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
+
                 // execute query
                 $stmt->execute(); 
+                $num = $stmt->rowCount(); 
+                if ($num > 0) {
+                    $updateAppointment .= "
+                    UPDATE company
+                    SET company_name = '$company_name',
+                    created_by = '$user_id', created_date=now() where co_id = '$company_id';
+                    UPDATE appointment
+                    SET day = '$day',
+                    time = '$time',
+                    created_by='$user_id', created_date=now() where event_id = '$event_id' and company_id = '$company_id'";
 
-                $emptyRecordCount = $stmt->rowCount(); 
-                //check if records > 0
-                if ($emptyRecordCount > 0) {
-                    $appointmentItem = array(
-                        "eventId" => $event_id,
-                        "companyId" => $company_id
-                    );
-                    
-                    array_push($appointmentArr, $appointmentItem);
+                    $stmt = $conn->prepare($updateAppointment);
+                    if ($i%1000 == 0) {
+                        $stmt->execute(); 
+                        $updateAppointment = "";
+                    }elseif ($i > $finalmultiple){
+                        $stmt->execute(); 
+                        $updateAppointment = "";
+                    }
 
-                }else{     
+                }else{
+
+                    $appointmentquery .= "INSERT INTO event (event_id) VALUES('$event_id')
+                    ON DUPLICATE KEY UPDATE event_id= '$event_id', created_date= now();
+                    INSERT INTO company (co_id, company_name, created_by) VALUES('$company_id', '$company_name', '$user_id')
+                    ON DUPLICATE KEY UPDATE co_id= '$company_id', company_name = '$company_name', created_date= now(), created_by='$user_id';
+                    INSERT INTO appointment
+                            SET company_id = '$company_id',
+                            event_id = '$event_id',
+                            day = '$day',
+                            time = '$time',
+                            created_by='$user_id', created_date=now();"; 
+
+                    $stmt = $conn->prepare($appointmentquery);
+                    if ($i%1000 == 0) {
+                        $stmt->execute(); 
+                        $appointmentquery = "";
+                    }elseif ($i > $finalmultiple){
+                        $stmt->execute(); 
+                        $appointmentquery = "";
+                    }
+
                 }
-                
+                $appointmentItem = array(
+                    "eventId" => $event_id,
+                    "companyId" => $company_id
+                );
+                        
+                array_push($appointmentArr, $appointmentItem);
+                    
                 array_push($eventIdArray,$event_id); 
-                
-            } else {
-                $missedRowCount++; 
+
             }
-            }
+        }
+
         $eventIdUnique = count(array_unique($eventIdArray)); 
         //to get missed record count
         $missedAppointmentRecordCount = count($appointmentArr);
@@ -184,54 +217,19 @@ if (isset($_POST["resignappintments"])) {
                         $missedRecordCount++;
                     }
                 }
-                
-                if($missedRecordCount > 0){
-                    if($eventIdUnique == 1){
-                        $dispEventId = array_unique($eventIdArray); 
-                        $message = '<div class="alert alert-success">Re-sign appointment file upload is complete for EventId: '. $dispEventId[0] .'</div>';
-                        $uniqueEventIdDisp = $dispEventId[0];
-
-                    }else{
-                        $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
-                    }
-                    $emptyUniqueAppointment = $missedRecordCount;
-                }else{
-                    if($eventIdUnique == 1){
-                        $dispEventId = array_unique($eventIdArray); 
-                        $message = '<div class="alert alert-success">Re-sign appointment file upload is complete for EventId: '. $dispEventId[0] .'</div>';
-                        $uniqueEventIdDisp = $dispEventId[0];
-
-                    }else{
-                        $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
-                    }
-                    $emptyUniqueAppointment = $missedRecordCount;  
-                }
+        }
+        $eventIdUnique = count(array_unique($eventIdArray));
+        if($eventIdUnique == 1){
+            $dispEventId = array_unique($eventIdArray); 
+            $message = '<div class="alert alert-success">Re-sign appointment file upload is complete for Event ID: '. $dispEventId[0] .'</div>';
+            $uniqueEventIdDisp = $dispEventId[0];
         }else{
-            if($eventIdUnique == 1){
-                $dispEventId = array_unique($eventIdArray); 
-                $message = '<div class="alert alert-success">Re-sign appointment file upload is complete for Event ID: '. $dispEventId[0] .'</div>';
-                $uniqueEventIdDisp = $dispEventId[0];
-            }else{
-                $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
-            }
+            $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
         }
-
-        if($totalRecords > 0){
-          if($missedRowCount > 0){
-           if($eventIdUnique == 1){
-                $dispEventId = array_unique($eventIdArray); 
-                $message = '<div class="alert alert-success">Re-sign appointment file upload is complete for Event ID: '. $dispEventId[0] .'</div>';
-                $uniqueEventIdDisp = $dispEventId[0];
-            }else{
-                $message = '<div class="alert alert-success">Re-sign appointment file upload is complete.</div>';
-            }
-          }
-        }
-
         if($totalRecords == $missedRowCount){
             $message = '<div class="errorMessage errormsgWrapperDi">Re-sign appointment file upload is not complete.</div>';
         }
-        echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'emptyUniqueAppointment' =>  $emptyUniqueAppointment, 'uniqueEventIdDisp' => $uniqueEventIdDisp, 'eventCount' => $eventCount)); exit;
+        echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'eventCount' => $eventCount)); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct re-sign appointment file.</div>';
             echo json_encode(array('status' => 401, 'message' => $message)); exit; 
@@ -328,8 +326,11 @@ if (isset($_POST["floormanager"])) {
 
         // match excel sheet column
         if ($flag == 1) {
+        //get booth object
+        $boothdetails = new boothdetails($conn); 
         $totalRecords = ($sheetCount-1);
         if($totalRecords > 0){
+        $finalmultiple = $appointment->batchImport($totalRecords); 
         //loop through the excel data
         for ($i = 1; $i <= $totalRecords; $i ++) {
             $coid = $sheetDataKey['CoID'];
@@ -347,57 +348,107 @@ if (isset($_POST["floormanager"])) {
 
             $company_id = filter_var(trim($spreadSheetAry[$i][$coid]), FILTER_SANITIZE_NUMBER_INT);
             $event_id = filter_var(trim($spreadSheetAry[$i][$eventid]), FILTER_SANITIZE_NUMBER_INT);
-            $company_name = trim($spreadSheetAry[$i][$exhibiting_as]);
-            $booth = trim($spreadSheetAry[$i][$booth_number]);
-            $first_name = trim($spreadSheetAry[$i][$first_name]);
-            $last_name = trim($spreadSheetAry[$i][$last_name]); 
-            $company_email = trim($spreadSheetAry[$i][$company_email]);
-            $hall = trim($spreadSheetAry[$i][$hall]);
-            $fm_name = trim($spreadSheetAry[$i][$floor_manager]);
-            $fm_phone = trim($spreadSheetAry[$i][$phone]);
-            $ges_ese = trim($spreadSheetAry[$i][$ges_ese]);
-            $fm_text_number = trim($spreadSheetAry[$i][$text_number]);
+            $company_name = filter_var(addslashes(trim($spreadSheetAry[$i][$exhibiting_as])));
+            $booth = filter_var(addslashes(trim($spreadSheetAry[$i][$booth_number])));
+            $first_name = filter_var(addslashes(trim($spreadSheetAry[$i][$first_name])));
+            $last_name = filter_var(addslashes(trim($spreadSheetAry[$i][$last_name]))); 
+            $company_email = filter_var(addslashes(trim($spreadSheetAry[$i][$company_email])));
+            $hall = filter_var(addslashes(trim($spreadSheetAry[$i][$hall])));
+            $fm_name = filter_var(addslashes(trim($spreadSheetAry[$i][$floor_manager])));
+            $fm_phone = filter_var(addslashes(trim($spreadSheetAry[$i][$phone])));
+            $ges_ese = filter_var(addslashes(trim($spreadSheetAry[$i][$ges_ese])));
+            $fm_text_number = filter_var(addslashes(trim($spreadSheetAry[$i][$text_number])));
        
-            //get booth object
-            $boothdetails = new boothdetails($conn);  
-            $stmt = $boothdetails->addOrUpdateBoothDetails($event_id, $company_id, $booth, $hall, $fm_name, $fm_phone, $ges_ese, $fm_text_number, $company_name, $first_name, $last_name, $company_email, $user_id);
-            
-            if ($stmt->execute()) {
+            if(empty($company_id) || empty($event_id) || empty($booth)){
+                $missedRowCount++;
+            }else{
+                // select booths based on event_id and company_id and booth
                 $query = "SELECT 
-                                    event_id
-                                FROM
-                                    booth_details
-                                WHERE ((hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
-                $addCondition = "and event_id = ?";
-                $addCondition .= "and company_id = ?";
-                $query .= $addCondition;
-                $query .= " order by created_date desc";
+                c.co_id,
+                e.event_id,
+                bd.booth
+                FROM
+                booth_details bd
+                LEFT JOIN
+                company c ON bd.company_id = c.co_id
+                LEFT JOIN
+                event e ON e.event_id = bd.event_id
+                WHERE
+                bd.event_id = ? and bd.company_id= ? and bd.booth = ?";
 
                 // prepare query statement
                 $stmt = $conn->prepare($query);
-                $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-                $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
-                // execute query
-                $stmt->execute(); 
+                $event_id = htmlspecialchars(strip_tags($event_id));
+                $company_id = htmlspecialchars(strip_tags($company_id));
 
-                $emptyRecordCount = $stmt->rowCount(); 
-                //check if records > 0
-                if ($emptyRecordCount > 0) {
-                    $floorItem = array(
+                $stmt->bindParam(1, $event_id);
+                $stmt->bindParam(2, $company_id);
+                $stmt->bindParam(3, $booth);
+                // execute query
+                $stmt->execute();  
+                $num = $stmt->rowCount(); 
+                if($num > 0){
+                    $updateBooth .= "
+                    UPDATE company
+                    SET company_name = '$company_name',
+                    company_contact_first_name = '$first_name',
+                    company_contact_last_name = '$last_name',
+                    company_email = '$company_email',
+                    created_by = '$user_id', created_date=now() where co_id = '$company_id';
+                    UPDATE booth_details
+                    SET hall = '$hall',
+                    fm_name= '$fm_name',
+                    fm_phone= '$fm_phone',
+                    fm_text_number= '$fm_text_number',
+                    ges_ese= '$ges_ese', created_by = '$user_id', created_date=now() where event_id = '$event_id' and company_id = '$company_id' and booth = '$booth';"; 
+
+                    // prepare query statement
+                    $stmt = $conn->prepare($updateBooth);
+                    if ($i%1000 == 0) {
+                        $stmt->execute(); 
+                        $updateBooth = "";
+                    }elseif ($i > $finalmultiple){
+                        $stmt->execute(); 
+                        $updateBooth = "";
+                    }
+
+                }else{
+                    $boothquery .= "INSERT INTO event (event_id) VALUES('$event_id')
+                    ON DUPLICATE KEY UPDATE event_id= '$event_id', created_date= now();
+                    INSERT INTO company (co_id, company_name, company_contact_first_name, company_contact_last_name, company_email, created_by) VALUES('$company_id', '$company_name', '$first_name', '$last_name', '$company_email', '$user_id')
+                    ON DUPLICATE KEY UPDATE co_id= '$company_id', company_name = '$company_name', company_contact_first_name = '$first_name', company_contact_last_name = '$last_name', company_email = '$company_email', created_by = '$user_id', created_date= now();
+                    INSERT INTO booth_details
+                    SET company_id = '$company_id',
+                    event_id = '$event_id',
+                    booth = '$booth',
+                    hall = '$hall',
+                    fm_name= '$fm_name',
+                    fm_phone= '$fm_phone',
+                    fm_text_number= '$fm_text_number',
+                    ges_ese= '$ges_ese', created_by = '$user_id', created_date=now();"; 
+
+                    // prepare query statement
+                    $stmt = $conn->prepare($boothquery); 
+                    if ($i%1000 == 0) {
+                        $stmt->execute(); 
+                        $boothquery = "";
+                    }elseif ($i > $finalmultiple){
+                        $stmt->execute(); 
+                        $boothquery = "";
+                    }
+
+                }
+                $floorItem = array(
                     "eventId" => $event_id,
                     "companyId" => $company_id
                     );
                     
-                    array_push($floorArr, $floorItem);
-                }else{
-                }
+                array_push($floorArr, $floorItem);
 
                 array_push($eventIdArray,$event_id);
-                
-            } else {
-                $missedRowCount++;
+
             }
-            } 
+        }
 
         $eventIdUnique = count(array_unique($eventIdArray));
         //to get missed record count
@@ -428,56 +479,22 @@ if (isset($_POST["floormanager"])) {
                 if($emptyCount > 0){
                     $missedRecordCount++;
                 }
+
                 }
                 
-                if($missedRecordCount > 0){
-                    if($eventIdUnique == 1){
-                        $dispEventId = array_unique($eventIdArray); 
-                        $message = '<div class="alert alert-success">Floor manager file upload is complete for EventId: '. $dispEventId[0] .'</div>';
-                        $uniqueEventIdDisp = $dispEventId[0];
-
-                    }else{
-                        $message = '<div class="alert alert-success">Floor manager file upload is complete.</div>';
-                    }
-                    $emptyUniqueFloor = $missedRecordCount;
-                }else{
-                    if($eventIdUnique == 1){
-                        $dispEventId = array_unique($eventIdArray); 
-                        $message = '<div class="alert alert-success">Floor manager file upload is complete for EventId: '. $dispEventId[0] .'</div>';
-                        $uniqueEventIdDisp = $dispEventId[0];
-
-                    }else{
-                        $message = '<div class="alert alert-success">Floor manager file upload is complete.</div>';
-                    }
-                    $emptyUniqueFloor = $missedRecordCount;
-                }
-        }else{
-            if($eventIdUnique == 1){
-                $dispEventId = array_unique($eventIdArray); 
-                $message = '<div class="alert alert-success">Floor manager file upload is complete for EventId: '. $dispEventId[0] .'</div>';
-                $uniqueEventIdDisp = $dispEventId[0];
-            }else{
-                $message = '<div class="alert alert-success">Floor manager file upload is complete.</div>';
-            }
-        }
-
-        if($totalRecords > 0){
-          if($missedRowCount > 0){
+           }
            if($eventIdUnique == 1){
                 $dispEventId = array_unique($eventIdArray); 
                 $message = '<div class="alert alert-success">Floor manager file upload is complete for EventId: '. $dispEventId[0] .'</div>';
-                $uniqueEventIdDisp = $dispEventId[0];
             }else{
                 $message = '<div class="alert alert-success">Floor manager file upload is complete.</div>';
             }
-          }
-        }
 
         if($totalRecords == $missedRowCount){
             $message = '<div class="errorMessage errormsgWrapperDi">Floor manager file upload is not complete.</div>';
         }
         
-        echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'emptyUniqueFloor' =>  $emptyUniqueFloor, 'uniqueEventIdDisp' => $uniqueEventIdDisp, 'eventCount' => $eventCount )); exit;
+        echo json_encode(array('status' => 200, 'message' => $message,'emptyRowsCount' => $missedRecordCount,'missedRowCount' => $missedRowCount, 'totalRecords' => $totalRecords, 'eventCount' => $eventCount )); exit;
         }else{
             $message = '<div class="errorMessage errormsgWrapperDi">Please upload the correct floor manager file.</div>';
             echo json_encode(array('status' => 401, 'message' => $message)); exit; 
