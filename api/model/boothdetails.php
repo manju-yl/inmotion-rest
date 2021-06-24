@@ -102,12 +102,10 @@ class BoothDetails {
             $stmt->bindParam(2, $company_id);
             $stmt->bindParam(3, $booth);
             // execute query
-            $stmt->execute();
+            $stmt->execute();  
             $num = $stmt->rowCount(); 
             if($num > 0){
-
-                $updateBooth = "
-                update company
+                $updateBooth = "UPDATE company
                 SET company_name = :company_name,
                 company_contact_first_name = :company_contact_first_name,
                 company_contact_last_name = :company_contact_last_name,
@@ -153,7 +151,7 @@ class BoothDetails {
                         fm_text_number= :fm_text_number,
                         ges_ese= :ges_ese, created_by = '$user_id', created_date=now()"; 
 
-                        // prepare query statement
+                // prepare query statement
                 $stmt = $this->conn->prepare($query); 
 
 
@@ -172,6 +170,7 @@ class BoothDetails {
                 $stmt->bindParam(':ges_ese', $ges_ese);
 
                 $stmt->execute();
+
                 }
             }
         return $stmt;

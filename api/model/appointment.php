@@ -114,7 +114,7 @@ class Appointment {
                 $stmt->bindParam(':day', $day);
                 $stmt->bindParam(':time', $time);
                 $stmt->bindParam(':event_id', htmlspecialchars(strip_tags($event_id)));
-                $stmt->execute();  echo $stmt->debugDumpParams();
+                $stmt->execute(); 
 
             }else{
                 $query = "INSERT INTO event (event_id) VALUES(:event_id)
