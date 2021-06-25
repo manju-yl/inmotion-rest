@@ -1,5 +1,4 @@
 <?php
-
 require "../vendor/autoload.php";
 include_once './config/database.php';
 include_once './model/appointment.php';
