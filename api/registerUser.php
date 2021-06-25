@@ -38,6 +38,13 @@ if ($password == "" || $password == null ) {
 
 //get user object
 $user = new User($conn);
+//check if email already exists
+if ($user->getUser($email)->rowCount() > 0) {
+    http_response_code(400);
+
+    echo json_encode(array("message" => "User already exists with this email."));
+    exit;
+}
 //add user data
 $stmt = $user->addUser($firstName, $lastName, $email, $password);
 
