@@ -123,12 +123,10 @@ if (isset($_POST["resignappintments"])) {
                 LEFT JOIN
                 event e ON e.event_id = a.event_id
                 WHERE
-                a.event_id = ? and a.company_id = ?";
+                a.event_id = '$event_id' and a.company_id = '$company_id'";
 
                 // prepare query statement
                 $stmt = $conn->prepare($query);
-                $stmt->bindParam(1, htmlspecialchars(strip_tags($event_id)));
-                $stmt->bindParam(2, htmlspecialchars(strip_tags($company_id)));
 
                 // execute query
                 $stmt->execute(); 
@@ -141,7 +139,7 @@ if (isset($_POST["resignappintments"])) {
                     UPDATE appointment
                     SET day = '$day',
                     time = '$time',
-                    created_by='$user_id', created_date=now() where event_id = '$event_id' and company_id = '$company_id'";
+                    created_by='$user_id', created_date=now() where event_id = '$event_id' and company_id = '$company_id';";
 
                     $stmt = $conn->prepare($updateAppointment);
                     if ($i%1000 == 0) {
@@ -201,14 +199,12 @@ if (isset($_POST["resignappintments"])) {
                                     FROM
                                         appointment
                                     WHERE ( (day = '' OR day IS NULL)  OR (time = '' OR time IS NULL))"; 
-                    $addCondition = "and event_id = ?";
-                    $addCondition .= "and company_id = ?";
+                    $addCondition = "and event_id = '$value[eventId]'";
+                    $addCondition .= "and company_id = '$value[companyId]'";
                     $query .= $addCondition;
                     $query .= " order by created_date desc";
                     // prepare query statement
-                    $stmt = $conn->prepare($query); 
-                    $stmt->bindParam(1, htmlspecialchars(strip_tags($value[eventId])));
-                    $stmt->bindParam(2, htmlspecialchars(strip_tags($value[companyId])));
+                    $stmt = $conn->prepare($query);
                     // execute query
                     $stmt->execute(); 
 
@@ -374,16 +370,13 @@ if (isset($_POST["floormanager"])) {
                 LEFT JOIN
                 event e ON e.event_id = bd.event_id
                 WHERE
-                bd.event_id = ? and bd.company_id= ? and bd.booth = ?";
+                bd.event_id = '$event_id' and bd.company_id= '$company_id' and bd.booth = '$booth'";
 
                 // prepare query statement
                 $stmt = $conn->prepare($query);
                 $event_id = htmlspecialchars(strip_tags($event_id));
                 $company_id = htmlspecialchars(strip_tags($company_id));
 
-                $stmt->bindParam(1, $event_id);
-                $stmt->bindParam(2, $company_id);
-                $stmt->bindParam(3, $booth);
                 // execute query
                 $stmt->execute();  
                 $num = $stmt->rowCount(); 
@@ -463,15 +456,13 @@ if (isset($_POST["floormanager"])) {
                                 FROM
                                     booth_details
                                 WHERE ((hall = '' OR hall IS NULL) OR (fm_name = '' OR fm_name IS NULL) OR (fm_phone = '' OR fm_phone IS NULL) OR (fm_text_number = '' OR fm_text_number IS NULL) OR (ges_ese = '' OR ges_ese IS NULL))";
-                $addCondition = "and event_id = ?";
-                $addCondition .= "and company_id = ?";
+                $addCondition = "and event_id = '$value[eventId]'";
+                $addCondition .= "and company_id = '$value[companyId]'";
                 $query .= $addCondition;
                 $query .= " order by created_date desc";
 
                 // prepare query statement
                 $stmt = $conn->prepare($query);
-                $stmt->bindParam(1, htmlspecialchars(strip_tags($value[eventId])));
-                $stmt->bindParam(2, htmlspecialchars(strip_tags($value[companyId])));
                 // execute query
                 $stmt->execute(); 
 
