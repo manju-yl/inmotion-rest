@@ -20,7 +20,7 @@
 		<div class="wrap-login100">
 			<?php
 			if (isset($_COOKIE['expireAt'])) { 
-				if(time() > $_COOKIE['expireAt']){
+				if(time() > base64_decode($_COOKIE['expireAt'])){
 					setcookie('token', '', time() - 3600);
 					setcookie('expireAt', '', time() - 3600);
 					setcookie('firstname', '', time() - 3600);
@@ -37,6 +37,6 @@
 			}
 
 			if (isset($_COOKIE['firstname'])){?>
-				<p>Welcome: <strong><?php echo $_COOKIE['firstname']; ?></strong></p>
+				<p>Welcome: <strong><?php echo base64_decode($_COOKIE['firstname']); ?></strong></p>
 				<p> <a href="importData.php?logout='1'">Logout</a> </p>
 			<?php  }  ?>

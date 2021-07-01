@@ -110,6 +110,8 @@ if ($jwt) {
             "error" => $e->getMessage()
         ));
     }
+}else{
+    http_response_code(404);
 }
 
 

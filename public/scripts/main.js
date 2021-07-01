@@ -234,10 +234,10 @@ $("#login_form").on('submit',function(e){
    url: 'api/generateToken.php',
    success: function(data, result) {
      if(data.status ==200){
-      $.cookie('token',data.jwt);
-      $.cookie('firstname',data.firstname);
-      $.cookie('userId',data.userId);
-      $.cookie('expireAt',data.expireAt);
+      $.cookie('token',data.jwt, {secure: true});
+      $.cookie('firstname',btoa(data.firstname), {secure: true});
+      $.cookie('userId',btoa(data.userId), {secure: true});
+      $.cookie('expireAt',btoa(data.expireAt), {secure: true});
       window.location = 'importData.php';
     }else{
       $(".error").html(data.error)

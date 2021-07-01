@@ -5,7 +5,17 @@ if(isset($_COOKIE['token'])) {
 }
 
 require './api/common/header.php';
-
+header("X-Frame-Options: DENY");
+header("X-XSS-Protection: 0");
+header("X-Content-Type-Options: nosniff");
+header("X-Frame-Options: SAMEORIGIN");
+header("Referrer-Policy: no-referrer");
+header('Cache-Control: post-check=0, pre-check=0', FALSE);
+header('Pragma: no-cache');
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header("Access-Control-Allow-Origin: * ");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 ?>
 <style>

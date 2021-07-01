@@ -1,6 +1,7 @@
 <?php
 header("X-Frame-Options: DENY");
 header("X-XSS-Protection: 0");
+header("X-Content-Type-Options: nosniff");
 header("X-Frame-Options: SAMEORIGIN");
 header("Referrer-Policy: no-referrer");
 header('Cache-Control: no-store, no-cache, must-revalidate');

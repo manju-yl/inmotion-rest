@@ -2,6 +2,7 @@
 
 require "../vendor/autoload.php";
 include_once './config/database.php';
+require "./common/headers.php";
 require "../start.php";
 
 //database connection

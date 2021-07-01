@@ -15,7 +15,7 @@ $conn = $databaseService->getConnection();
 
 $user_id = "";
 if(isset($_COOKIE['userId'])){
-    $user_id = $_COOKIE['userId'];
+    $user_id = base64_decode($_COOKIE['userId']);
 }
 
 //If resign appointment radio button is clicked
@@ -56,8 +56,7 @@ if (isset($_POST["resignappintments"])) {
         // file path
         $spreadSheet = $reader->load($targetPath);
         $csvSheet = $spreadSheet->getActiveSheet();
-        $spreadSheetAry = $csvSheet->toArray(); 
-
+        $spreadSheetAry = $csvSheet->toArray();
         // array Count
         $sheetCount = count($spreadSheetAry); 
         if($sheetCount > 1) {
@@ -89,7 +88,8 @@ if (isset($_POST["resignappintments"])) {
         if (empty($dataDiff)) {
             $flag = 1;
         }
-
+        
+        
         // match excel sheet column
         if ($flag == 1) {
         $totalRecords = ($sheetCount-1); 
@@ -376,6 +376,7 @@ if (isset($_POST["floormanager"])) {
                 $event_id = htmlspecialchars(strip_tags($event_id));
                 $company_id = htmlspecialchars(strip_tags($company_id));
 
+                
                 // execute query
                 $stmt->execute();  
                 $num = $stmt->rowCount(); 

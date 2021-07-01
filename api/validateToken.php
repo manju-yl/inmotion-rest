@@ -19,10 +19,6 @@ $authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_S
 
 $arr = explode(" ", $authHeader);
 
-/* echo json_encode(array(
-  "message" => "sd" .$arr[1]
-  )); */
-
 $jwt = $arr[1];
 
 if ($jwt) {
@@ -46,4 +42,6 @@ if ($jwt) {
             "error" => $e->getMessage()
         ));
     }
+}else{
+    http_response_code(404);
 }

@@ -102,7 +102,7 @@ class BoothDetails {
             $stmt->bindParam(2, $company_id);
             $stmt->bindParam(3, $booth);
             // execute query
-            $stmt->execute();  
+            $stmt->execute();
             $num = $stmt->rowCount(); 
             if($num > 0){
                 $updateBooth = "UPDATE company
@@ -170,7 +170,6 @@ class BoothDetails {
                 $stmt->bindParam(':ges_ese', $ges_ese);
 
                 $stmt->execute();
-
                 }
             }
         return $stmt;

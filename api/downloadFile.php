@@ -3,6 +3,7 @@ require "../vendor/autoload.php";
 include_once './config/database.php';
 include_once './model/appointment.php';
 include_once './model/boothdetails.php';
+require "./common/headers.php";
 require "../start.php";
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -55,7 +56,6 @@ $fileName = $fileName.'.xlsx';
  
 header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 header("Content-Disposition: attachment; filename=".$fileName);
-header("Cache-Control: max-age=0");
 $writer->save('php://output'); exit;
 }
 
@@ -119,6 +119,5 @@ $fileName = $fileName.'.xlsx';
  
 header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 header("Content-Disposition: attachment; filename=".$fileName);
-header("Cache-Control: max-age=0");
 $writer->save('php://output'); exit;
 }
