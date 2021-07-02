@@ -12,6 +12,17 @@ $secret_key = $_ENV['JWT_SECRET'];
 //database connection
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
+
+//validate url
+if (filter_var($_ENV['SERVER_URL'].$_SERVER['REQUEST_URI'], FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED)) {
+    //set response code - 400 Bad Request
+    http_response_code(400);
+    echo json_encode(
+            array("message" => "")
+    );
+    exit;
+}
+
 //get filter data from input request
 $data = json_decode(file_get_contents("php://input"));
 //check if eventId value exists
@@ -111,7 +122,12 @@ if ($jwt) {
         ));
     }
 }else{
-    http_response_code(404);
+    // set response code - 400 Bad Request
+    http_response_code(400);
+    echo json_encode(
+            array("message" => "")
+    );
+    exit;
 }
 
 
