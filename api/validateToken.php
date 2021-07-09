@@ -61,11 +61,4 @@ if ($jwt) {
             "error" => $e->getMessage()
         ));
     }
-}else{
-    // set response code - 400 Bad Request
-    http_response_code(400);
-    echo json_encode(
-            array("message" => "")
-    );
-    exit;
 }

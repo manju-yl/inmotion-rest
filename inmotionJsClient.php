@@ -74,7 +74,7 @@
         <script src="<?php echo $_ENV['SERVER_URL'] ?>/public/scripts/jquery.cookie.js"></script>
         <script>
         var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/validateToken.php'; 
-        var proxy = 'https://cors-anywhere.herokuapp.com/';
+        
         var tokenfinalurl = url;
 
         var datasetting = {

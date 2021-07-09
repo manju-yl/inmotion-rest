@@ -15,20 +15,21 @@ $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
 //get filter data from input request
 $data = json_decode(file_get_contents("php://input"));
-//get authorization header
-$authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_STRING);
-
-$arr = explode(" ", $authHeader);
 //check if eventId value exists
 if ($data->event_id == "" || $data->event_id == null) {
-    // set response code - 404 Not found
-    http_response_code(404);
+    // set response code
+    http_response_code(200);
     // no appointments found
     echo json_encode(
             array("message" => "")
     );
     exit;
 }
+//get authorization header
+$authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_STRING);
+
+$arr = explode(" ", $authHeader);
+
 //check if event_id iss numeric
 if ($data->event_id != "" || $data->event_id != null) {
     if (!is_numeric($data->event_id) || !is_numeric($data->event_id)) {
@@ -99,6 +100,3 @@ if ($jwt) {
         ));
     }
 }
-
-
-

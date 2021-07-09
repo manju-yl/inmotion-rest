@@ -27,8 +27,8 @@ if (filter_var($_ENV['SERVER_URL'].$_SERVER['REQUEST_URI'], FILTER_VALIDATE_URL,
 $data = json_decode(file_get_contents("php://input"));
 //check if eventId value exists
 if ($data->event_id == "" || $data->event_id == null ) {
-    // set response code - 404 Not found
-    http_response_code(404);
+    // set response code
+    http_response_code(200);
     // no appointments found
     echo json_encode(
             array("message" => "")
@@ -38,8 +38,8 @@ if ($data->event_id == "" || $data->event_id == null ) {
 //check if event_id is numeric
 if ($data->event_id != "" || $data->event_id != null ) {
     if (!is_numeric($data->event_id) || !is_numeric($data->event_id)) {
-     // set response code - 404 Not found
-    http_response_code(404);
+     // set response code
+    http_response_code(200);
     // no appointments found
     echo json_encode(
             array("message" => "")
@@ -50,8 +50,8 @@ if ($data->event_id != "" || $data->event_id != null ) {
 //check if company_id is numeric
 if ($data->company_id != "" || $data->company_id != null ) {
     if (!is_numeric($data->company_id) || !is_numeric($data->company_id)) {
-     // set response code - 404 Not found
-    http_response_code(404);
+     // set response code
+    http_response_code(200);
     // no appointments found
     echo json_encode(
             array("message" => "")
