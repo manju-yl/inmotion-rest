@@ -100,7 +100,6 @@ if ($jwt) {
 
             // show user data in json format
             echo json_encode($user_arr);
-            exit;
         } else {
 
             // set response code - 404 Not found

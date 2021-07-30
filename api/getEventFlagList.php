@@ -33,7 +33,7 @@ $arr = explode(" ", $authHeader);
 //check if eventId value exists
 if ($data->event_id == "" || $data->event_id == null) {
     // set response code - 404 Not found
-    http_response_code(404);
+    http_response_code(200);
     // no appointments found
     echo json_encode(
             array("message" => "")
@@ -44,7 +44,7 @@ if ($data->event_id == "" || $data->event_id == null) {
 if ($data->event_id != "" || $data->event_id != null) {
     if (!is_numeric($data->event_id) || !is_numeric($data->event_id)) {
         // set response code - 404 Not found
-        http_response_code(404);
+        http_response_code(200);
         // no appointments found
         echo json_encode(
                 array("message" => "")
