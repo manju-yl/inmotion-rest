@@ -7,6 +7,8 @@ function hideValidate(input){var thisAlert=$(input).parent();$(thisAlert).remove
 //on page load
 $( document ).ready(function() {
   if($('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
+    $("#pagerefresh, #pagedownloadrefresh").load(location.href + " #pagerefresh");
+    
     $("#floorManagerDivDisp").hide();
     $(".excelfloorLoader").hide();
     $.ajax({
@@ -29,26 +31,7 @@ $( document ).ready(function() {
       error: function(data) {
       }
     });
-    $.ajax({
-      url: 'api/getEventSelectOption.php',
-      cache:false,
-      dataType:"html",
-      beforeSend:function(){
-        $('.deleteLoaderContainer').show();
-        $(".deleteBtn").hide();
-      },
-      success: function(data) {
-        $('.deleteLoaderContainer').hide();
-        if(data=="false"){
-            $(".deleteBtn").hide();
-          }else{
-            $(".deleteBtn").show();
-          }
-          
-      },
-      error: function(data) {
-      }
-    });
+    
 
     $('.infoAppointmentMessage').show();
     $('.infoBoothMessage').hide();
@@ -58,6 +41,8 @@ $( document ).ready(function() {
     $('#floormanager_div').hide();
 
   }else if($('input:radio[name=floormanager]:checked').val()=='floormanager'){
+    $("#pagefloorrefresh, #pagefloordownloadrefresh").load(location.href + " #pagefloorrefresh");
+
     $("#appointmentDivDisp").hide();
     $('.excelLoader').hide();
     $.ajax({
@@ -80,26 +65,7 @@ $( document ).ready(function() {
       error: function(data) {
       }
     });
-    $.ajax({
-      url: 'api/getEventSelectOption.php',
-      cache:false,
-      dataType:"html",
-      beforeSend:function(){
-        $('.deleteLoaderContainer').show();
-        $(".deleteBtn").hide();
-      },
-      success: function(data) {
-        $('.deleteLoaderContainer').hide();
-        if(data=="false"){
-            $(".deleteBtn").hide();
-          }else{
-            $(".deleteBtn").show();
-          }
-          
-      },
-      error: function(data) {
-      }
-    }); 
+    
     $('.infoBoothMessage').show();
     $('.infoAppointmentMessage').hide();
     $('#message').html('');
@@ -109,6 +75,7 @@ $( document ).ready(function() {
   }
 //when appointment radio button is clicked
 $('#resignappintment').click(function(){
+  $("#pagerefresh, #pagedownloadrefresh").load(location.href + " #pagerefresh");
   $("#floorManagerDivDisp").hide();
   $(".excelfloorLoader").hide();
   $.ajax({
@@ -131,26 +98,7 @@ $('#resignappintment').click(function(){
     error: function(data) {
     }
   });
-  $.ajax({
-    url: 'api/getEventSelectOption.php',
-    cache:false,
-    dataType:"html",
-    beforeSend:function(){
-      $('.deleteLoaderContainer').show();
-      $(".deleteBtn").hide();
-    },
-    success: function(data) {
-      $('.deleteLoaderContainer').hide();
-      if(data=="false"){
-          $(".deleteBtn").hide();
-        }else{
-          $(".deleteBtn").show();
-        }
-        
-    },
-    error: function(data) {
-    }
-  });
+  
   $('.infoAppointmentMessage').show();
   $('.infoBoothMessage').hide();
   $('#message').html('');
@@ -162,6 +110,8 @@ $('#resignappintment').click(function(){
 
 //when floor manager radio button is clicked
 $('#floormanager').click(function(){
+  $("#pagefloorrefresh, #pagefloordownloadrefresh").load(location.href + " #pagefloorrefresh");
+
   $("#appointmentDivDisp").hide();
   $('.excelLoader').hide();
   $.ajax({
@@ -184,26 +134,7 @@ $('#floormanager').click(function(){
     error: function(data) {
     }
   }); 
-  $.ajax({
-    url: 'api/getEventSelectOption.php',
-    cache:false,
-    dataType:"html",
-    beforeSend:function(){
-      $('.deleteLoaderContainer').show();
-      $(".deleteBtn").hide();
-    },
-    success: function(data) {
-      $('.deleteLoaderContainer').hide();
-      if(data=="false"){
-          $(".deleteBtn").hide();
-        }else{
-          $(".deleteBtn").show();
-        }
-        
-    },
-    error: function(data) {
-    }
-  });
+  
   $('.infoBoothMessage').show();
   $('.infoAppointmentMessage').hide();
   $('#message').html('');
@@ -238,7 +169,7 @@ $("#login_form").on('submit',function(e){
       $.cookie('firstname',btoa(data.firstname), {secure: true});
       $.cookie('userId',btoa(data.userId), {secure: true});
       $.cookie('expireAt',btoa(data.expireAt), {secure: true});
-      window.location = 'importData.php';
+      window.location.href = 'importData.php';
     }else{
       $(".error").html(data.error)
     }
@@ -274,8 +205,14 @@ $("#import_form").on('submit',function(e){
      $('.loaderContainer').show();
 
    },
-   success:function(data){
+   success:function(data){console.log(data.status);
+    if(data.status == "403"){
+      window.location.href = "api/error.php";
+    }
     $('#message').html(data.message);
+    $("#pagerefresh, #pagedownloadrefresh").load(location.href + " #pagerefresh");
+    
+    
     if(data.totalRecords > 0){
       if(data.totalRecords == data.missedRowCount){
         $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed mandatory records on the uploaded file.</div>' );
@@ -315,26 +252,7 @@ $("#import_form").on('submit',function(e){
       }
     });
 
-    $.ajax({
-      url: 'api/getEventSelectOption.php',
-      cache:false,
-      dataType:"html",
-      beforeSend:function(){
-        $('.deleteLoaderContainer').show();
-        $(".deleteBtn").hide();
-      },
-      success: function(data) {
-        $('.deleteLoaderContainer').hide();
-        if(data=="false"){
-            $(".deleteBtn").hide();
-          }else{
-            $(".deleteBtn").show();
-          }
-          
-      },
-      error: function(data) {
-      }
-    });
+    
     $('#importappintmentSubmit').attr('disabled', false);
     $('.loaderContainer').hide();
     $('#importappintmentSubmit').val('Import');
@@ -372,9 +290,13 @@ $("#import_floor_form").on('submit',function(e){
      $('#importFloormanagerSubmit').val('Importing...');
      $('.loaderContainer').show();
    },
-   success:function(data){
+   success:function(data){console.log(data.status);
+    if(data.status == "403"){
+      window.location.href = "api/error.php";
+    }
     $('#message').html(data.message);
-
+    $("#pagefloorrefresh, #pagefloordownloadrefresh").load(location.href + " #pagefloorrefresh");
+    
     if(data.totalRecords > 0){
       if(data.totalRecords == data.missedRowCount){
         $("#message").append( '<div class="errorMessage errormsgWrapperDi"> None of the record(s) were inserted due to missed mandatory records on the uploaded file.</div>' );
@@ -415,26 +337,7 @@ $("#import_floor_form").on('submit',function(e){
       }
     });
 
-    $.ajax({
-      url: 'api/getEventSelectOption.php',
-      cache:false,
-      dataType:"html",
-      beforeSend:function(){
-        $('.deleteLoaderContainer').show();
-        $(".deleteBtn").hide();
-      },
-      success: function(data) {
-        $('.deleteLoaderContainer').hide();
-        if(data=="false"){
-            $(".deleteBtn").hide();
-          }else{
-            $(".deleteBtn").show();
-          }
-          
-      },
-      error: function(data) {
-      }
-    });
+    
     
     $('#importFloormanagerSubmit').attr('disabled', false);
     $('.loaderContainer').hide();
