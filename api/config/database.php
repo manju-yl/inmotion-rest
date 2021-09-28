@@ -11,7 +11,7 @@ class DatabaseService {
         $this->connection = null; 
 
         try {
-            $this->connection = new PDO("mysql:host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_DATABASE'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD']);
+            $this->connection = new PDO("mysql:host=" . $_SERVER['DB_HOST'] . ";dbname=" . $_SERVER['DB_DATABASE'], $_SERVER['DB_USERNAME'], $_SERVER['DB_PASSWORD']);
         } catch (PDOException $exception) {
             echo "Connection failed: " . $exception->getMessage();
         }

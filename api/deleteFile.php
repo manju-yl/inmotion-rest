@@ -9,7 +9,7 @@ require "../start.php";
 $databaseService = new DatabaseService(); 
 $conn = $databaseService->getConnection();
 //uploaded file expiry days
-$day = $_ENV['UPLOAD_FILE_EXPIRY_DAYS'];
+$day = $_SERVER['UPLOAD_FILE_EXPIRY_DAYS'];
 if ($day != "") {
     $days = $day;
 } else {

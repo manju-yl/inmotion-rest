@@ -6,17 +6,24 @@ if(isset($_COOKIE['token'])) {
 }
 
 require './api/common/header.php';
-header("X-Frame-Options: DENY");
+header("Strict-Transport-Security: max-age=15768000");
+header('Access-Control-Allow-Origin', "lookuptools-dev.informamarkets.com, lookuptools.informamarkets.com");
 header("X-XSS-Protection: 0");
 header("X-Content-Type-Options: nosniff");
-header("X-Frame-Options: SAMEORIGIN");
 header("Referrer-Policy: no-referrer");
-header('Cache-Control: post-check=0, pre-check=0', FALSE);
-header('Pragma: no-cache');
+header("Referrer-Policy: same-origin");
 header('Cache-Control: no-store, no-cache, must-revalidate');
-header("Access-Control-Allow-Origin: * ");
-header("Access-Control-Max-Age: 3600");
+header('Pragma: no-cache');
+header("Expires: 0"); 
+header("X-Frame-Options: SAMEORIGIN");
+header("X-Frame-Options: DENY");
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT');
+header('Access-Control-Max-Age: 86400');
+header('Access-Control-Request-Headers: X-Custom-Header');
+header('Access-Control-Allow-Headers: x-requested-with, Content-Type, origin, authorization, accept, client-security-token');
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 
 ?>
 <style>
