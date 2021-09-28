@@ -14,7 +14,7 @@ $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
 
 //validate url
-if (filter_var($_ENV['SERVER_URL'].$_SERVER['REQUEST_URI'], FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED)) {
+if (filter_var($_SERVER['SERVER_URL'].$_SERVER['REQUEST_URI'], FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED)) {
     //set response code - 400 Bad Request
     http_response_code(400);
     echo json_encode(
@@ -63,7 +63,7 @@ if ($email != "" && $password != "") {
         $password2 = $row['password'];
         //check if password matches
         if (password_verify($password, $password2)) {
-            $secret_key = $_ENV['JWT_SECRET'];
+            $secret_key = $_SERVER['JWT_SECRET'];
             $issuedat_claim = time(); // issued at
             $expire_claim = $issuedat_claim + 86400; // expire time in seconds
             $token = array(

@@ -1,10 +1,14 @@
 <?php
+ini_set('memory_limit', '-1');
+ini_set('max_execution_time', '-1');
+ini_set('max_execution_time', 0);
 require "../vendor/autoload.php";
 include_once './config/database.php';
 include_once './model/appointment.php';
 include_once './model/boothdetails.php';
 require "./common/headers.php";
 require "../start.php";
+session_start();
 
 use Phppot\DataSource;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
@@ -20,6 +24,7 @@ if(isset($_COOKIE['userId'])){
 
 //If resign appointment radio button is clicked
 if (isset($_POST["resignappintments"])) { 
+    if (isset($_POST['pageupload']) && ($_POST['pageupload'] == $_SESSION['pageupload'])) {
     //check if file is selected
     if($_FILES['file']['name'] !=""){
     $allowedFileType = [
@@ -245,10 +250,16 @@ if (isset($_POST["resignappintments"])) {
         $message = '<div class="errorMessage errormsgWrapperDi">Please upload re-sign appointment excel file.</div>';
         echo json_encode(array('status' => 401, 'message' => $message)); exit;
     }
+    }else{
+       $message = '<div class="errorMessage errormsgWrapperDi">Invalid request. Please try again.</div>';
+        echo json_encode(array('status' => 403, 'message' => $message)); exit; 
+    }
 }
 
 //If floor manager lookup radio button is clicked
 if (isset($_POST["floormanager"])) { 
+    //check for csrf token
+    if (isset($_POST['pageupload']) && ($_POST['pageupload'] == $_SESSION['pageupload'])) {
     //check if file is selected
     if($_FILES['myfile']['name'] !=""){
     $allowedFileType = [
@@ -505,5 +516,9 @@ if (isset($_POST["floormanager"])) {
     } else {
         $message = '<div class="errorMessage errormsgWrapperDi">Please upload floor manager excel file.</div>';
         echo json_encode(array('status' => 401, 'message' => $message)); exit;
+    }
+    }else{
+       $message = '<div class="errorMessage errormsgWrapperDi">Invalid request. Please try again.</div>';
+        echo json_encode(array('status' => 403, 'message' => $message)); exit; 
     }
 }

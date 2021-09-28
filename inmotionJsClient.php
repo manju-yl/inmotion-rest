@@ -3,7 +3,7 @@
         <meta charset="utf-8">
         <title>Connect to API</title>
         
-    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+    <script src="public/scripts/jquery-3.5.0.min.js"></script>
     </head>
     <body>
         <style>
@@ -71,10 +71,9 @@
           <span class="deleteLoader" style="display:none"><span class="loader" ></span></span>
         </div><br/>
         <?php require "./start.php"; ?>
-        <script src="<?php echo $_ENV['SERVER_URL'] ?>/public/scripts/jquery.cookie.js"></script>
+        <script src="<?php echo $_SERVER['SERVER_URL'] ?>/public/scripts/jquery.cookie.js"></script>
         <script>
-        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/validateToken.php'; 
-        
+        var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/validateToken.php';
         var tokenfinalurl = url;
 
         var datasetting = {
@@ -90,7 +89,7 @@
         $.ajax(datasetting).done(function (response) {
             return false;
         }).fail(function(response){
-            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/generateToken.php';
+            var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/generateToken.php';
             var finalurl = url;
             $.ajax({
                    type: "post",
@@ -100,8 +99,8 @@
                      'Content-Type': 'application/json'
                    },
                    data: JSON.stringify({ 
-                     "email" : '<?php echo $_ENV['USER_NAME'] ?>',
-                     "password" : '<?php echo $_ENV['PASSWORD'] ?>'
+                     "email" : 'inmotion@gmail.com',
+                     "password" : 'inmotion2135'
                    }),
                    url: finalurl,
                    success: function(data, result) {
@@ -120,7 +119,7 @@
             });
         });
 
-        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/dispEventOptions.php'; 
+        var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/dispEventOptions.php'; 
         var eventurl = url;
         var eventHtml = "";
         var eventsettings = {
@@ -150,7 +149,7 @@
             eventHtml = '<span>There are no events to display.</span>'; 
             $('#message').html(eventHtml);
         });
-        var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getCompanySelectOption.php';
+        var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/getCompanySelectOption.php';
         var companyurl = url;
         var companyHtml = "";
         var companysettings = {
@@ -192,7 +191,7 @@
             var data = JSON.stringify({
               event_id: selectedEventId
             });
-            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getEventCompanys.php'; 
+            var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/getEventCompanys.php'; 
             var eventcompanyurl = url;
             var settings = {
                 "url": eventcompanyurl,
@@ -220,7 +219,7 @@
               event_id: selectedEventId,
               company_id: selectedCompanyId
             });
-            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getAppointments.php'; 
+            var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/getAppointments.php'; 
             var finalurl = url;
             var datasetting = {
                 "url": finalurl,
@@ -247,7 +246,7 @@
                 appointmentHtml = '<span>No Appointments found.</span>'; 
                 $('#appointments').html(appointmentHtml);
             });
-            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getFloorManagerDetails.php'; 
+            var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/getFloorManagerDetails.php'; 
             var finalurl = url;
             var datasettings = {
                 "url": finalurl,
@@ -285,7 +284,7 @@
                   event_id: selectedEventId,
                   company_id: selectedCompanyId
                 });
-            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getAppointments.php'; 
+            var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/getAppointments.php'; 
             var finalurl = url;
             var datasetting = {
                 "url": finalurl,
@@ -312,7 +311,7 @@
                 appointmentHtml = '<span>No Appointments found.</span>'; 
                 $('#appointments').html(appointmentHtml);
             });
-            var url = '<?php echo $_ENV['SERVER_URL'] ?>/api/getFloorManagerDetails.php'; 
+            var url = '<?php echo $_SERVER['SERVER_URL'] ?>/api/getFloorManagerDetails.php'; 
             var finalurl = url;
             var datasettings = {
                 "url": finalurl,
@@ -338,7 +337,7 @@
         });
         </script>
         <div>
-            <div><h4>Re-Sign Appointment</h4><div id="appointments"></div></div>
+            <div><h4>Re-Sign Appointments</h4><div id="appointments"></div></div>
             <div><h4>Floor Manager Details</h4><div id="floormanager"></div></div>
         </div>
     </body>

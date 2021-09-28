@@ -8,7 +8,7 @@ require "../start.php";
 
 use \Firebase\JWT\JWT;
 
-$secret_key = $_ENV['JWT_SECRET'];
+$secret_key = $_SERVER['JWT_SECRET'];
 //get database connection
 $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();

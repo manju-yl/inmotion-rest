@@ -261,5 +261,23 @@ class BoothDetails {
     }
 
 
+    //get all floor event details
+    function getAllBoothEventDetails() {
+        $query = "SELECT e.event_id
+                    FROM event e
+                    LEFT OUTER JOIN booth_details s 
+                      ON s.event_id=e.event_id 
+                      where s.event_id IS NOT NULL
+                    GROUP BY e.event_id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+
+        return $stmt;
+    }
+
+
 
 }

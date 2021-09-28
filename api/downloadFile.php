@@ -5,6 +5,7 @@ include_once './model/appointment.php';
 include_once './model/boothdetails.php';
 require "./common/headers.php";
 require "../start.php";
+session_start();
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 //database connection
@@ -13,6 +14,7 @@ $conn = $databaseService->getConnection();
 
 //on click of appointment export to excel
 if(isset($_POST['export'])){
+if (isset($_POST['pageupload']) && ($_POST['pageupload'] == $_SESSION['pageupload'])) { 
 $event_id = filter_var($_POST['eventselection'], FILTER_SANITIZE_NUMBER_INT); 
 
 //get appointment object
@@ -57,10 +59,16 @@ $fileName = $fileName.'.xlsx';
 header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 header("Content-Disposition: attachment; filename=".$fileName);
 $writer->save('php://output'); exit;
+}else{
+    header("HTTP/1.0 404 Not Found");
+    header("location:".$_SERVER['SERVER_URLS']."/api/error.php");
+    exit;
+}
 }
 
 //on click of floor manager export to excel
 if(isset($_POST['exportEmptyFloorDetails'])){
+if (isset($_POST['pageupload']) && ($_POST['pageupload'] == $_SESSION['pageupload'])) { 
 $event_id = filter_var($_POST['flooreventselection'], FILTER_SANITIZE_NUMBER_INT); 
 
 //get booth details object
@@ -120,4 +128,9 @@ $fileName = $fileName.'.xlsx';
 header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 header("Content-Disposition: attachment; filename=".$fileName);
 $writer->save('php://output'); exit;
+}else{
+    header("HTTP/1.0 404 Not Found");
+    header("location:".$_SERVER['SERVER_URLS']."/api/error.php");
+    exit;
+}
 }

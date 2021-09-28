@@ -63,8 +63,8 @@ select {
 </style>
 
 <link rel="stylesheet" href="public/css/ipc_fbf.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="public/css/bootstrap.min.css">
+<script src="public/scripts/bootstrap.min.js"></script>
 
 <div class="container">
   <span><a href="importData.php">Back</a></span>
@@ -75,12 +75,17 @@ select {
     <div class="col-md-4"></div>
     <div class="col-md-4 text-center form-container">
     <div class="form-group">
-    <div id="dispAllEventIds">
-      <span class="deleteLoader" style="display:none"><span class="loader" ></span></span>
+    <div id="dispAllOptions">
+    <select id='appointflooroption' name='appointflooroption'>";
+    <option id='appointment'>Re-Sign Appointment</option>";
+    <option id='floorManager'>Floor Manager</option>";
+    </select>
     </div>
     </div>
     <div class="form-group">
-    <div id="dispAllOptions"></div>
+    <div id="dispAllEventIds">
+      <span class="deleteLoader" style="display:none"><span class="loader" ></span></span>
+    </div>
     </div>
     <div class="form-group">
     <button class="delete button button4" title="Delete">Delete</button>
@@ -104,14 +109,14 @@ $.ajax({
   success: function(data) {
     $('.deleteLoader').hide();
     if(data=="false"){
-        $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
-        $(".eventDeletionDiv").hide();
+        $(".eventDeletionDiv").show();
+        $("#dispAllOptions").show();
     }else{
         $(".eventDeletionDiv").show();
         $('.delete').show();
         $('.cancel').show();
         $("#dispAllEventIds").html(data);
-        $("#dispAllOptions").hide();
+        $("#dispAllOptions").show();
     }
   },
   error: function(data) {
@@ -162,14 +167,13 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
               success: function(data) {
                 $('.deleteLoader').hide();
                 if(data=="false"){
-                    $('#message').append('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
-                    $(".eventDeletionDiv").hide();
+                    $(".eventDeletionDiv").show();
                   }else{
                     $(".eventDeletionDiv").show();
                     $('.delete').show();
                     $('.cancel').show();
                     $("#dispAllEventIds").html(data);
-                    $("#dispAllOptions").hide();
+                    $("#dispAllOptions").show();
                   }
                   
               },
@@ -195,25 +199,19 @@ function Confirm(title, msg, $true, $false, selectedEventId, getSelectedOption) 
 $('.delete').click(function () {
     var selectedEventId = $( "#eventdeletion option:selected" ).text();
     var getSelectedOption = $("#appointflooroption option:selected").text(); 
-    if(selectedEventId == "Select Event"){
-      $('#message').html('<div class="errorMessage errormsgWrapperDi">Please select the event.</div>');
-    }else{
     Confirm('Confirm', 'Are you sure you want to delete the ', 'Yes', 'Cancel', selectedEventId, getSelectedOption);
-    }
 });
 
-$(document).on('change','#eventdeletion',function(e){
+$(document).on('change','#appointflooroption',function(e){
     // Preventing form to submit
     e.preventDefault();
-    var selectedEventId = $( "#eventdeletion option:selected" ).text();
-    if(selectedEventId == "Select Event"){
-      $("#dispAllOptions").hide();
-    }
+    $('#message').html('');
+    var selectedEventOption = $("#appointflooroption option:selected").attr("id"); 
     var data = JSON.stringify({
-      event_id: selectedEventId
+      options: selectedEventOption
     });
     var settings = {
-        "url": 'api/getEventFlagList.php',
+        "url": 'api/getEventsDisplay.php',
         "method": "POST",
         "timeout": 0,
         "headers": {
@@ -226,13 +224,21 @@ $(document).on('change','#eventdeletion',function(e){
 
     var html = '';
     $.ajax(settings).done(function (response) {
-        $("#dispAllOptions").show();
-        html += '<select id="appointflooroption" name="appointflooroption">';
-        $.each(response, function (index, value) {
-            html += '<option id=' + value.option_key + '>' + value.option_value + '</option>';
+        $("#dispAllEventIds").show();
+        html += '<select id="eventdeletion" name="eventdeletion">';
+        $.each(response, function (index, value) {console.log(value)
+            html += '<option>' + value.option_value + '</option>';
         });
-        $('#dispAllOptions').html(html);
-    })
+        
+        $('#dispAllEventIds').html(html);
+        $('.delete').show();
+        $('.cancel').show();
+    }).fail(function(response){//alert("ss");
+    $('#message').html('<div class="errorMessage errormsgWrapperDi">There are no events to display.</div>');
+        $("#dispAllEventIds").hide();
+        $('.delete').hide();
+        $('.cancel').hide();           
+    });
 });
 
 </script>

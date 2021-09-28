@@ -321,5 +321,22 @@ class Appointment {
         return $finalmultiple;
     }
 
+    //get all appointment event details
+    function getAllAppointmentEventDetails() {
+        $query = "SELECT e.event_id
+                    FROM event e
+                    LEFT OUTER JOIN appointment p 
+                    ON p.event_id = e.event_id
+                    where p.event_id IS NOT NULL
+                    GROUP BY e.event_id";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute(); 
+
+        return $stmt;
+    }
+
 
 }

@@ -349,3 +349,9 @@ i.glyphicon.glyphicon-trash {
     margin: 0px auto;
     float:right;
 }
+
+#progress {
+  width: 500px;
+  border: 1px solid #aaa;
+  height: 20px;
+}

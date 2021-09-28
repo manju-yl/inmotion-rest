@@ -1,4 +1,5 @@
 <?php
+ini_set('max_execution_time', 0);
 if(isset($_COOKIE['token'])) {
     header("Location: importData.php"); 
     exit();
@@ -50,7 +51,7 @@ Member Login
 </span>
 
 <div class="error"></div>
-<div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+<div class="wrap-input100 validate-input" data-validate="Valid email is required">
 <input class="input100" type="text" id="email" name="email" placeholder="Email">
 <span class="focus-input100"></span>
 <span class="symbol-input100">

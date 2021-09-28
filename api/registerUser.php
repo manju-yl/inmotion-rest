@@ -9,7 +9,7 @@ $databaseService = new DatabaseService();
 $conn = $databaseService->getConnection();
 
 //validate url
-if (filter_var($_ENV['SERVER_URL'].$_SERVER['REQUEST_URI'], FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED)) {
+if (filter_var($_SERVER['SERVER_URL'].$_SERVER['REQUEST_URI'], FILTER_VALIDATE_URL, FILTER_FLAG_QUERY_REQUIRED)) {
     //set response code - 400 Bad Request
     http_response_code(400);
     echo json_encode(

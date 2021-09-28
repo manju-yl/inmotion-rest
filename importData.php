@@ -1,4 +1,5 @@
 <?php
+session_start();
 if(!isset($_COOKIE['token'])) {
     header("Location: index.php"); 
     exit();
@@ -60,14 +61,14 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
 </script>
 
 <link rel="stylesheet" href="public/css/ipc_fbf.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="public/css/bootstrap.min.css">
+<script src="public/scripts/bootstrap.min.js"></script>
 
 <span class="login100-form-title">Upload Appointment and Floor Manager Data</span>
 <div class="container">
         <div class="wrapper clearfix">
            <div id="message"></div>
-           <p><span class="deleteLoaderContainer" style="display:none;"><span class="loader" style="border-color:rgb(255, 0, 0) rgb(234, 234, 234) rgb(234, 234, 234) !important"></span></span><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="display:none;float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
+           <p><a href="deleteAppointmentFloorEvents.php" class="deleteBtn" title="Clear Event Data" style="float:right;color:red"><i class="glyphicon glyphicon-trash"></i> Clear Event Data</a></p>
            <p></p>
            <div class="infoAppointmentMessage" style="display:none">
                   <?php $appointmentSampleExcel = 'downloadfile/appointment.xlsx'; ?>
@@ -86,6 +87,13 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
             </div>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_form">
+                <?php 
+                $_SESSION['pageupload'] = base64_encode(bin2hex(openssl_random_pseudo_bytes(32)));  
+                ?>
+                <div id="pagerefresh">
+                
+                <input type="hidden" name="pageupload" value="<?=$_SESSION['pageupload']?>"/>
+                </div>
                 <input type="radio" name="resignappintments" value="resignappintment"  id="resignappintment" checked />
                <label>Re-sign Appointment</label>
                <div id='resignappintment_div'>
@@ -99,6 +107,9 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
                 <div class="btn" id="appointmentDivDisp" style="display:none">
                 <label>Fetch missing records for Event Id:</label>
                 <form action="api/downloadFile.php" method="post">
+                  <div id="pagedownloadrefresh">
+                  <input type="hidden" name="pageupload" value="<?=$_SESSION['pageupload']?>"/>
+                  </div>
                     <div id="dispEventLists"> 
                     </div>
                       <button type="submit" id="btnExport" name='export'
@@ -109,6 +120,9 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
             </section>
             <section>
               <form  class="form" action="" method="post" enctype="multipart/form-data" id="import_floor_form">
+                <div id="pagefloorrefresh">
+                <input type="hidden" name="pageupload" value="<?=$_SESSION['pageupload']?>"/>
+                </div>
                 <input type="radio" name="floormanager"  value="floormanager" id="floormanager"/>
                 <label>Floor Manager Lookup </label>
                 <div id='floormanager_div'>
@@ -121,6 +135,9 @@ if( $('input:radio[name=resignappintments]:checked').val()=='resignappintment'){
               <div class="btn" id="floorManagerDivDisp" style="display:none">
               <label>Fetch missing records for Event Id:</label>
               <form action="api/downloadFile.php" method="post">
+                  <div id="pagefloordownloadrefresh">
+                  <input type="hidden" name="pageupload" value="<?=$_SESSION['pageupload']?>"/>
+                  </div>
                   <div id="dispFloorEventLists"></div>
                     <button type="submit" id="btnExport" name='exportEmptyFloorDetails'
                         value="Export to Excel" class="button button4" title="Export to Excel">Export

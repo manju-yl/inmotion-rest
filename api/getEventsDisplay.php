@@ -31,7 +31,7 @@ $authHeader = filter_input(INPUT_SERVER, 'HTTP_AUTHORIZATION', FILTER_SANITIZE_S
 
 $arr = explode(" ", $authHeader);
 //check if eventId value exists
-if ($data->event_id == "" || $data->event_id == null) {
+if ($data->options == "" || $data->options == null) {
     // set response code - 404 Not found
     http_response_code(200);
     // no appointments found
@@ -40,55 +40,52 @@ if ($data->event_id == "" || $data->event_id == null) {
     );
     exit;
 }
-//check if event_id iss numeric
-if ($data->event_id != "" || $data->event_id != null) {
-    if (!is_numeric($data->event_id) || !is_numeric($data->event_id)) {
-        // set response code - 404 Not found
-        http_response_code(200);
-        // no appointments found
-        echo json_encode(
-                array("message" => "")
-        );
-        exit;
-    }
-}
 
 //check if jwt token exists
 $jwt = $arr[1];
-
 if ($jwt) {
     try {
         //decode the jwt token
         $decoded = JWT::decode($jwt, $secret_key, array('HS256'));
         
         $event_keys = array();
+
+        if($data->options == "appointment"){
         //get appointment object
         $appointment = new Appointment($conn);
         //get appointment details
-        $stmt_appointment_check = $appointment->checkIfEventExists($data);
+        $stmt_appointment_check = $appointment->getAllAppointmentEventDetails();
+        //check if records > 0
+        if ($stmt_appointment_check->rowCount() > 0) {
+            while ($row = $stmt_appointment_check->fetch(PDO::FETCH_ASSOC)) {
+                extract($row); 
 
+                $appointment_item = array(
+                    "option_value" => $event_id
+                );
+                array_push($event_keys, $appointment_item);
+            }
+        }
+        }
+
+        if($data->options == "floorManager"){
         //get booth details object
         $boothDetails = new BoothDetails($conn);
         //get appointment details
-        $stmt_booth_check = $boothDetails->checkIfEventExists($data);
-
-        //check if records > 0
-        if ($stmt_appointment_check->rowCount() > 0) {
-            $appointment_item = array(
-                    "option_key" => "appointment",
-                    "option_value" => "Re-Sign Appointment"
-                    );
-            array_push($event_keys, $appointment_item);
-        }
-
+        $stmt_booth_check = $boothDetails->getAllBoothEventDetails();
         if ($stmt_booth_check->rowCount() > 0) {
-            $floor_item = array(
-                    "option_key" => "floorManager",
-                    "option_value" => "Floor Manager"
-                    );
-            array_push($event_keys, $floor_item);
-        }
+            while ($row = $stmt_booth_check->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
 
+                $floor_item = array(
+                    "option_value" => $event_id
+                );
+                array_push($event_keys, $floor_item);
+            }
+            
+        }
+        }
+        
         if (sizeof($event_keys) == 0) {
             // set response code - 404 Not found
             http_response_code(404);
