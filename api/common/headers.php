@@ -17,4 +17,3 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS, DELETE, PUT');
 header('Access-Control-Max-Age: 86400');
 header('Access-Control-Request-Headers: X-Custom-Header');
 header('Access-Control-Allow-Headers: x-requested-with, Content-Type, origin, authorization, accept, client-security-token');
-//header("Content-Security-Policy: default-src 'self'");
